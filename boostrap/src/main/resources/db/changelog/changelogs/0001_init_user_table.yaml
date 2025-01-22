@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0001
+      author: dorian-frances
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(256)
+                  constraints:
+                    nullable: false

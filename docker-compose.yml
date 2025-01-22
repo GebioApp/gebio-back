@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  gebio-back-local-db:
+    image: postgres
+    container_name: gebio-back-postgres-container
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password

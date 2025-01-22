@@ -1,0 +1,11 @@
+{
+  "name": "gebio-back",
+  "version": "1.0.0",
+  "scripts": {
+    "format": "npx prettier --write \"**/*.java\""
+  },
+  "devDependencies": {
+    "prettier": "3.4.2",
+    "prettier-plugin-java": "2.6.6"
+  }
+}
