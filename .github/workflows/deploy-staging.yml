@@ -45,8 +45,7 @@ jobs:
           scp $SSH_OPTS -i private_key.pem bootstrap/target/*.jar ubuntu@$EC2_HOST:~/app.jar
 
           ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST << EOF
-            export DB_STAGING_PASSWORD="${{ secrets.DB_STAGING_PASSWORD }}"
             pkill -f 'java -jar' || true
-            nohup java -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
+            nohup java -DDB_STAGING_PASSWORD=${{ secrets.DB_STAGING_PASSWORD }} -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
           EOF
           rm -f private_key.pem
