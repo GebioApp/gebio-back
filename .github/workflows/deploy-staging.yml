@@ -43,6 +43,10 @@ jobs:
           export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
           
           scp $SSH_OPTS -i private_key.pem bootstrap/target/*.jar ubuntu@$EC2_HOST:~/app.jar
-          ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST "export DB_PASSWORD=${DB_PASSWORD} && pkill -f 'java -jar' || true && nohup java -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &"
-        
+
+          ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST << EOF
+            export DB_PASSWORD=$DB_PASSWORD
+            pkill -f 'java -jar' || true
+            nohup java -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
+          EOF
           rm -f private_key.pem
