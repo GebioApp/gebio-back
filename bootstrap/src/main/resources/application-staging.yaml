@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://gebio-postgres-staging.cpgwm8i8aieq.eu-west-3.rds.amazonaws.com:5432/postgres
+    username: staging
+    password: ${DB_STAGING_PASSWORD}
+    driver-class-name: org.postgresql.Driver

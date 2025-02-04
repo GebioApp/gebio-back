@@ -1,0 +1,48 @@
+name: Deploy Spring Boot to EC2
+
+on:
+  push:
+    branches:
+      - staging  # Déclenche le déploiement sur push vers main
+  pull_request:
+    branches:
+      - staging
+    types:
+      - closed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build and test
+        run: |
+          mvn clean install -DskipTests=false
+
+      - name: Package application
+        run: mvn package -DskipTests
+
+      - name: Deploy to EC2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+          DB_PASSWORD: ${{ secrets.DB_STAGING_PASSWORD }}
+
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+          
+          export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          
+          scp $SSH_OPTS -i private_key.pem bootstrap/target/*.jar ubuntu@$EC2_HOST:~/app.jar
+          ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST "export DB_PASSWORD=${DB_PASSWORD} && pkill -f 'java -jar' || true && nohup java -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &"
+        
+          rm -f private_key.pem

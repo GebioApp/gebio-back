@@ -18,7 +18,7 @@
         <module>application</module>
         <module>domain</module>
         <module>infrastructure</module>
-        <module>boostrap</module>
+        <module>bootstrap</module>
     </modules>
     <properties>
         <java.version>21</java.version>
