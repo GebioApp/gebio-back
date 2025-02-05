@@ -1,15 +1,14 @@
 package io.gebio.gebioback.rest.api.adapter.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import io.gebio.gebioback.contract.api.HealthApi;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("health")
-public class HealthController {
+public class HealthController implements HealthApi {
 
-  @GetMapping("check")
-  public String check() {
-    return "OK, I'm alive!";
+  @Override
+  public ResponseEntity<String> check() {
+    return ResponseEntity.ok("OK, API is running");
   }
 }
