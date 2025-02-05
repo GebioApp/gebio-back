@@ -3,12 +3,7 @@ name: Deploy Spring Boot to EC2
 on:
   push:
     branches:
-      - staging  # Déclenche le déploiement sur push vers main
-  pull_request:
-    branches:
       - staging
-    types:
-      - closed
 
 jobs:
   build-and-deploy:
