@@ -45,7 +45,16 @@ jobs:
           scp $SSH_OPTS -i private_key.pem bootstrap/target/*.jar ubuntu@$EC2_HOST:~/app.jar
 
           ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST << EOF
-            pkill -f 'java -jar' || true
+            
+            echo "Stopping old application if running..."
+            PID=\$(ps aux | grep 'app.jar' | grep -v grep | awk '{print \$2}')
+            if [ -n "\$PID" ]; then
+                echo "Stopping process \$PID..."
+                kill -9 \$PID
+                sleep 5
+            else
+                echo "No running Java process found."
+            fi
             nohup java -DDB_STAGING_PASSWORD=${{ secrets.DB_STAGING_PASSWORD }} -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
           EOF
           rm -f private_key.pem
