@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Example API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+  - url: http://35.180.152.129:8080/
+    description: Staging server
+
+paths:
+  /health/check:
+    get:
+      summary: Check health of the API
+      operationId: check
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Application is running
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK, API is running"
