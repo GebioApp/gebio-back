@@ -24,3 +24,59 @@ paths:
               schema:
                 type: string
                 example: "OK, API is running"
+  /api/v1/me:
+    get:
+      security:
+        - bearerAuth: [ ]
+      summary: Get current logged in user
+      description: Get current logged in user
+      operationId: getCurrentUser
+      tags:
+        - User
+      responses:
+        "200":
+          description: Successfully retrieved current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponseContract'
+              example:
+                user:
+                  id: 77dbf8f5-8490-4986-9863-969bf7dc6c23
+                  email: john.doe@gmail.com
+                  firstname: John
+                  lastname: Doe
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    CurrentUserResponseContract:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/UserContract'
+    UserContract:
+      type: object
+      required:
+        - id
+        - email
+        - firstname
+        - lastname
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+  responses:
+    UnauthorizedError:
+      description: Authentication is missing or invalid
+
+
