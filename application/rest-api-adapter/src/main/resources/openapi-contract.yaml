@@ -44,8 +44,6 @@ paths:
                 user:
                   id: 77dbf8f5-8490-4986-9863-969bf7dc6c23
                   email: john.doe@gmail.com
-                  firstname: John
-                  lastname: Doe
         "401":
           $ref: '#/components/responses/UnauthorizedError'
 
@@ -63,17 +61,11 @@ components:
       required:
         - id
         - email
-        - firstname
-        - lastname
       properties:
         id:
           type: string
           format: uuid
         email:
-          type: string
-        firstname:
-          type: string
-        lastname:
           type: string
   responses:
     UnauthorizedError:
