@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "gebio_user")
 public class UserEntity {
 
   @Id
@@ -16,6 +16,13 @@ public class UserEntity {
 
   @Column(name = "email")
   private String email;
+
+  public UserEntity() {}
+
+  public UserEntity(UUID id, String email) {
+    this.id = id;
+    this.email = email;
+  }
 
   public UUID getId() {
     return id;

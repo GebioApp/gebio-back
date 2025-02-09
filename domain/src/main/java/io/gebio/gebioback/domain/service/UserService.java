@@ -1,8 +1,8 @@
-package io.gebio.gebiback.domain.service;
+package io.gebio.gebioback.domain.service;
 
-import io.gebio.gebiback.domain.model.User;
-import io.gebio.gebiback.domain.port.in.UserFacade;
-import io.gebio.gebiback.domain.port.out.UserRepositoryPort;
+import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.port.in.UserFacade;
+import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import org.springframework.stereotype.Service;
 
 @Service

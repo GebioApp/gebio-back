@@ -1,4 +1,4 @@
-package io.gebio.gebiback.domain.model;
+package io.gebio.gebioback.domain.model;
 
 import java.util.UUID;
 

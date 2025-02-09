@@ -1,6 +1,6 @@
-package io.gebio.gebiback.domain.port.out;
+package io.gebio.gebioback.domain.port.out;
 
-import io.gebio.gebiback.domain.model.User;
+import io.gebio.gebioback.domain.model.User;
 import java.util.Optional;
 
 public interface UserRepositoryPort {
