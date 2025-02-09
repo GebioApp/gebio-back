@@ -1,9 +1,9 @@
-package service;
+package io.gebio.gebiback.domain.service;
 
-import model.User;
+import io.gebio.gebiback.domain.model.User;
+import io.gebio.gebiback.domain.port.in.UserFacade;
+import io.gebio.gebiback.domain.port.out.UserRepositoryPort;
 import org.springframework.stereotype.Service;
-import port.in.UserFacade;
-import port.out.UserRepositoryPort;
 
 @Service
 public class UserService implements UserFacade {

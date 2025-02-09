@@ -1,18 +1,18 @@
-package service;
+package io.gebio.gebiback.domain.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.gebio.gebiback.domain.model.User;
+import io.gebio.gebiback.domain.port.out.UserRepositoryPort;
 import java.util.Optional;
 import java.util.UUID;
-import model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import port.out.UserRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
