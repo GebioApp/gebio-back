@@ -3,11 +3,14 @@ databaseChangeLog:
       id: 0002
       author: dorian-frances
       changes:
+        - renameTable:
+            oldTableName: user
+            newTableName: gebio_user
         - dropColumn:
-            tableName: user
+            tableName: gebio_user
             columnName: username
         - addColumn:
-            tableName: user
+            tableName: gebio_user
             columns:
               - column:
                   name: email

@@ -1,13 +1,15 @@
 package io.gebio.gebioback.postgres.adapter;
 
-import io.gebio.gebiback.domain.model.User;
-import io.gebio.gebiback.domain.port.out.UserRepositoryPort;
+import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
+import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.mapper.UserMapper;
 import io.gebio.gebioback.postgres.repository.UserRepository;
 import java.util.Optional;
-import org.springframework.stereotype.Repository;
+import java.util.UUID;
+import org.springframework.stereotype.Component;
 
-@Repository
+@Component
 public class PostgresUserAdapter implements UserRepositoryPort {
 
   private final UserRepository userRepository;
@@ -23,6 +25,9 @@ public class PostgresUserAdapter implements UserRepositoryPort {
 
   @Override
   public User createUserFromMail(String email) {
-    return null;
+    UserEntity userEntity = UserMapper.domainToEntity(
+      new User(UUID.randomUUID(), email)
+    );
+    return UserMapper.entityToDomain(userRepository.save(userEntity));
   }
 }

@@ -1,11 +1,11 @@
-package io.gebio.gebiback.domain.service;
+package io.gebio.gebioback.domain.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.gebio.gebiback.domain.model.User;
-import io.gebio.gebiback.domain.port.out.UserRepositoryPort;
+import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
