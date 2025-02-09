@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0002
+      author: dorian-frances
+      changes:
+        - dropColumn:
+            tableName: user
+            columnName: username
+        - addColumn:
+            tableName: user
+            columns:
+              - column:
+                  name: email
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
