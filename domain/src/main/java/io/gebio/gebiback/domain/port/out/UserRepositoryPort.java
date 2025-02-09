@@ -1,7 +1,7 @@
-package port.out;
+package io.gebio.gebiback.domain.port.out;
 
+import io.gebio.gebiback.domain.model.User;
 import java.util.Optional;
-import model.User;
 
 public interface UserRepositoryPort {
   Optional<User> findUserByEmail(String email);
