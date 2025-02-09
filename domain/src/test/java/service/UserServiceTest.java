@@ -1,11 +1,12 @@
 package service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.UUID;
 import model.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,21 @@ class UserServiceTest {
 
     User user = userService.getOrCreateUserFromEmail(email);
 
-    Assertions.assertThat(user).isEqualTo(existingUser);
+    assertThat(user).isEqualTo(existingUser);
+  }
+
+  @Test
+  void should_create_user_if_user_does_not_exist() {
+    String email = "john.doe@gmail.com";
+    User createdUser = new User(UUID.randomUUID(), email);
+
+    when(userRepositoryPort.findUserByEmail(email)).thenReturn(
+      Optional.empty()
+    );
+    when(userRepositoryPort.createUserFromMail(email)).thenReturn(createdUser);
+    User user = userService.getOrCreateUserFromEmail(email);
+
+    verify(userRepositoryPort).createUserFromMail(email);
+    assertThat(user).isEqualTo(createdUser);
   }
 }

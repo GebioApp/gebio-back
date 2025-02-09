@@ -5,4 +5,6 @@ import model.User;
 
 public interface UserRepositoryPort {
   Optional<User> findUserByEmail(String email);
+
+  User createUserFromMail(String email);
 }
