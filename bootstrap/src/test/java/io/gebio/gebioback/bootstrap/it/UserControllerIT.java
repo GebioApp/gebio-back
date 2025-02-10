@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-public class UserControllerIntegrationTest extends AbstractGebioBackApiIT {
+public class UserControllerIT extends AbstractGebioBackApiIT {
 
   @Autowired
   UserRepository userRepository;
