@@ -19,12 +19,7 @@ public class SecurityConfiguration {
     return http
       .csrf(AbstractHttpConfigurer::disable)
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-      .authorizeHttpRequests(authorize ->
-        authorize
-          .requestMatchers("/api/v1/public/**")
-          .permitAll()
-          .anyRequest()
-          .authenticated()
+      .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()
       )
       .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
       .build();
