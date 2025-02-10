@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class PostgresUserAdapterIntegrationTest extends AbstractPostgresIT {
+class PostgresUserAdapterIT extends AbstractPostgresIT {
 
   @Autowired
   private UserRepository userRepository;
