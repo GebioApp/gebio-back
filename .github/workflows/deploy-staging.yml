@@ -50,6 +50,10 @@ jobs:
             else
                 echo "No running Java process found."
             fi
-            nohup java -DDB_STAGING_PASSWORD=${{ secrets.DB_STAGING_PASSWORD }} -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
+            nohup java \
+              -DAUTH0_STAGING_ISSUER=${{ secrets.AUTH0_STAGING_ISSUER }} \
+              -DAUTH0_STATING_AUDIENCE=${{ secrets.AUTH0_STATING_AUDIENCE }} \
+              -DDB_STAGING_PASSWORD=${{ secrets.DB_STAGING_PASSWORD }} \
+              -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
           EOF
           rm -f private_key.pem
