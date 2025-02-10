@@ -4,3 +4,8 @@ spring:
     username: staging
     password: ${DB_STAGING_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
+okta:
+  oauth2:
+    issuer: ${AUTH0_STAGING_ISSUER}
+    audience: ${AUTH0_STATING_AUDIENCE}
