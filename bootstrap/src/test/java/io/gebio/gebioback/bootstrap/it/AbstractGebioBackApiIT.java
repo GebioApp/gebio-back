@@ -23,7 +23,7 @@ public class AbstractGebioBackApiIT {
   @Autowired
   protected MockMvc mockMvc;
 
-  private static final String GEBIO_EMAIL = "https://gebio.app/email";
+  private static final String GEBIO_EMAIL = "email";
 
   protected static final String EMAIL = "integration-test.user@gmail.com";
 
