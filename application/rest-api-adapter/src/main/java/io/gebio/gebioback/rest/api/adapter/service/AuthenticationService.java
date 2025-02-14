@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-  private static final String GEBIO_APP_EMAIL = "https://gebio.app/email";
+  private static final String GEBIO_APP_EMAIL = "email";
   private final UserFacade userFacade;
 
   public AuthenticationService(UserFacade userFacade) {
