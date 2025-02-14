@@ -19,11 +19,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build
-        run: mvn clean install -DskipTests
-
-      - name: Run unit tests
-        run: mvn test
-
-      - name: Run integration tests
-        run: mvn integration-test
+      - name: Build and test
+        run: |
+          mvn clean install -DskipTests=false
