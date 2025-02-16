@@ -52,11 +52,9 @@ jobs:
           docker tag "$ECR_REPO_URI:$IMAGE_TAG" "$ECR_REPO_URI:latest"
           docker push "$ECR_REPO_URI:latest"
 
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          cluster: "gebio-back-stating-cluster-ec2"
-          service: "gebio-back-ecs-cluster-service-staging"
-          task-definition: ".aws/gebio-back-api-staging-taskdef-revision4.json"
-          wait-for-service-stability: "true"
-          force-new-deployment: "true"
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service \
+            --cluster "gebio-back-stating-cluster-ec2" \
+            --service "gebio-back-ecs-cluster-service-staging" \
+            --force-new-deployment
