@@ -1,4 +1,4 @@
-name: Deploy Spring Boot to EC2
+name: Deploy Spring Boot to Staging ECS Cluster
 
 on:
   push:
@@ -26,34 +26,37 @@ jobs:
       - name: Package application
         run: mvn package -DskipTests
 
-      - name: Deploy to EC2
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
-          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
-          DB_PASSWORD: ${{ secrets.DB_STAGING_PASSWORD }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to ECR
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+          ECR_REPO_URI="209479278439.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/gebio-back-staging"
+          IMAGE_TAG="${{ github.sha }}"  # Tag unique basé sur le commit
           
-          export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          # Build de l'image Docker
+          docker build -t "$ECR_REPO_URI:$IMAGE_TAG" .
           
-          scp $SSH_OPTS -i private_key.pem bootstrap/target/*.jar ubuntu@$EC2_HOST:~/app.jar
+          # Pousser l'image vers ECR
+          docker push "$ECR_REPO_URI:$IMAGE_TAG"
+          
+          # Tag également 'latest'
+          docker tag "$ECR_REPO_URI:$IMAGE_TAG" "$ECR_REPO_URI:latest"
+          docker push "$ECR_REPO_URI:latest"
 
-          ssh $SSH_OPTS -i private_key.pem ubuntu@$EC2_HOST << EOF
-            
-            echo "Stopping old application if running..."
-            PID=\$(ps aux | grep 'app.jar' | grep -v grep | awk '{print \$2}')
-            if [ -n "\$PID" ]; then
-                echo "Stopping process \$PID..."
-                kill -9 \$PID
-                sleep 5
-            else
-                echo "No running Java process found."
-            fi
-            nohup java \
-              -DAUTH0_STAGING_ISSUER=${{ secrets.AUTH0_STAGING_ISSUER }} \
-              -DAUTH0_STATING_AUDIENCE=${{ secrets.AUTH0_STATING_AUDIENCE }} \
-              -DDB_STAGING_PASSWORD=${{ secrets.DB_STAGING_PASSWORD }} \
-              -jar ~/app.jar --spring.profiles.active=staging > app.log 2>&1 &
-          EOF
-          rm -f private_key.pem
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          cluster: "gebio-back-ecs-cluster-staging"
+          service: "gebio-back-ecs-cluster-service-staging"
+          task-definition: ".aws/gebio-back-api-staging-task-revision.json"
+          wait-for-service-stability: "true"
+          force-new-deployment: "true"
