@@ -25,16 +25,16 @@ class UserServiceTest {
 
   @Test
   void should_return_user_for_already_created_user() {
-    String email = "john.doe@gmail.com";
+    String existingUserEmail = "john.doe@gmail.com";
     UUID existingUserId = UUID.fromString(
       "e575b163-a4ae-41ff-a407-d004042248fb"
     );
-    User existingUser = new User(existingUserId, email);
-    when(userRepositoryPort.findUserByEmail(email)).thenReturn(
+    User existingUser = new User(existingUserId, existingUserEmail);
+    when(userRepositoryPort.findUserByEmail(existingUserEmail)).thenReturn(
       Optional.of(existingUser)
     );
 
-    User user = userService.getOrCreateUserFromEmail(email);
+    User user = userService.getOrCreateUserFromEmail(existingUserEmail);
 
     assertThat(user).isEqualTo(existingUser);
   }
