@@ -55,8 +55,8 @@ jobs:
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          cluster: "gebio-back-ecs-cluster-staging"
+          cluster: "gebio-back-stating-cluster-ec2"
           service: "gebio-back-ecs-cluster-service-staging"
-          task-definition: ".aws/gebio-back-api-staging-task-revision.json"
+          task-definition: ".aws/gebio-back-api-staging-taskdef-revision4.json"
           wait-for-service-stability: "true"
           force-new-deployment: "true"
