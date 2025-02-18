@@ -63,5 +63,15 @@ public class AbstractGebioBackApiIT {
       );
   }
 
+  protected static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor invalidToken() {
+    return jwt()
+      .jwt(
+        Jwt.withTokenValue("token")
+          .header("alg", "none")
+          .claim("INVALID CLAIM", "Invalid claim value")
+          .build()
+      );
+  }
+
   protected static final String GET_CURRENT_USER_API_URL = "/api/v1/me";
 }

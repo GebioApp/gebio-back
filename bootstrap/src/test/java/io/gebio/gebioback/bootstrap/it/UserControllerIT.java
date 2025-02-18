@@ -34,6 +34,23 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
   }
 
   @Test
+  void should_return_401_when_token_is_invalid() throws Exception {
+    mockMvc
+      .perform(
+        get(GET_CURRENT_USER_API_URL)
+          .with(invalidToken())
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      .andExpect(status().isUnauthorized())
+      .andExpect(
+        jsonPath(
+          "$.description",
+          equalTo("Authentication is missing or invalid")
+        )
+      );
+  }
+
+  @Test
   void should_return_200_with_user_if_user_already_exists_in_database()
     throws Exception {
     UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");

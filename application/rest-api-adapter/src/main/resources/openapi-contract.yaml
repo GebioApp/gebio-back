@@ -67,8 +67,22 @@ components:
           format: uuid
         email:
           type: string
+    UnauthorizedResponseContract:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedResponseContract'
+          example:
+            description: "Authentication is missing or invalid"
+
 
 
