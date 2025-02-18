@@ -28,9 +28,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
   void should_return_401_when_unauthenticated() throws Exception {
     mockMvc
       .perform(
-        get(GET_CURRENT_USER_API_URL)
-          .header("Authorization", "Bearer invalid-token")
-          .contentType(MediaType.APPLICATION_JSON)
+        get(GET_CURRENT_USER_API_URL).contentType(MediaType.APPLICATION_JSON)
       )
       .andExpect(status().isUnauthorized());
   }
@@ -45,8 +43,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
     mockMvc
       .perform(
         get(GET_CURRENT_USER_API_URL)
-          .header("Authorization", "Bearer token")
-          .with(jwtToken())
+          .with(validJwtToken())
           .contentType(MediaType.APPLICATION_JSON)
       )
       .andExpect(status().isOk())
@@ -60,8 +57,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
     mockMvc
       .perform(
         get(GET_CURRENT_USER_API_URL)
-          .header("Authorization", "Bearer token")
-          .with(jwtToken())
+          .with(validJwtToken())
           .contentType(MediaType.APPLICATION_JSON)
       )
       .andExpect(status().isOk())
