@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -19,18 +18,13 @@ public class SecurityConfiguration {
     return http
       .csrf(AbstractHttpConfigurer::disable)
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-      .authorizeHttpRequests(authorize ->
-        authorize
-          .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
-          .permitAll()
-          .anyRequest()
-          .authenticated()
+      .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()
       )
       .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
       .build();
   }
 
-  private static CorsConfigurationSource corsConfigurationSource() {
+  UrlBasedCorsConfigurationSource corsConfigurationSource() {
     final var configuration = new CorsConfiguration();
     configuration.addAllowedOriginPattern("*");
     configuration.setAllowedMethods(

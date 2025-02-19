@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "io.gebio.gebioback.rest.api.adapter",
     "io.gebio.gebioback.postgres",
     "io.gebio.gebioback.domain",
+    "io.gebio.gebioback.bootstrap",
   }
 )
 @EnableJpaRepositories(
