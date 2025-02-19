@@ -1,7 +1,7 @@
 package io.gebio.gebioback.rest.api.adapter.controller;
 
 import io.gebio.gebioback.contract.model.UnauthorizedResponseContract;
-import io.gebio.gebioback.domain.exception.InvalidJwtToken;
+import io.gebio.gebioback.core.exception.InvalidJwtToken;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

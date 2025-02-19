@@ -1,4 +1,4 @@
-package io.gebio.gebioback.domain.exception;
+package io.gebio.gebioback.core.exception;
 
 import org.springframework.stereotype.Component;
 
