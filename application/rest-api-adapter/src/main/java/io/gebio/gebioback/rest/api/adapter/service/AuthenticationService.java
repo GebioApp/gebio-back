@@ -1,5 +1,6 @@
 package io.gebio.gebioback.rest.api.adapter.service;
 
+import io.gebio.gebioback.core.exception.InvalidJwtToken;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import java.util.Optional;
@@ -28,6 +29,6 @@ public class AuthenticationService {
       .filter(claims -> claims.containsKey(GEBIO_APP_EMAIL))
       .map(claims -> claims.get(GEBIO_APP_EMAIL).toString())
       .map(userFacade::getOrCreateUserFromEmail)
-      .orElseThrow(() -> new IllegalStateException("Invalid JWT Token"));
+      .orElseThrow(InvalidJwtToken::new);
   }
 }

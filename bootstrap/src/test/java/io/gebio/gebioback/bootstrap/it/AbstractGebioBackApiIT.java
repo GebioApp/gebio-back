@@ -2,10 +2,12 @@ package io.gebio.gebioback.bootstrap.it;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
+import io.gebio.gebioback.bootstrap.it.configuration.TestJwtDecoderConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
@@ -18,12 +20,13 @@ import org.testcontainers.junit.jupiter.Container;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("it")
+@Import(TestJwtDecoderConfiguration.class)
 public class AbstractGebioBackApiIT {
 
   @Autowired
   protected MockMvc mockMvc;
 
-  private static final String GEBIO_EMAIL = "email";
+  protected static final String GEBIO_EMAIL = "email";
 
   protected static final String EMAIL = "integration-test.user@gmail.com";
 
@@ -50,12 +53,22 @@ public class AbstractGebioBackApiIT {
     );
   }
 
-  protected static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtToken() {
+  protected static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor validJwtToken() {
     return jwt()
       .jwt(
         Jwt.withTokenValue("token")
           .header("alg", "none")
           .claim(GEBIO_EMAIL, EMAIL)
+          .build()
+      );
+  }
+
+  protected static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor invalidToken() {
+    return jwt()
+      .jwt(
+        Jwt.withTokenValue("token")
+          .header("alg", "none")
+          .claim("INVALID CLAIM", "Invalid claim value")
           .build()
       );
   }
