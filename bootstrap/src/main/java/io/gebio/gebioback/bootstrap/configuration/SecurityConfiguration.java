@@ -18,8 +18,13 @@ public class SecurityConfiguration {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
       .csrf(AbstractHttpConfigurer::disable)
-      .cors(AbstractHttpConfigurer::disable)
-      .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()
+      .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+      .authorizeHttpRequests(authorize ->
+        authorize
+          .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+          .permitAll()
+          .anyRequest()
+          .authenticated()
       )
       .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
       .build();
@@ -29,10 +34,11 @@ public class SecurityConfiguration {
     final var configuration = new CorsConfiguration();
     configuration.addAllowedOriginPattern("*");
     configuration.setAllowedMethods(
-      List.of("GET", "POST", "PUT", "PATCH", "DELETE")
+      List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
     );
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setExposedHeaders(List.of("*"));
+    configuration.setAllowCredentials(true);
 
     final var source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
