@@ -58,3 +58,29 @@ jobs:
             --cluster "gebio-back-stating-cluster-ec2" \
             --service "gebio-back-ecs-cluster-service-staging" \
             --force-new-deployment
+
+      - name: Wait for ECS Service to be Stable
+        run: |
+          CLUSTER_NAME="gebio-back-stating-cluster-ec2"
+          SERVICE_NAME="gebio-back-ecs-cluster-service-staging"
+          
+          echo "Waiting for ECS service to become stable..."
+          aws ecs wait services-stable --cluster "$CLUSTER_NAME" --services "$SERVICE_NAME"
+          
+          echo "Service is stable."
+
+      - name: Notify Discord on Success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d '{"username": "GitHub Actions", "content": "✅ [Staging] Déploiement réussi ! 🎉"}' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Discord on Failure
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{"username": "GitHub Actions", "content": "❌ [Staging] Déploiement échoué ! 🚨"}' \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
