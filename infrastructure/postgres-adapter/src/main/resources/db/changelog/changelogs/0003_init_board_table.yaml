@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0003
+      author: dorian-frances
+      changes:
+        - createTable:
+            tableName: board
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: template_id
+                  type: uuid
+                  constraints:
+                    nullable: false
