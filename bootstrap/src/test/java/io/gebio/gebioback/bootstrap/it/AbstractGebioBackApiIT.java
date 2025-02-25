@@ -28,7 +28,8 @@ public class AbstractGebioBackApiIT {
 
   private static final String GEBIO_EMAIL = "email";
 
-  protected static final String EMAIL = "integration-test.user@gmail.com";
+  protected static final String AUTHENTICATED_USER_EMAIL =
+    "integration-test.user@gmail.com";
 
   @Container
   static PostgreSQLContainer postgresSQLContainer = new PostgreSQLContainer<>(
@@ -58,7 +59,7 @@ public class AbstractGebioBackApiIT {
       .jwt(
         Jwt.withTokenValue("token")
           .header("alg", "none")
-          .claim(GEBIO_EMAIL, EMAIL)
+          .claim(GEBIO_EMAIL, AUTHENTICATED_USER_EMAIL)
           .build()
       );
   }

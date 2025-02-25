@@ -37,7 +37,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
   void should_return_200_with_user_if_user_already_exists_in_database()
     throws Exception {
     UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-    UserEntity userEntity = new UserEntity(id, EMAIL);
+    UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL);
     userRepository.save(userEntity);
 
     mockMvc
@@ -48,7 +48,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
       )
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", equalTo(id.toString())))
-      .andExpect(jsonPath("$.user.email", equalTo(EMAIL)));
+      .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)));
   }
 
   @Test
@@ -62,6 +62,6 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
       )
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", notNullValue()))
-      .andExpect(jsonPath("$.user.email", equalTo(EMAIL)));
+      .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)));
   }
 }
