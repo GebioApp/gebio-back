@@ -1,9 +1,7 @@
 package io.gebio.gebioback.postgres.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +14,14 @@ public class UserEntity {
 
   @Column(name = "email")
   private String email;
+
+  @OneToMany(
+    mappedBy = "owner",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<BoardEntity> boards;
 
   public UserEntity() {}
 

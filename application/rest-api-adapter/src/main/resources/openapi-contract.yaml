@@ -72,6 +72,11 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateBoardResponseContract:
       description: Retrospective board creation response contract
