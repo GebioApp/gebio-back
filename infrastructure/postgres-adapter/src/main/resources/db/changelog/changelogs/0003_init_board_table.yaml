@@ -12,6 +12,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
                   name: name
                   type: varchar(128)
                   constraints:
@@ -21,3 +26,14 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     nullable: false
+
+        - addPrimaryKey:
+            tableName: gebio_user
+            columnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: board
+            baseColumnNames: owner_id
+            referencedTableName: gebio_user
+            referencedColumnNames: id
+            constraintName: fk_board_user
