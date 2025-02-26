@@ -2,6 +2,7 @@ package io.gebio.gebioback.rest.api.adapter.mapper;
 
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.contract.model.UserContract;
+import io.gebio.gebioback.contract.model.UserInfoContract;
 import io.gebio.gebioback.domain.model.User;
 
 public interface UserContractMapper {
@@ -13,5 +14,12 @@ public interface UserContractMapper {
     userContract.setEmail(user.email());
     currentUserResponseContract.setUser(userContract);
     return currentUserResponseContract;
+  }
+
+  static UserInfoContract domainToUserInfoContract(User user) {
+    UserInfoContract userInfoContract = new UserInfoContract();
+    userInfoContract.setId(user.id());
+    userInfoContract.setLogo(user.profileLogo());
+    return userInfoContract;
   }
 }

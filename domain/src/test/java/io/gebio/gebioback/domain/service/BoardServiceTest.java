@@ -29,7 +29,7 @@ class BoardServiceTest {
 
     UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
     String userEmail = "dorianf@gebio.com";
-    User currentUser = new User(userId, userEmail);
+    User currentUser = new User(userId, userEmail, null);
 
     String boardName = "Retrospective du 25 février";
     UUID templateId = UUID.fromString("e637621b-4451-4b38-b33f-f07dbd8aeceb");
@@ -44,5 +44,6 @@ class BoardServiceTest {
     assertThat(savedBoard.name()).isEqualTo(boardName);
     assertThat(savedBoard.templateId()).isEqualTo(templateId);
     assertThat(savedBoard.owner()).isEqualTo(currentUser);
+    assertThat(savedBoard.cards()).isEmpty();
   }
 }

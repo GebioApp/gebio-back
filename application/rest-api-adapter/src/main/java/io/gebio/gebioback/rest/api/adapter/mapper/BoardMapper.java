@@ -12,6 +12,14 @@ public interface BoardMapper {
     createBoardResponseContract.setId(createdBoard.id());
     createBoardResponseContract.setTitle(createdBoard.name());
     createBoardResponseContract.setTemplateId(createdBoard.templateId());
+    createBoardResponseContract.setOwnerId(createdBoard.owner().id());
+    createBoardResponseContract.setCards(
+      createdBoard
+        .cards()
+        .stream()
+        .map(CardMapper::fromDomainToContract)
+        .toList()
+    );
     return createBoardResponseContract;
   }
 }

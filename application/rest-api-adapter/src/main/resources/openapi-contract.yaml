@@ -90,6 +90,13 @@ components:
         templateId:
           type: string
           format: uuid
+        ownerId:
+          type: string
+          format: uuid
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardContract'
     CreateBoardRequestContract:
       description: Retrospective board creation request contract
       type: object
@@ -109,6 +116,47 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/UserContract'
+    CardContract:
+      type: object
+      required:
+        - id
+        - content
+        - color
+        - position
+        - userInfo
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        color:
+          type: string
+        position:
+          $ref: '#/components/schemas/CardPositionContract'
+        userInfo:
+          $ref: '#/components/schemas/UserInfoContract'
+    CardPositionContract:
+      type: object
+      required:
+        - posX
+        - posY
+      properties:
+        posX:
+          type: integer
+        posY:
+          type: integer
+    UserInfoContract:
+      type: object
+      required:
+        - id
+        - logo
+      properties:
+        id:
+          type: string
+          format: uuid
+        logo:
+          type: string
     UserContract:
       type: object
       required:

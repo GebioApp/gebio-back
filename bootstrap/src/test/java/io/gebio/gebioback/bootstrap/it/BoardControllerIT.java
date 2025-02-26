@@ -1,6 +1,7 @@
 package io.gebio.gebioback.bootstrap.it;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,7 +97,11 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
             "$.templateId",
             equalTo("b65687d3-4edc-4492-857d-3f22705ca7fd")
           )
-        );
+        )
+        .andExpect(
+          jsonPath("$.ownerId", equalTo("3338266c-26f2-4c85-8157-91f02b680577"))
+        )
+        .andExpect(jsonPath("$.cards", hasSize(0)));
     }
   }
 }
