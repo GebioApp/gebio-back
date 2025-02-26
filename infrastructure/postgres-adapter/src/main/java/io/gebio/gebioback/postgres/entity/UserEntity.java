@@ -23,6 +23,9 @@ public class UserEntity {
   )
   private List<BoardEntity> boards;
 
+  @Column(name = "profile_logo")
+  private String profileLogo;
+
   public UserEntity() {}
 
   public UserEntity(UUID id, String email) {
@@ -36,5 +39,9 @@ public class UserEntity {
 
   public String getEmail() {
     return email;
+  }
+
+  public String getProfileLogo() {
+    return profileLogo;
   }
 }

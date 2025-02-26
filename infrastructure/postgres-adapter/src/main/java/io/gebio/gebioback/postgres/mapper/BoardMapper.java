@@ -2,6 +2,7 @@ package io.gebio.gebioback.postgres.mapper;
 
 import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
+import java.util.Collections;
 
 public interface BoardMapper {
   static Board entityToDomain(BoardEntity boardEntity) {
@@ -9,7 +10,8 @@ public interface BoardMapper {
       boardEntity.getId(),
       boardEntity.getName(),
       boardEntity.getTemplateId(),
-      UserMapper.entityToDomain(boardEntity.getOwner())
+      UserMapper.entityToDomain(boardEntity.getOwner()),
+      Collections.emptyList()
     );
   }
 
