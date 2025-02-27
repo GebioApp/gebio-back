@@ -39,7 +39,8 @@ public class CardEntity {
     String color,
     int posX,
     int posY,
-    UserEntity owner
+    UserEntity owner,
+    BoardEntity board
   ) {
     this.id = id;
     this.content = content;
@@ -47,5 +48,30 @@ public class CardEntity {
     this.posX = posX;
     this.posY = posY;
     this.owner = owner;
+    this.board = board;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
+  public int getPosX() {
+    return posX;
+  }
+
+  public int getPosY() {
+    return posY;
+  }
+
+  public UserEntity getOwner() {
+    return owner;
   }
 }
