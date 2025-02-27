@@ -9,7 +9,7 @@ import java.util.UUID;
 public class UserEntity {
 
   @Id
-  @Column(name = "id")
+  @Column(name = "user_id")
   private UUID id;
 
   @Column(name = "email")

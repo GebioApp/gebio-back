@@ -3,15 +3,20 @@ databaseChangeLog:
       id: 0003
       author: dorian-frances
       changes:
+        - renameColumn:
+            tableName: gebio_user
+            oldColumnName: id
+            newColumnName: user_id
+
         - addPrimaryKey:
             tableName: gebio_user
-            columnNames: id
+            columnNames: user_id
 
         - createTable:
             tableName: board
             columns:
               - column:
-                  name: id
+                  name: board_id
                   type: uuid
                   constraints:
                     primaryKey: true
@@ -36,14 +41,14 @@ databaseChangeLog:
             baseTableName: board
             baseColumnNames: owner_id
             referencedTableName: gebio_user
-            referencedColumnNames: id
+            referencedColumnNames: user_id
             constraintName: fk_board_user
 
         - createTable:
             tableName: card
             columns:
               - column:
-                  name: id
+                  name: card_id
                   type: uuid
                   constraints:
                     primaryKey: true
@@ -83,14 +88,14 @@ databaseChangeLog:
             baseTableName: card
             baseColumnNames: owner_id
             referencedTableName: gebio_user
-            referencedColumnNames: id
+            referencedColumnNames: user_id
             constraintName: fk_card_user
 
         - addForeignKeyConstraint:
             baseTableName: card
             baseColumnNames: board_id
             referencedTableName: board
-            referencedColumnNames: id
+            referencedColumnNames: board_id
             constraintName: fk_card_board
 
         - addColumn:

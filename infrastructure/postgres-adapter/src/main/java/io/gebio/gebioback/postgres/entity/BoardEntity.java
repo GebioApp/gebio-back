@@ -9,7 +9,7 @@ import java.util.UUID;
 public class BoardEntity {
 
   @Id
-  @Column(name = "id")
+  @Column(name = "board_id")
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY)
