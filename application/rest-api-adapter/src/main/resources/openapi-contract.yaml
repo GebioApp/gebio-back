@@ -47,6 +47,25 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedError'
   /api/v1/board:
+    get:
+      security:
+        - bearerAuth: [ ]
+      summary: Find retrospective board by its id
+      description: Find retrospective board by its id
+      operationId: findById
+      tags:
+        - Board
+      responses:
+        "200":
+          description: Successfully retrieved retrospective board
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindBoardResponseContract'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: Board was not found
     post:
       security:
         - bearerAuth: [ ]
@@ -78,6 +97,12 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    FindBoardResponseContract:
+      description: Find retrospective board response contract
+      type: object
+      properties:
+        board:
+          $ref: '#/components/schemas/BoardContract'
     CreateBoardResponseContract:
       description: Retrospective board creation response contract
       type: object
