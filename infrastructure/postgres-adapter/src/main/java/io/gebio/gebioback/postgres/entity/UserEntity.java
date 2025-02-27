@@ -23,6 +23,14 @@ public class UserEntity {
   )
   private List<BoardEntity> boards;
 
+  @OneToMany(
+    mappedBy = "owner",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<CardEntity> cards;
+
   @Column(name = "profile_logo")
   private String profileLogo;
 

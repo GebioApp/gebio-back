@@ -1,6 +1,7 @@
 package io.gebio.gebioback.postgres.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +21,14 @@ public class BoardEntity {
 
   @Column(name = "template_id")
   private UUID templateId;
+
+  @OneToMany(
+    mappedBy = "board",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<CardEntity> cards;
 
   public BoardEntity() {}
 
