@@ -20,7 +20,8 @@ public interface BoardMapper {
       board.id(),
       board.name(),
       board.templateId(),
-      UserMapper.domainToEntity(board.owner())
+      UserMapper.domainToEntity(board.owner()),
+      board.cards().stream().map(CardMapper::fromDomainToEntity).toList()
     );
   }
 }

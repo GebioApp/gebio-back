@@ -30,4 +30,20 @@ public class CardEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "board_id")
   private BoardEntity board;
+
+  public CardEntity(
+    UUID id,
+    String content,
+    String color,
+    int posX,
+    int posY,
+    UserEntity owner
+  ) {
+    this.id = id;
+    this.content = content;
+    this.color = color;
+    this.posX = posX;
+    this.posY = posY;
+    this.owner = owner;
+  }
 }
