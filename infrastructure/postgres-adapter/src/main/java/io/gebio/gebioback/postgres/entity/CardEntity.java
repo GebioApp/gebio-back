@@ -31,6 +31,8 @@ public class CardEntity {
   @JoinColumn(name = "board_id")
   private BoardEntity board;
 
+  public CardEntity() {}
+
   public CardEntity(
     UUID id,
     String content,

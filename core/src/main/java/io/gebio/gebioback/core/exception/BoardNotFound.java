@@ -1,4 +1,4 @@
-package io.gebio.gebiback.core.exception;
+package io.gebio.gebioback.core.exception;
 
 import java.util.UUID;
 

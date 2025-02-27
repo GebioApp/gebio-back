@@ -2,6 +2,7 @@ package io.gebio.gebioback.bootstrap.it;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -107,6 +108,34 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
           )
         )
         .andExpect(jsonPath("$.board.cards", hasSize(0)));
+    }
+  }
+
+  @Nested
+  class FindBoard {
+
+    UUID boardId = UUID.fromString("99c25084-4df3-42da-bece-4e7e50788abb");
+
+    @Test
+    void should_return_401_when_unauthenticated() throws Exception {
+      mockMvc
+        .perform(
+          get(String.format(FIND_BOARD_API_URL, boardId)).contentType(
+            MediaType.APPLICATION_JSON
+          )
+        )
+        .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void should_return_404_when_board_was_not_found() throws Exception {
+      mockMvc
+        .perform(
+          get(String.format(FIND_BOARD_API_URL, boardId))
+            .with(jwtToken())
+            .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isNotFound());
     }
   }
 }
