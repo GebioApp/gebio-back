@@ -1,6 +1,6 @@
 package io.gebio.gebioback.domain.service;
 
-import io.gebio.gebiback.core.exception.BoardNotFound;
+import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;

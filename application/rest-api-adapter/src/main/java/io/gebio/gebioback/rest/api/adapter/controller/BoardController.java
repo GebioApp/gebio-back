@@ -52,6 +52,8 @@ public class BoardController implements BoardApi {
 
   @Override
   public ResponseEntity<FindBoardResponseContract> findById(UUID boardId) {
-    return null;
+    return ResponseEntity.ok(
+      BoardMapper.findBoardFromDomainToContract(boardFacade.findById(boardId))
+    );
   }
 }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.gebio.gebiback.core.exception.BoardNotFound;
+import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
