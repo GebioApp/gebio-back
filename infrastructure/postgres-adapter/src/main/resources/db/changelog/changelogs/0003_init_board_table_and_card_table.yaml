@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0003
+      author: dorian-frances
+      changes:
+        - addPrimaryKey:
+            tableName: gebio_user
+            columnNames: id
+
+        - createTable:
+            tableName: board
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: template_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: board
+            baseColumnNames: owner_id
+            referencedTableName: gebio_user
+            referencedColumnNames: id
+            constraintName: fk_board_user
+
+        - createTable:
+            tableName: card
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pos_x
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pos_y
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: board_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: card
+            baseColumnNames: owner_id
+            referencedTableName: gebio_user
+            referencedColumnNames: id
+            constraintName: fk_card_user
+
+        - addForeignKeyConstraint:
+            baseTableName: card
+            baseColumnNames: board_id
+            referencedTableName: board
+            referencedColumnNames: id
+            constraintName: fk_card_board
+
+        - addColumn:
+            tableName: gebio_user
+            columns:
+              - column:
+                  name: profile_logo
+                  type: varchar(128)
+                  constraints:
+                    nullable: true

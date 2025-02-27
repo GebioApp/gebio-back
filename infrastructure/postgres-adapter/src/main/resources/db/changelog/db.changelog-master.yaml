@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changelogs/0001_init_user_table.yaml
   - include:
       file: db/changelog/changelogs/0002_update_user_table_to_rename_table_remove_username_and_add_email.yaml
+  - include:
+      file: db/changelog/changelogs/0003_init_board_table_and_card_table.yaml

@@ -46,9 +46,69 @@ paths:
                   email: john.doe@gmail.com
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/board:
+    post:
+      security:
+        - bearerAuth: [ ]
+      summary: Create a retrospective board
+      description: Create a retrospective board
+      operationId: createBoard
+      tags:
+        - Board
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBoardRequestContract'
+      responses:
+        "201":
+          description: Successfully created retrospective board
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBoardResponseContract'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    CreateBoardResponseContract:
+      description: Retrospective board creation response contract
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        templateId:
+          type: string
+          format: uuid
+        ownerId:
+          type: string
+          format: uuid
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardContract'
+    CreateBoardRequestContract:
+      description: Retrospective board creation request contract
+      type: object
+      required:
+        - title
+        - templateId
+      properties:
+        title:
+          type: string
+        templateId:
+          type: string
+          format: uuid
     CurrentUserResponseContract:
       type: object
       required:
@@ -56,6 +116,47 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/UserContract'
+    CardContract:
+      type: object
+      required:
+        - id
+        - content
+        - color
+        - position
+        - userInfo
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        color:
+          type: string
+        position:
+          $ref: '#/components/schemas/CardPositionContract'
+        userInfo:
+          $ref: '#/components/schemas/UserInfoContract'
+    CardPositionContract:
+      type: object
+      required:
+        - posX
+        - posY
+      properties:
+        posX:
+          type: integer
+        posY:
+          type: integer
+    UserInfoContract:
+      type: object
+      required:
+        - id
+        - logo
+      properties:
+        id:
+          type: string
+          format: uuid
+        logo:
+          type: string
     UserContract:
       type: object
       required:

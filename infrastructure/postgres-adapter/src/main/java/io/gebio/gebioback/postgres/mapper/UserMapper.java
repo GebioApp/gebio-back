@@ -5,7 +5,11 @@ import io.gebio.gebioback.postgres.entity.UserEntity;
 
 public interface UserMapper {
   static User entityToDomain(UserEntity userEntity) {
-    return new User(userEntity.getId(), userEntity.getEmail());
+    return new User(
+      userEntity.getId(),
+      userEntity.getEmail(),
+      userEntity.getProfileLogo()
+    );
   }
 
   static UserEntity domainToEntity(User user) {

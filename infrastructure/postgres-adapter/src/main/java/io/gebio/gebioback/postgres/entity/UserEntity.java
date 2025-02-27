@@ -1,9 +1,7 @@
 package io.gebio.gebioback.postgres.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +14,25 @@ public class UserEntity {
 
   @Column(name = "email")
   private String email;
+
+  @OneToMany(
+    mappedBy = "owner",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<BoardEntity> boards;
+
+  @OneToMany(
+    mappedBy = "owner",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  )
+  private List<CardEntity> cards;
+
+  @Column(name = "profile_logo")
+  private String profileLogo;
 
   public UserEntity() {}
 
@@ -30,5 +47,9 @@ public class UserEntity {
 
   public String getEmail() {
     return email;
+  }
+
+  public String getProfileLogo() {
+    return profileLogo;
   }
 }
