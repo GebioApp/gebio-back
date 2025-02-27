@@ -26,6 +26,6 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
 
   @Override
   public Optional<Board> findById(UUID boardId) {
-    return Optional.empty();
+    return boardRepository.findById(boardId).map(BoardMapper::entityToDomain);
   }
 }
