@@ -90,18 +90,23 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
             .content(requestBody)
         )
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").exists())
-        .andExpect(jsonPath("$.title", equalTo("Retrospective du 25 février")))
+        .andExpect(jsonPath("$.board.id").exists())
+        .andExpect(
+          jsonPath("$.board.title", equalTo("Retrospective du 25 février"))
+        )
         .andExpect(
           jsonPath(
-            "$.templateId",
+            "$.board.templateId",
             equalTo("b65687d3-4edc-4492-857d-3f22705ca7fd")
           )
         )
         .andExpect(
-          jsonPath("$.ownerId", equalTo("3338266c-26f2-4c85-8157-91f02b680577"))
+          jsonPath(
+            "$.board.ownerId",
+            equalTo("3338266c-26f2-4c85-8157-91f02b680577")
+          )
         )
-        .andExpect(jsonPath("$.cards", hasSize(0)));
+        .andExpect(jsonPath("$.board.cards", hasSize(0)));
     }
   }
 }
