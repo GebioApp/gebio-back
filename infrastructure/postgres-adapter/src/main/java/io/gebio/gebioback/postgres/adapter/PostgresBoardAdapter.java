@@ -4,6 +4,8 @@ import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.postgres.mapper.BoardMapper;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,5 +22,10 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
     return BoardMapper.entityToDomain(
       boardRepository.save(BoardMapper.domainToEntity(board))
     );
+  }
+
+  @Override
+  public Optional<Board> findById(UUID boardId) {
+    return Optional.empty();
   }
 }
