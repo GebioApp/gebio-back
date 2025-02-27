@@ -13,6 +13,7 @@ import io.gebio.gebioback.rest.api.adapter.mapper.BoardMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,7 +51,7 @@ public class BoardController implements BoardApi {
   }
 
   @Override
-  public ResponseEntity<FindBoardResponseContract> findById() {
+  public ResponseEntity<FindBoardResponseContract> findById(UUID boardId) {
     return null;
   }
 }

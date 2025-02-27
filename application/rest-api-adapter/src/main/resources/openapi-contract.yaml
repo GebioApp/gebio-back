@@ -46,7 +46,7 @@ paths:
                   email: john.doe@gmail.com
         "401":
           $ref: '#/components/responses/UnauthorizedError'
-  /api/v1/board:
+  /api/v1/board/{board_id}:
     get:
       security:
         - bearerAuth: [ ]
@@ -55,6 +55,14 @@ paths:
       operationId: findById
       tags:
         - Board
+      parameters:
+        - name: board_id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: Successfully retrieved retrospective board
@@ -66,6 +74,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "404":
           description: Board was not found
+  /api/v1/board:
     post:
       security:
         - bearerAuth: [ ]
