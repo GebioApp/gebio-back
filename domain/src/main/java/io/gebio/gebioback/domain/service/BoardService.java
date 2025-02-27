@@ -1,5 +1,6 @@
 package io.gebio.gebioback.domain.service;
 
+import io.gebio.gebiback.core.exception.BoardNotFound;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
@@ -27,5 +28,12 @@ public class BoardService implements BoardFacade {
         Collections.emptyList()
       )
     );
+  }
+
+  @Override
+  public Board findById(UUID boardId) {
+    return boardRepositoryPort
+      .findById(boardId)
+      .orElseThrow(() -> new BoardNotFound(boardId));
   }
 }
