@@ -1,8 +1,8 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
+import io.gebio.gebioback.contract.model.CardOwnerInfoContract;
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.contract.model.UserContract;
-import io.gebio.gebioback.contract.model.UserInfoContract;
 import io.gebio.gebioback.domain.model.User;
 
 public interface UserContractMapper {
@@ -16,10 +16,10 @@ public interface UserContractMapper {
     return currentUserResponseContract;
   }
 
-  static UserInfoContract domainToUserInfoContract(User user) {
-    UserInfoContract userInfoContract = new UserInfoContract();
-    userInfoContract.setId(user.id());
-    userInfoContract.setLogo(user.profileLogo());
-    return userInfoContract;
+  static CardOwnerInfoContract domainToCardOwnerInfoContract(User user) {
+    CardOwnerInfoContract cardOwnerInfoContract = new CardOwnerInfoContract();
+    cardOwnerInfoContract.setId(user.id());
+    cardOwnerInfoContract.setLogo(user.profileLogo());
+    return cardOwnerInfoContract;
   }
 }
