@@ -74,7 +74,7 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d '{"username": "GitHub Actions", "content": "✅ [Staging] Déploiement réussi ! 🎉"}' \
+            -d '{"username": "GitHub Actions", "content": "✅ [Staging - Backend] Déploiement réussi ! 🎉"}' \
             ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Notify Discord on Failure
@@ -82,5 +82,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d '{"username": "GitHub Actions", "content": "❌ [Staging] Déploiement échoué ! 🚨"}' \
+               -d '{"username": "GitHub Actions", "content": "❌ [Staging - Backend] Déploiement échoué ! 🚨"}' \
                ${{ secrets.DISCORD_WEBHOOK_URL }}
