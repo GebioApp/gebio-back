@@ -8,7 +8,7 @@ import java.util.UUID;
 public class CardEntity {
 
   @Id
-  @Column(name = "id", nullable = false)
+  @Column(name = "card_id", nullable = false)
   private UUID id;
 
   @Column(name = "content", nullable = false)
