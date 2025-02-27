@@ -1,6 +1,7 @@
 package io.gebio.gebioback.postgres.entity;
 
 import jakarta.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,18 +33,12 @@ public class BoardEntity {
 
   public BoardEntity() {}
 
-  public BoardEntity(
-    UUID id,
-    String name,
-    UUID templateId,
-    UserEntity owner,
-    List<CardEntity> cards
-  ) {
+  public BoardEntity(UUID id, String name, UUID templateId, UserEntity owner) {
     this.id = id;
     this.name = name;
     this.templateId = templateId;
     this.owner = owner;
-    this.cards = cards;
+    this.cards = Collections.emptyList();
   }
 
   public UUID getId() {
@@ -60,5 +55,13 @@ public class BoardEntity {
 
   public UserEntity getOwner() {
     return owner;
+  }
+
+  public List<CardEntity> getCards() {
+    return cards;
+  }
+
+  public void setCards(List<CardEntity> cardEntities) {
+    this.cards = cardEntities;
   }
 }

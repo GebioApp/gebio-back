@@ -2,7 +2,8 @@ package io.gebio.gebioback.postgres.mapper;
 
 import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
-import java.util.Collections;
+import io.gebio.gebioback.postgres.entity.CardEntity;
+import java.util.List;
 
 public interface BoardMapper {
   static Board entityToDomain(BoardEntity boardEntity) {
@@ -11,17 +12,27 @@ public interface BoardMapper {
       boardEntity.getName(),
       boardEntity.getTemplateId(),
       UserMapper.entityToDomain(boardEntity.getOwner()),
-      Collections.emptyList()
+      boardEntity
+        .getCards()
+        .stream()
+        .map(CardMapper::fromEntityToDomain)
+        .toList()
     );
   }
 
   static BoardEntity domainToEntity(Board board) {
-    return new BoardEntity(
+    BoardEntity boardEntity = new BoardEntity(
       board.id(),
       board.name(),
       board.templateId(),
-      UserMapper.domainToEntity(board.owner()),
-      board.cards().stream().map(CardMapper::fromDomainToEntity).toList()
+      UserMapper.domainToEntity(board.owner())
     );
+    List<CardEntity> cardEntities = board
+      .cards()
+      .stream()
+      .map(card -> CardMapper.fromDomainToEntity(card, boardEntity))
+      .toList();
+    boardEntity.setCards(cardEntities);
+    return boardEntity;
   }
 }
