@@ -32,11 +32,18 @@ public class BoardEntity {
 
   public BoardEntity() {}
 
-  public BoardEntity(UUID id, String name, UUID templateId, UserEntity owner) {
+  public BoardEntity(
+    UUID id,
+    String name,
+    UUID templateId,
+    UserEntity owner,
+    List<CardEntity> cards
+  ) {
     this.id = id;
     this.name = name;
     this.templateId = templateId;
     this.owner = owner;
+    this.cards = cards;
   }
 
   public UUID getId() {
