@@ -5,6 +5,7 @@ import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder
 import io.gebio.gebioback.contract.api.BoardApi;
 import io.gebio.gebioback.contract.model.CreateBoardRequestContract;
 import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
+import io.gebio.gebioback.contract.model.FindBoardResponseContract;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.service.Board;
@@ -46,5 +47,10 @@ public class BoardController implements BoardApi {
     return ResponseEntity.created(location).body(
       BoardMapper.createBoardFromDomainToContract(createdBoard)
     );
+  }
+
+  @Override
+  public ResponseEntity<FindBoardResponseContract> findById() {
+    return null;
   }
 }
