@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface BoardFacade {
   Board createWithOwner(UUID templateId, String boardName, User owner);
+  Board findById(UUID boardId);
 }
