@@ -11,8 +11,8 @@ public interface CardMapper {
     cardContract.setContent(card.content());
     cardContract.setColor(card.color());
     cardContract.setPosition(fromDomainToContract(card.position()));
-    cardContract.setUserInfo(
-      UserContractMapper.domainToUserInfoContract(card.owner())
+    cardContract.setOwnerInfo(
+      UserContractMapper.domainToCardOwnerInfoContract(card.owner())
     );
     return cardContract;
   }
