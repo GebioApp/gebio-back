@@ -14,6 +14,7 @@ import io.gebio.gebioback.postgres.repository.BoardRepository;
 import io.gebio.gebioback.postgres.repository.UserRepository;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
 
   @Autowired
   BoardRepository boardRepository;
+
+  @BeforeEach
+  void setUp() {
+    userRepository.deleteAll();
+    boardRepository.deleteAll();
+  }
 
   @Nested
   class CreateBoard {
