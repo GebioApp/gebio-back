@@ -44,7 +44,7 @@ class BoardServiceTest {
     boardService.createWithOwner(templateId, boardName, currentUser);
 
     //then
-    verify(boardRepositoryPort).createBoard(argumentCaptor.capture());
+    verify(boardRepositoryPort).save(argumentCaptor.capture());
     Board savedBoard = argumentCaptor.getValue();
     assertThat(savedBoard.id()).isNotNull();
     assertThat(savedBoard.name()).isEqualTo(boardName);
@@ -102,5 +102,77 @@ class BoardServiceTest {
     Board result = boardService.findById(boardId);
 
     assertThat(result).isEqualTo(expectedBoard);
+  }
+
+  @Test
+  void should_throw_when_trying_to_add_a_card_to_a_non_existing_board() {
+    UUID boardId = UUID.randomUUID();
+
+    when(boardRepositoryPort.findById(boardId)).thenReturn(Optional.empty());
+
+    User cardOwner = new User(
+      UUID.randomUUID(),
+      "another.user@gebio.com",
+      "https://another-logo.com"
+    );
+    Card card = new Card(
+      UUID.randomUUID(),
+      "I'm the content of the card",
+      "#000000",
+      new Card.Position(100, 100),
+      cardOwner
+    );
+
+    assertThatThrownBy(() -> boardService.addCardToBoard(boardId, card))
+      .isInstanceOf(BoardNotFound.class)
+      .hasMessage("Board with id " + boardId + " was not found");
+  }
+
+  @Test
+  void should_add_card_to_board_and_save_board_when_board_is_found() {
+    UUID boardId = UUID.randomUUID();
+    User boardOwner = new User(
+      UUID.randomUUID(),
+      "dorianf@gebio.com",
+      "https://logo.com"
+    );
+    User cardOwner = new User(
+      UUID.randomUUID(),
+      "another.user@gebio.com",
+      "https://another-logo.com"
+    );
+    List<Card> cards = List.of(
+      new Card(
+        UUID.randomUUID(),
+        "I'm the content of the card",
+        "#000000",
+        new Card.Position(100, 100),
+        cardOwner
+      )
+    );
+    Board expectedBoard = new Board(
+      boardId,
+      "My board",
+      UUID.randomUUID(),
+      boardOwner,
+      cards
+    );
+    when(boardRepositoryPort.findById(boardId)).thenReturn(
+      Optional.of(expectedBoard)
+    );
+
+    Card newCard = new Card(
+      UUID.randomUUID(),
+      "I'm the content of the new card of the board",
+      "#111111",
+      new Card.Position(200, 200),
+      cardOwner
+    );
+
+    Board updatedBoard = boardService.addCardToBoard(boardId, newCard);
+
+    verify(boardRepositoryPort).save(updatedBoard);
+    assertThat(updatedBoard.cards()).hasSize(2);
+    assertThat(updatedBoard.cards().get(1)).isEqualTo(newCard);
   }
 }
