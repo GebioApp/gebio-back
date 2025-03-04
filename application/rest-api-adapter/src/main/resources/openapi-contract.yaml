@@ -207,6 +207,13 @@ components:
           format: uuid
         email:
           type: string
+    AddCardResponseContract:
+      type: object
+      required:
+        - card
+      properties:
+        card:
+          $ref: '#/components/schemas/CardContract'
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid

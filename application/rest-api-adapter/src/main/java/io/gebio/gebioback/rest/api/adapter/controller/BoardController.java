@@ -3,18 +3,20 @@ package io.gebio.gebioback.rest.api.adapter.controller;
 import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder.getCreatedResourceURI;
 
 import io.gebio.gebioback.contract.api.BoardApi;
-import io.gebio.gebioback.contract.model.CreateBoardRequestContract;
-import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
-import io.gebio.gebioback.contract.model.FindBoardResponseContract;
+import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.rest.api.adapter.mapper.BoardMapper;
+import io.gebio.gebioback.rest.api.adapter.mapper.CardMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -55,5 +57,11 @@ public class BoardController implements BoardApi {
     return ResponseEntity.ok(
       BoardMapper.findBoardFromDomainToContract(boardFacade.findById(boardId))
     );
+  }
+
+  @MessageMapping("/board/{boardId}/add-card")
+  @SendTo("/topic/board/{boardId}")
+  public AddCardResponseContract addCard(@Payload CardContract cardContract) {
+    return CardMapper.addCardFromDomainToContract(cardContract);
   }
 }
