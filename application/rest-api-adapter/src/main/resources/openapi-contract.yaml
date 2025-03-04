@@ -189,11 +189,14 @@ components:
       type: object
       required:
         - id
+        - email
         - logo
       properties:
         id:
           type: string
           format: uuid
+        email:
+          type: string
         logo:
           type: string
     UserContract:
