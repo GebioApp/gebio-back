@@ -207,6 +207,14 @@ components:
           format: uuid
         email:
           type: string
+    AddCardRequestContract:
+      type: object
+      properties:
+        boardId:
+          type: string
+          format: uuid
+        card:
+          $ref: '#/components/schemas/CardContract'
     AddCardResponseContract:
       type: object
       required:

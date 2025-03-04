@@ -59,9 +59,13 @@ public class BoardController implements BoardApi {
     );
   }
 
-  @MessageMapping("/board/{boardId}/add-card")
+  @MessageMapping("/board/add-card")
   @SendTo("/topic/board/{boardId}")
-  public AddCardResponseContract addCard(@Payload CardContract cardContract) {
-    return CardMapper.addCardFromDomainToContract(cardContract);
+  public AddCardResponseContract addCard(
+    @Payload AddCardRequestContract addCardRequestContract
+  ) {
+    return CardMapper.addCardFromDomainToContract(
+      addCardRequestContract.getCard()
+    );
   }
 }
