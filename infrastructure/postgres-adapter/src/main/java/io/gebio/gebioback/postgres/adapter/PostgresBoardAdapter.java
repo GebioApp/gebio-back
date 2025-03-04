@@ -18,7 +18,7 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
   }
 
   @Override
-  public Board createBoard(Board board) {
+  public Board save(Board board) {
     return BoardMapper.entityToDomain(
       boardRepository.save(BoardMapper.domainToEntity(board))
     );

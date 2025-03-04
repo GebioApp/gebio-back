@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BoardRepositoryPort {
-  Board createBoard(Board board);
+  Board save(Board board);
 
   Optional<Board> findById(UUID boardId);
 }

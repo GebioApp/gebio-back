@@ -1,10 +1,12 @@
 package io.gebio.gebioback.domain.service;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
+import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class BoardService implements BoardFacade {
 
   @Override
   public Board createWithOwner(UUID templateId, String boardName, User owner) {
-    return boardRepositoryPort.createBoard(
+    return boardRepositoryPort.save(
       new Board(
         UUID.randomUUID(),
         boardName,
@@ -35,5 +37,16 @@ public class BoardService implements BoardFacade {
     return boardRepositoryPort
       .findById(boardId)
       .orElseThrow(() -> new BoardNotFound(boardId));
+  }
+
+  @Override
+  public Board addCardToBoard(UUID boardId, Card card) {
+    Optional<Board> board = boardRepositoryPort.findById(boardId);
+    if (board.isEmpty()) {
+      throw new BoardNotFound(boardId);
+    }
+    Board updatedBoard = Board.addCardToBoard(board.get(), card);
+    boardRepositoryPort.save(updatedBoard);
+    return updatedBoard;
   }
 }
