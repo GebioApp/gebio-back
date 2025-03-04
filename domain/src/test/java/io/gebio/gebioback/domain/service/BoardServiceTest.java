@@ -168,10 +168,13 @@ class BoardServiceTest {
       new Card.Position(200, 200),
       cardOwner
     );
+    Board expectedUpdatedBoard = Board.addCardToBoard(expectedBoard, newCard);
+    when(boardRepositoryPort.save(expectedUpdatedBoard)).thenReturn(
+      expectedUpdatedBoard
+    );
 
     Board updatedBoard = boardService.addCardToBoard(boardId, newCard);
 
-    verify(boardRepositoryPort).save(updatedBoard);
     assertThat(updatedBoard.cards()).hasSize(2);
     assertThat(updatedBoard.cards().get(1)).isEqualTo(newCard);
   }
