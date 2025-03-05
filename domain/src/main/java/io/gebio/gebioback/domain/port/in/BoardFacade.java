@@ -9,4 +9,5 @@ public interface BoardFacade {
   Board createWithOwner(UUID templateId, String boardName, User owner);
   Board findById(UUID boardId);
   Board addCardToBoard(UUID boardId, Card card);
+  Board updateCardOnBoard(UUID boardId, Card card);
 }
