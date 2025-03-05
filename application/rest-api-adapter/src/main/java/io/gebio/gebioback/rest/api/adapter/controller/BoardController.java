@@ -3,10 +3,7 @@ package io.gebio.gebioback.rest.api.adapter.controller;
 import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder.getCreatedResourceURI;
 
 import io.gebio.gebioback.contract.api.BoardApi;
-import io.gebio.gebioback.contract.model.AddCardRequestContract;
-import io.gebio.gebioback.contract.model.CreateBoardRequestContract;
-import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
-import io.gebio.gebioback.contract.model.FindBoardResponseContract;
+import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.service.Board;
@@ -70,6 +67,20 @@ public class BoardController implements BoardApi {
     Board updatedBoard = boardFacade.addCardToBoard(
       addCardRequestContract.getBoardId(),
       CardMapper.fromContractToDomain(addCardRequestContract.getCard())
+    );
+    simpMessagingTemplate.convertAndSend(
+      "/topic/board/" + updatedBoard.id(),
+      BoardMapper.findBoardFromDomainToContract(updatedBoard)
+    );
+  }
+
+  @MessageMapping("/board/update-card")
+  public void updateCard(
+    @Payload UpdateCardRequestContract updateCardRequestContract
+  ) {
+    Board updatedBoard = boardFacade.updateCardOnBoard(
+      updateCardRequestContract.getBoardId(),
+      CardMapper.fromContractToDomain(updateCardRequestContract.getCard())
     );
     simpMessagingTemplate.convertAndSend(
       "/topic/board/" + updatedBoard.id(),

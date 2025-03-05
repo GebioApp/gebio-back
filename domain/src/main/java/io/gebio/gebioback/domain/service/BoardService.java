@@ -47,4 +47,14 @@ public class BoardService implements BoardFacade {
     }
     return boardRepositoryPort.save(Board.addCardToBoard(board.get(), card));
   }
+
+  @Override
+  public Board updateCardOnBoard(UUID boardId, Card card) {
+    Optional<Board> board = boardRepositoryPort.findById(boardId);
+    if (board.isEmpty()) {
+      throw new BoardNotFound(boardId);
+    }
+    Board boardWithUpdatedCard = board.get().updateCard(card);
+    return boardWithUpdatedCard;
+  }
 }

@@ -22,4 +22,12 @@ public record Board(
       Stream.concat(board.cards.stream(), Stream.of(card)).toList()
     );
   }
+
+  Board updateCard(Card card) {
+    List<Card> updatedCards = cards
+      .stream()
+      .map(existingCard -> existingCard.equals(card) ? card : existingCard)
+      .toList();
+    return new Board(id, name, templateId, owner, updatedCards);
+  }
 }
