@@ -7,6 +7,12 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "board")
+@NamedEntityGraph(
+  name = "Board.withCardsAndOwner",
+  attributeNodes = {
+    @NamedAttributeNode("cards"), @NamedAttributeNode("owner"),
+  }
+)
 public class BoardEntity {
 
   @Id
@@ -63,5 +69,17 @@ public class BoardEntity {
 
   public void setCards(List<CardEntity> cardEntities) {
     this.cards = cardEntities;
+  }
+
+  public void addCard(CardEntity cardEntity) {
+    cards.add(cardEntity);
+  }
+
+  public void updateCard(CardEntity cardEntity) {
+    List<CardEntity> updatedCards = cards
+      .stream()
+      .map(card -> card.getId() == cardEntity.getId() ? cardEntity : card)
+      .toList();
+    this.setCards(updatedCards);
   }
 }

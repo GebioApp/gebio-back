@@ -1,5 +1,6 @@
 package io.gebio.gebioback.domain.port.out;
 
+import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.service.Board;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,4 +9,8 @@ public interface BoardRepositoryPort {
   Board save(Board board);
 
   Optional<Board> findById(UUID boardId);
+
+  Board updateBoardWithNewCardForBoardId(UUID boardId, Card card);
+
+  Board updateBoardWithUpdatedCardForBoardId(UUID boardId, Card card);
 }
