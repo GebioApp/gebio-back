@@ -6,7 +6,6 @@ import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -41,19 +40,14 @@ public class BoardService implements BoardFacade {
 
   @Override
   public Board addCardToBoard(UUID boardId, Card card) {
-    Optional<Board> board = boardRepositoryPort.findById(boardId);
-    if (board.isEmpty()) {
-      throw new BoardNotFound(boardId);
-    }
-    return boardRepositoryPort.save(Board.addCardToBoard(board.get(), card));
+    return boardRepositoryPort.updateBoardWithNewCardForBoardId(boardId, card);
   }
 
   @Override
   public Board updateCardOnBoard(UUID boardId, Card card) {
-    Optional<Board> board = boardRepositoryPort.findById(boardId);
-    if (board.isEmpty()) {
-      throw new BoardNotFound(boardId);
-    }
-    return boardRepositoryPort.save(board.get().updateCard(card));
+    return boardRepositoryPort.updateBoardWithUpdatedCardForBoardId(
+      boardId,
+      card
+    );
   }
 }
