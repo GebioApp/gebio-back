@@ -23,11 +23,11 @@ public class CardEntity {
   @Column(name = "pos_y", nullable = false)
   private int posY;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "owner_id")
   private UserEntity owner;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "board_id")
   private BoardEntity board;
 

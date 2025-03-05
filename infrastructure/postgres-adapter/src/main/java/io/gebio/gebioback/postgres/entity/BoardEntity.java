@@ -13,7 +13,7 @@ public class BoardEntity {
   @Column(name = "board_id")
   private UUID id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "owner_id")
   private UserEntity owner;
 
