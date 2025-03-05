@@ -26,7 +26,9 @@ public record Board(
   Board updateCard(Card card) {
     List<Card> updatedCards = cards
       .stream()
-      .map(existingCard -> existingCard.equals(card) ? card : existingCard)
+      .map(existingCard ->
+        existingCard.id().equals(card.id()) ? card : existingCard
+      )
       .toList();
     return new Board(id, name, templateId, owner, updatedCards);
   }

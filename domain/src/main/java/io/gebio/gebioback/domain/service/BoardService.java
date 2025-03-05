@@ -54,7 +54,6 @@ public class BoardService implements BoardFacade {
     if (board.isEmpty()) {
       throw new BoardNotFound(boardId);
     }
-    Board boardWithUpdatedCard = board.get().updateCard(card);
-    return boardWithUpdatedCard;
+    return boardRepositoryPort.save(board.get().updateCard(card));
   }
 }
