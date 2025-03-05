@@ -218,11 +218,12 @@ components:
           format: uuid
         card:
           $ref: '#/components/schemas/CardContract'
-    AddCardResponseContract:
+    UpdateCardRequestContract:
       type: object
-      required:
-        - card
       properties:
+        boardId:
+          type: string
+          format: uuid
         card:
           $ref: '#/components/schemas/CardContract'
   responses:
