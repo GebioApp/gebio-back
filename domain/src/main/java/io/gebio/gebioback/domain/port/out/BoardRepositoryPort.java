@@ -13,4 +13,6 @@ public interface BoardRepositoryPort {
   Board updateBoardWithNewCardForBoardId(UUID boardId, Card card);
 
   Board updateBoardWithUpdatedCardForBoardId(UUID boardId, Card card);
+
+  Board deleteBoardWithDeletedCard(UUID boardId, UUID cardId);
 }
