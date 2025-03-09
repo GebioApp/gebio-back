@@ -367,4 +367,101 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       );
     }
   }
+
+  @Nested
+  class UpdateCard {
+
+    @Test
+    void should_update_card_on_board() throws Exception {
+      UUID boardId = UUID.randomUUID();
+      UUID cardId = UUID.randomUUID();
+
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      userRepository.save(userEntity);
+
+      BoardEntity boardEntity = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+      CardEntity cardEntity = new CardEntity(
+        cardId,
+        "Card 1 Content",
+        "#FF5733",
+        10,
+        20,
+        userEntity,
+        boardEntity
+      );
+      boardEntity.setCards(List.of(cardEntity));
+
+      boardRepository.save(boardEntity);
+
+      UpdateCardRequestContract request = new UpdateCardRequestContract();
+      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      request.setBoardId(boardId);
+      request.setCard(
+        new CardContract(
+          cardId,
+          "Card 1 Content modified",
+          "#FF5735",
+          new CardPositionContract(20, 30),
+          ownerInfo
+        )
+      );
+
+      CountDownLatch latch = new CountDownLatch(1);
+      final FindBoardResponseContract[] responseHolder =
+        new FindBoardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return FindBoardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (FindBoardResponseContract) payload;
+            latch.countDown();
+          }
+        }
+      );
+
+      stompSession.send("/app/board/update-card", request);
+
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      FindBoardResponseContract response = responseHolder[0];
+      assertThat(response.getBoard()).isNotNull();
+      assertThat(response.getBoard().getCards()).isNotNull();
+
+      CardContract addedCard = response.getBoard().getCards().getFirst();
+      assertThat(addedCard.getId()).isEqualTo(cardId);
+      assertThat(addedCard.getContent()).isEqualTo("Card 1 Content modified");
+      assertThat(addedCard.getColor()).isEqualTo("#FF5735");
+      assertThat(addedCard.getPosition().getPosX()).isEqualTo(20);
+      assertThat(addedCard.getPosition().getPosY()).isEqualTo(30);
+      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(id);
+      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+        AUTHENTICATED_USER_LOGO
+      );
+      assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
+        AUTHENTICATED_USER_EMAIL
+      );
+    }
+  }
 }
