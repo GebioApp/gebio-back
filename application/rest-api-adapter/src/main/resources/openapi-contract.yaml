@@ -226,6 +226,15 @@ components:
           format: uuid
         card:
           $ref: '#/components/schemas/CardContract'
+    DeleteCardRequestContract:
+      type: object
+      properties:
+        boardId:
+          type: string
+          format: uuid
+        cardId:
+          type: string
+          format: uuid
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid
