@@ -74,4 +74,32 @@ public class CardEntity {
   public UserEntity getOwner() {
     return owner;
   }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public void setColor(String color) {
+    this.color = color;
+  }
+
+  public void setPosX(int posX) {
+    this.posX = posX;
+  }
+
+  public void setPosY(int posY) {
+    this.posY = posY;
+  }
+
+  public void setOwner(UserEntity owner) {
+    this.owner = owner;
+  }
+
+  public void setBoard(BoardEntity board) {
+    this.board = board;
+  }
 }
