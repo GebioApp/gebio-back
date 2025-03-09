@@ -1,5 +1,6 @@
 package io.gebio.gebioback.bootstrap.it;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,18 +8,32 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
 import io.gebio.gebioback.postgres.repository.UserRepository;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 class BoardControllerIT extends AbstractGebioBackApiIT {
 
@@ -28,10 +43,28 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
   @Autowired
   BoardRepository boardRepository;
 
+  private WebSocketStompClient stompClient;
+  private StompSession stompSession;
+
+  @LocalServerPort
+  private int port;
+
   @BeforeEach
-  void setUp() {
+  void setUp()
+    throws ExecutionException, InterruptedException, TimeoutException {
     userRepository.deleteAll();
     boardRepository.deleteAll();
+
+    stompClient = new WebSocketStompClient(new StandardWebSocketClient());
+    stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+    // Connexion au WebSocket
+    stompSession = stompClient
+      .connectAsync(
+        "ws://localhost:" + port + "/ws",
+        new StompSessionHandlerAdapter() {}
+      )
+      .get(1, TimeUnit.SECONDS);
   }
 
   @Nested
@@ -87,7 +120,11 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
     @Test
     void should_return_201_and_with_created_board() throws Exception {
       UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL, AUTHENTICATED_USER_LOGO);
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
       userRepository.save(userEntity);
 
       String requestBody =
@@ -155,7 +192,11 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
     @Test
     void should_return_200_and_retrieve_existing_board() throws Exception {
       UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL, AUTHENTICATED_USER_LOGO);
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
       userRepository.save(userEntity);
 
       BoardEntity board = new BoardEntity(
@@ -237,6 +278,93 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             equalTo(card1.getOwner().getProfileLogo())
           )
         );
+    }
+  }
+
+  @Nested
+  class AddCard {
+
+    @Test
+    void testAddCardToBoard() throws Exception {
+      UUID boardId = UUID.randomUUID();
+      UUID cardId = UUID.randomUUID();
+
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      userRepository.save(userEntity);
+
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+
+      boardRepository.save(board);
+
+      AddCardRequestContract request = new AddCardRequestContract();
+      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      request.setBoardId(boardId);
+      request.setCard(
+        new CardContract(
+          cardId,
+          "Test Card",
+          "#FF5733",
+          new CardPositionContract(1, 2),
+          ownerInfo
+        )
+      );
+
+      CountDownLatch latch = new CountDownLatch(1);
+      final FindBoardResponseContract[] responseHolder =
+        new FindBoardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return FindBoardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (FindBoardResponseContract) payload;
+            latch.countDown();
+          }
+        }
+      );
+
+      stompSession.send("/app/board/add-card", request);
+
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      FindBoardResponseContract response = responseHolder[0];
+      assertThat(response.getBoard()).isNotNull();
+      assertThat(response.getBoard().getCards()).isNotNull();
+
+      CardContract addedCard = response.getBoard().getCards().getFirst();
+      assertThat(addedCard.getId()).isEqualTo(cardId);
+      assertThat(addedCard.getContent()).isEqualTo("Test Card");
+      assertThat(addedCard.getColor()).isEqualTo("#FF5733");
+      assertThat(addedCard.getPosition().getPosX()).isEqualTo(1);
+      assertThat(addedCard.getPosition().getPosY()).isEqualTo(2);
+      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(id);
+      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+        AUTHENTICATED_USER_LOGO
+      );
+      assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
+        AUTHENTICATED_USER_EMAIL
+      );
     }
   }
 }
