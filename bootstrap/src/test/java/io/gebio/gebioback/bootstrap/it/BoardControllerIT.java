@@ -464,4 +464,79 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       );
     }
   }
+
+  @Nested
+  class DeleteCard {
+
+    @Test
+    void should_delete_card_from_board() throws InterruptedException {
+      UUID boardId = UUID.randomUUID();
+      UUID cardId = UUID.randomUUID();
+
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      userRepository.save(userEntity);
+
+      BoardEntity boardEntity = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+      CardEntity cardEntity = new CardEntity(
+        cardId,
+        "Card 1 Content",
+        "#FF5733",
+        10,
+        20,
+        userEntity,
+        boardEntity
+      );
+      boardEntity.setCards(List.of(cardEntity));
+
+      boardRepository.save(boardEntity);
+
+      DeleteCardRequestContract request = new DeleteCardRequestContract();
+      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO
+      );
+      request.setBoardId(boardId);
+      request.setCardId(cardId);
+
+      CountDownLatch latch = new CountDownLatch(1);
+      final FindBoardResponseContract[] responseHolder =
+        new FindBoardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return FindBoardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (FindBoardResponseContract) payload;
+            latch.countDown();
+          }
+        }
+      );
+
+      stompSession.send("/app/board/delete-card", request);
+
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      FindBoardResponseContract response = responseHolder[0];
+      assertThat(response.getBoard()).isNotNull();
+      assertThat(response.getBoard().getCards().size()).isEqualTo(0);
+    }
+  }
 }
