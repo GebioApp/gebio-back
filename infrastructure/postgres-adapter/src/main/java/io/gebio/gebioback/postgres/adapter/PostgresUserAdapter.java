@@ -24,9 +24,9 @@ public class PostgresUserAdapter implements UserRepositoryPort {
   }
 
   @Override
-  public User createUserFromMail(String email) {
+  public User createUserFromMail(String email, String logo) {
     UserEntity userEntity = UserMapper.domainToEntity(
-      new User(UUID.randomUUID(), email, null)
+      new User(UUID.randomUUID(), email, logo)
     );
     return UserMapper.entityToDomain(userRepository.save(userEntity));
   }

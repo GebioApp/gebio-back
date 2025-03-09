@@ -13,6 +13,6 @@ public interface UserMapper {
   }
 
   static UserEntity domainToEntity(User user) {
-    return new UserEntity(user.id(), user.email());
+    return new UserEntity(user.id(), user.email(), user.profileLogo());
   }
 }

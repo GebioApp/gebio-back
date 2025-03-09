@@ -19,8 +19,9 @@ class PostgresUserAdapterIT extends AbstractPostgresIT {
       userRepository
     );
     String email = "john.doe@gmail.com";
+    String logo = "my-logo-url";
 
-    User user = postgresUserAdapter.createUserFromMail(email);
+    User user = postgresUserAdapter.createUserFromMail(email, logo);
 
     assertThat(user).isNotNull();
     assertThat(user.id()).isNotNull();
@@ -33,7 +34,8 @@ class PostgresUserAdapterIT extends AbstractPostgresIT {
       userRepository
     );
     String email = "john.doe@gmail.com";
-    postgresUserAdapter.createUserFromMail(email);
+    String logo = "my-logo-url";
+    postgresUserAdapter.createUserFromMail(email, logo);
 
     Optional<User> optionalUser = postgresUserAdapter.findUserByEmail(email);
 

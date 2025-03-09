@@ -37,7 +37,7 @@ public class UserControllerIT extends AbstractGebioBackApiIT {
   void should_return_200_with_user_if_user_already_exists_in_database()
     throws Exception {
     UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-    UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL);
+    UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL, AUTHENTICATED_USER_LOGO);
     userRepository.save(userEntity);
 
     mockMvc

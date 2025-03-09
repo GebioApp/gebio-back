@@ -15,9 +15,9 @@ public class UserService implements UserFacade {
   }
 
   @Override
-  public User getOrCreateUserFromEmail(String email) {
+  public User getOrCreateUserFromEmail(String email, String logo) {
     return userRepositoryPort
       .findUserByEmail(email)
-      .orElseGet(() -> userRepositoryPort.createUserFromMail(email));
+      .orElseGet(() -> userRepositoryPort.createUserFromMail(email, logo));
   }
 }
