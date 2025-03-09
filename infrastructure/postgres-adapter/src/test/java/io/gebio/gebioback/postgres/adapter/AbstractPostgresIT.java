@@ -16,7 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
   loader = AnnotationConfigContextLoader.class,
   classes = PostgresITConfiguration.class
 )
-public class AbstractPostgresIT {
+class AbstractPostgresIT {
 
   @Container
   static PostgreSQLContainer postgresSQLContainer = new PostgreSQLContainer<>(

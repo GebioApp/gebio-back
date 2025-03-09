@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Container;
 @AutoConfigureMockMvc
 @ActiveProfiles("it")
 @Import(TestJwtDecoderConfiguration.class)
-public class AbstractGebioBackApiIT {
+class AbstractGebioBackApiIT {
 
   @Autowired
   protected MockMvc mockMvc;
