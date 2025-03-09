@@ -87,4 +87,18 @@ public class BoardController implements BoardApi {
       BoardMapper.findBoardFromDomainToContract(updatedBoard)
     );
   }
+
+  @MessageMapping("/board/delete-card")
+  public void updateCard(
+          @Payload DeleteCardRequestContract deleteCardRequestContract
+  ) {
+    Board updatedBoard = boardFacade.deleteCardFromBoard(
+            deleteCardRequestContract.getBoardId(),
+            deleteCardRequestContract.getCardId()
+    );
+    simpMessagingTemplate.convertAndSend(
+            "/topic/board/" + updatedBoard.id(),
+            BoardMapper.findBoardFromDomainToContract(updatedBoard)
+    );
+  }
 }

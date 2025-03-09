@@ -10,4 +10,5 @@ public interface BoardFacade {
   Board findById(UUID boardId);
   Board addCardToBoard(UUID boardId, Card card);
   Board updateCardOnBoard(UUID boardId, Card card);
+  Board deleteCardFromBoard(UUID boardId, UUID cardId);
 }

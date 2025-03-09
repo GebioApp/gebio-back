@@ -50,4 +50,9 @@ public class BoardService implements BoardFacade {
       card
     );
   }
+
+  @Override
+  public Board deleteCardFromBoard(UUID boardId, UUID cardId) {
+    return boardRepositoryPort.deleteBoardWithDeletedCard(boardId, cardId);
+  }
 }
