@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
   private static final String GEBIO_APP_EMAIL = "email";
+  private static final String GEBIO_APP_LOGO = "logo";
   private final UserFacade userFacade;
 
   public AuthenticationService(UserFacade userFacade) {
@@ -26,8 +27,10 @@ public class AuthenticationService {
       )
       .map(Jwt::getClaims)
       .filter(claims -> claims.containsKey(GEBIO_APP_EMAIL))
-      .map(claims -> claims.get(GEBIO_APP_EMAIL).toString())
-      .map(userFacade::getOrCreateUserFromEmail)
+      .map(claims -> userFacade.getOrCreateUserFromEmail(
+              claims.get(GEBIO_APP_EMAIL).toString(),
+              claims.get(GEBIO_APP_LOGO).toString())
+      )
       .orElseThrow(() -> new IllegalStateException("Invalid JWT Token"));
   }
 }

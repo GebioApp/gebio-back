@@ -20,6 +20,7 @@ public interface UserContractMapper {
     CardOwnerInfoContract cardOwnerInfoContract = new CardOwnerInfoContract();
     cardOwnerInfoContract.setId(user.id());
     cardOwnerInfoContract.setLogo(user.profileLogo());
+    cardOwnerInfoContract.setEmail(user.email());
     return cardOwnerInfoContract;
   }
 }

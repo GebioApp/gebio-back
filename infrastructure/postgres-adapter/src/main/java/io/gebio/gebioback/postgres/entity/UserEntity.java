@@ -36,9 +36,10 @@ public class UserEntity {
 
   public UserEntity() {}
 
-  public UserEntity(UUID id, String email) {
+  public UserEntity(UUID id, String email, String profileLogo) {
     this.id = id;
     this.email = email;
+    this.profileLogo = profileLogo;
   }
 
   public UUID getId() {

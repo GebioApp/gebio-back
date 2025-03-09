@@ -87,7 +87,7 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
     @Test
     void should_return_201_and_with_created_board() throws Exception {
       UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL);
+      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL, AUTHENTICATED_USER_LOGO);
       userRepository.save(userEntity);
 
       String requestBody =
@@ -155,7 +155,7 @@ public class BoardControllerIT extends AbstractGebioBackApiIT {
     @Test
     void should_return_200_and_retrieve_existing_board() throws Exception {
       UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL);
+      UserEntity userEntity = new UserEntity(id, AUTHENTICATED_USER_EMAIL, AUTHENTICATED_USER_LOGO);
       userRepository.save(userEntity);
 
       BoardEntity board = new BoardEntity(

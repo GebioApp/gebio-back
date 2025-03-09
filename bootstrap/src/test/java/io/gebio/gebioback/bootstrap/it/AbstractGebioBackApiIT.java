@@ -27,9 +27,12 @@ public class AbstractGebioBackApiIT {
   protected MockMvc mockMvc;
 
   private static final String GEBIO_EMAIL = "email";
+  private static final String GEBIO_LOGO = "logo";
 
   protected static final String AUTHENTICATED_USER_EMAIL =
     "integration-test.user@gmail.com";
+  protected static final String AUTHENTICATED_USER_LOGO =
+          "my-logo-url";
 
   @Container
   static PostgreSQLContainer postgresSQLContainer = new PostgreSQLContainer<>(
@@ -60,6 +63,7 @@ public class AbstractGebioBackApiIT {
         Jwt.withTokenValue("token")
           .header("alg", "none")
           .claim(GEBIO_EMAIL, AUTHENTICATED_USER_EMAIL)
+          .claim(GEBIO_LOGO, AUTHENTICATED_USER_LOGO)
           .build()
       );
   }

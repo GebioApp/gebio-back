@@ -6,5 +6,5 @@ import java.util.Optional;
 public interface UserRepositoryPort {
   Optional<User> findUserByEmail(String email);
 
-  User createUserFromMail(String email);
+  User createUserFromMail(String email, String logo);
 }
