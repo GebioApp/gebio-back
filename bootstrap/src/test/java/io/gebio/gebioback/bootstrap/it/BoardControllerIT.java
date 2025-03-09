@@ -285,7 +285,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
   class AddCard {
 
     @Test
-    void testAddCardToBoard() throws Exception {
+    void should_add_card_to_board() throws Exception {
       UUID boardId = UUID.randomUUID();
       UUID cardId = UUID.randomUUID();
 
