@@ -5,6 +5,7 @@ import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
+import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.mapper.BoardMapper;
 import io.gebio.gebioback.postgres.mapper.CardMapper;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
@@ -47,7 +48,19 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
     BoardEntity boardEntity = boardRepository
       .findById(boardId)
       .orElseThrow(() -> new BoardNotFound(boardId));
-    boardEntity.updateCard(CardMapper.fromDomainToEntity(card, boardEntity));
+    Optional<CardEntity> cardEntityToUpdate = boardEntity
+      .getCards()
+      .stream()
+      .filter(cardEntity -> cardEntity.getId() == card.id())
+      .findFirst();
+    if (cardEntityToUpdate.isEmpty()) {
+      return BoardMapper.entityToDomain(boardEntity);
+    }
+    CardEntity updatedCardEntity = cardEntityToUpdate.get();
+    updatedCardEntity.setContent(card.content());
+    updatedCardEntity.setColor(card.color());
+    updatedCardEntity.setPosX(card.position().posX());
+    updatedCardEntity.setPosY(card.position().posY());
     return BoardMapper.entityToDomain(boardRepository.save(boardEntity));
   }
 }
