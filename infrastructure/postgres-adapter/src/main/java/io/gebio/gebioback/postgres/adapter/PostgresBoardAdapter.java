@@ -51,7 +51,7 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
     Optional<CardEntity> cardEntityToUpdate = boardEntity
       .getCards()
       .stream()
-      .filter(cardEntity -> cardEntity.getId() == card.id())
+      .filter(cardEntity -> cardEntity.getId().equals(card.id()))
       .findFirst();
     if (cardEntityToUpdate.isEmpty()) {
       return BoardMapper.entityToDomain(boardEntity);
