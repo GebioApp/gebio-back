@@ -105,7 +105,7 @@ public class BoardController implements BoardApi {
   public void updateCard(
     @Payload DeleteCardRequestContract deleteCardRequestContract
   ) {
-    Board updatedBoard = boardFacade.deleteCardFromBoard(
+    Board updatedBoard = cardFacade.deleteCardFromBoard(
       deleteCardRequestContract.getBoardId(),
       deleteCardRequestContract.getCardId()
     );

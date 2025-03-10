@@ -7,5 +7,4 @@ import java.util.UUID;
 public interface BoardRepositoryPort {
   Board save(Board board);
   Optional<Board> findById(UUID boardId);
-  Board deleteBoardWithDeletedCard(UUID boardId, UUID cardId);
 }
