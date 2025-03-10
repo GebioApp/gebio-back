@@ -27,4 +27,15 @@ public interface CardMapper {
       cardEntity.getBoard().getId()
     );
   }
+
+  static CardEntity updateCardFromDomainToEntity(
+    CardEntity cardEntity,
+    Card card
+  ) {
+    cardEntity.setContent(card.content());
+    cardEntity.setColor(card.color());
+    cardEntity.setPosX(card.position().posX());
+    cardEntity.setPosY(card.position().posY());
+    return cardEntity;
+  }
 }

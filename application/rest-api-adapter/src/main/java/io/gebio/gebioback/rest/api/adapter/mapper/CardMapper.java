@@ -3,6 +3,7 @@ package io.gebio.gebioback.rest.api.adapter.mapper;
 import io.gebio.gebioback.contract.model.AddCardResponseContract;
 import io.gebio.gebioback.contract.model.CardContract;
 import io.gebio.gebioback.contract.model.CardPositionContract;
+import io.gebio.gebioback.contract.model.UpdateCardResponseContract;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import java.util.UUID;
@@ -14,6 +15,14 @@ public interface CardMapper {
     CardContract cardContract = fromDomainToContract(card);
     addCardResponseContract.setCard(cardContract);
     return addCardResponseContract;
+  }
+
+  static UpdateCardResponseContract updateCardFromDomainToContract(Card card) {
+    UpdateCardResponseContract updateCardResponseContract =
+      new UpdateCardResponseContract();
+    CardContract cardContract = fromDomainToContract(card);
+    updateCardResponseContract.setCard(cardContract);
+    return updateCardResponseContract;
   }
 
   static CardContract fromDomainToContract(Card card) {
