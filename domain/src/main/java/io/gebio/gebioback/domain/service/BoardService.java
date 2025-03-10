@@ -37,9 +37,4 @@ public class BoardService implements BoardFacade {
       .findById(boardId)
       .orElseThrow(() -> new BoardNotFound(boardId));
   }
-
-  @Override
-  public Board deleteCardFromBoard(UUID boardId, UUID cardId) {
-    return boardRepositoryPort.deleteBoardWithDeletedCard(boardId, cardId);
-  }
 }
