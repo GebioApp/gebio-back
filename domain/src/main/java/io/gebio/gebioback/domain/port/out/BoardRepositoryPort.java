@@ -10,8 +10,6 @@ public interface BoardRepositoryPort {
 
   Optional<Board> findById(UUID boardId);
 
-  Card updateBoardWithNewCardForBoardId(UUID boardId, Card card);
-
   Board updateBoardWithUpdatedCardForBoardId(UUID boardId, Card card);
 
   Board deleteBoardWithDeletedCard(UUID boardId, UUID cardId);
