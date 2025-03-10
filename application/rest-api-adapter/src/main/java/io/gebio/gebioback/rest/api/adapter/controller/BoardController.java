@@ -105,13 +105,13 @@ public class BoardController implements BoardApi {
   public void updateCard(
     @Payload DeleteCardRequestContract deleteCardRequestContract
   ) {
-    Board updatedBoard = cardFacade.deleteCardFromBoard(
+    Card deletedCard = cardFacade.deleteCardFromBoard(
       deleteCardRequestContract.getBoardId(),
       deleteCardRequestContract.getCardId()
     );
     simpMessagingTemplate.convertAndSend(
-      TOPIC_BOARD + updatedBoard.id(),
-      BoardMapper.findBoardFromDomainToContract(updatedBoard)
+      TOPIC_BOARD + deletedCard.boardId(),
+      CardMapper.deleteCardFromDomainToContract(deletedCard)
     );
   }
 }

@@ -487,46 +487,48 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       request.setBoardId(boardId);
       request.setCardId(cardId);
 
-      FindBoardResponseContract response = sendAndReceiveStompRequest(
-        "/app/board/delete-card",
-        request,
-        boardId
+      CountDownLatch latch = new CountDownLatch(1);
+      final DeleteCardResponseContract[] responseHolder =
+        new DeleteCardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return DeleteCardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (DeleteCardResponseContract) payload;
+            latch.countDown();
+          }
+        }
       );
 
-      assertThat(response.getBoard()).isNotNull();
-      assertThat(response.getBoard().getCards().size()).isEqualTo(0);
+      stompSession.send("/app/board/delete-card", request);
+
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      DeleteCardResponseContract response = responseHolder[0];
+      CardContract deletedCard = response.getCard();
+      assertThat(deletedCard.getId()).isEqualTo(cardId);
+      assertThat(deletedCard.getContent()).isEqualTo("Card 1 Content");
+      assertThat(deletedCard.getColor()).isEqualTo("#FF5733");
+      assertThat(deletedCard.getPosition().getPosX()).isEqualTo(10);
+      assertThat(deletedCard.getPosition().getPosY()).isEqualTo(20);
+      assertThat(deletedCard.getOwnerInfo().getId()).isEqualTo(
+        guestEntity.getId()
+      );
+      assertThat(deletedCard.getOwnerInfo().getEmail()).isEqualTo(
+        guestEntity.getEmail()
+      );
+      assertThat(deletedCard.getOwnerInfo().getLogo()).isEqualTo(
+        guestEntity.getProfileLogo()
+      );
+      assertThat(deletedCard.getBoardId()).isEqualTo(boardId);
     }
-  }
-
-  private FindBoardResponseContract sendAndReceiveStompRequest(
-    String destination,
-    Object request,
-    UUID boardId
-  ) throws InterruptedException {
-    CountDownLatch latch = new CountDownLatch(1);
-    final FindBoardResponseContract[] responseHolder =
-      new FindBoardResponseContract[1];
-
-    stompSession.subscribe(
-      "/topic/board/" + boardId,
-      new StompFrameHandler() {
-        @Override
-        public Type getPayloadType(StompHeaders headers) {
-          return FindBoardResponseContract.class;
-        }
-
-        @Override
-        public void handleFrame(StompHeaders headers, Object payload) {
-          responseHolder[0] = (FindBoardResponseContract) payload;
-          latch.countDown();
-        }
-      }
-    );
-
-    stompSession.send(destination, request);
-
-    assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-    assertThat(responseHolder[0]).isNotNull();
-    return responseHolder[0];
   }
 }
