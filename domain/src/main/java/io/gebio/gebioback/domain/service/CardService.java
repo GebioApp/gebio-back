@@ -1,6 +1,5 @@
 package io.gebio.gebioback.domain.service;
 
-import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.port.in.CardFacade;
 import io.gebio.gebioback.domain.port.out.CardRepositoryPort;
@@ -22,7 +21,7 @@ public class CardService implements CardFacade {
   }
 
   @Override
-  public Board updateCardOnBoard(UUID boardId, Card card) {
+  public Card updateCardOnBoard(UUID boardId, Card card) {
     return cardRepositoryPort.updateCardOnBoard(boardId, card);
   }
 }

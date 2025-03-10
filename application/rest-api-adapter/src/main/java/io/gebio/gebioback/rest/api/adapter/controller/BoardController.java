@@ -88,7 +88,7 @@ public class BoardController implements BoardApi {
   public void updateCard(
     @Payload UpdateCardRequestContract updateCardRequestContract
   ) {
-    Board updatedBoard = cardFacade.updateCardOnBoard(
+    Card updatedCard = cardFacade.updateCardOnBoard(
       updateCardRequestContract.getBoardId(),
       CardMapper.fromContractToDomain(
         updateCardRequestContract.getBoardId(),
@@ -96,8 +96,8 @@ public class BoardController implements BoardApi {
       )
     );
     simpMessagingTemplate.convertAndSend(
-      TOPIC_BOARD + updatedBoard.id(),
-      BoardMapper.findBoardFromDomainToContract(updatedBoard)
+      TOPIC_BOARD + updatedCard.boardId(),
+      CardMapper.updateCardFromDomainToContract(updatedCard)
     );
   }
 

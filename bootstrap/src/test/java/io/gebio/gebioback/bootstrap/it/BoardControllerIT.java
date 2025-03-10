@@ -407,30 +407,50 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      FindBoardResponseContract response = sendAndReceiveStompRequest(
-        "/app/board/update-card",
-        request,
-        boardId
+      CountDownLatch latch = new CountDownLatch(1);
+      final UpdateCardResponseContract[] responseHolder =
+        new UpdateCardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return UpdateCardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (UpdateCardResponseContract) payload;
+            latch.countDown();
+          }
+        }
       );
 
-      assertThat(response.getBoard()).isNotNull();
-      assertThat(response.getBoard().getCards()).isNotNull();
+      stompSession.send("/app/board/update-card", request);
 
-      CardContract addedCard = response.getBoard().getCards().getFirst();
-      assertThat(addedCard.getId()).isEqualTo(cardId);
-      assertThat(addedCard.getContent()).isEqualTo("Card 1 Content modified");
-      assertThat(addedCard.getColor()).isEqualTo("#FF5735");
-      assertThat(addedCard.getPosition().getPosX()).isEqualTo(20);
-      assertThat(addedCard.getPosition().getPosY()).isEqualTo(30);
-      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      UpdateCardResponseContract response = responseHolder[0];
+      assertThat(response.getCard()).isNotNull();
+
+      CardContract updatedCard = response.getCard();
+      assertThat(updatedCard.getId()).isEqualTo(cardId);
+      assertThat(updatedCard.getContent()).isEqualTo("Card 1 Content modified");
+      assertThat(updatedCard.getColor()).isEqualTo("#FF5735");
+      assertThat(updatedCard.getPosition().getPosX()).isEqualTo(20);
+      assertThat(updatedCard.getPosition().getPosY()).isEqualTo(30);
+      assertThat(updatedCard.getOwnerInfo().getId()).isEqualTo(
         guestEntity.getId()
       );
-      assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
+      assertThat(updatedCard.getOwnerInfo().getEmail()).isEqualTo(
         guestEntity.getEmail()
       );
-      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+      assertThat(updatedCard.getOwnerInfo().getLogo()).isEqualTo(
         guestEntity.getProfileLogo()
       );
+      assertThat(updatedCard.getBoardId()).isEqualTo(boardId);
     }
   }
 
