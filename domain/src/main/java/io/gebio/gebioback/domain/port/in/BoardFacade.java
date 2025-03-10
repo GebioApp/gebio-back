@@ -8,7 +8,6 @@ import java.util.UUID;
 public interface BoardFacade {
   Board createWithOwner(UUID templateId, String boardName, User owner);
   Board findById(UUID boardId);
-  Card addCardToBoard(UUID boardId, Card card);
   Board updateCardOnBoard(UUID boardId, Card card);
   Board deleteCardFromBoard(UUID boardId, UUID cardId);
 }
