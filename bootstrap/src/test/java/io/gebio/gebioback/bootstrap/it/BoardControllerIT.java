@@ -336,7 +336,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         }
       );
 
-      stompSession.send("/app/board/add-card", request);
+      stompSession.send(ADD_CARD_API_URL, request);
 
       assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
       assertThat(responseHolder[0]).isNotNull();
@@ -430,7 +430,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         }
       );
 
-      stompSession.send("/app/board/update-card", request);
+      stompSession.send(UPDATED_CARD_API_URL, request);
 
       assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
       assertThat(responseHolder[0]).isNotNull();
@@ -512,7 +512,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           }
         );
 
-        stompSession.send("/app/board/delete-card", request);
+        stompSession.send(DELETE_CARD_API_URL, request);
 
         assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
         assertThat(responseHolder[0]).isNotNull();
