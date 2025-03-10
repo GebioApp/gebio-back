@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public interface CardFacade {
   Card addCardToBoard(UUID boardId, Card card);
-  Card updateCardOnBoard(UUID boardId, Card card);
-  Card deleteCardFromBoard(UUID boardId, UUID cardId);
+  Card updateCardOnBoard(Card card);
+  Card deleteCardFromBoard(UUID cardId);
 }

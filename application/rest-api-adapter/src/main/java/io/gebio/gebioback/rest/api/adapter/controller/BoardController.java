@@ -73,10 +73,7 @@ public class BoardController implements BoardApi {
   public void addCard(@Payload AddCardRequestContract addCardRequestContract) {
     Card addedCard = cardFacade.addCardToBoard(
       addCardRequestContract.getBoardId(),
-      CardMapper.fromContractToDomain(
-        addCardRequestContract.getBoardId(),
-        addCardRequestContract.getCard()
-      )
+      CardMapper.fromContractToDomain(addCardRequestContract.getCard())
     );
     simpMessagingTemplate.convertAndSend(
       TOPIC_BOARD + addedCard.boardId(),
@@ -89,11 +86,7 @@ public class BoardController implements BoardApi {
     @Payload UpdateCardRequestContract updateCardRequestContract
   ) {
     Card updatedCard = cardFacade.updateCardOnBoard(
-      updateCardRequestContract.getBoardId(),
-      CardMapper.fromContractToDomain(
-        updateCardRequestContract.getBoardId(),
-        updateCardRequestContract.getCard()
-      )
+      CardMapper.fromContractToDomain(updateCardRequestContract.getCard())
     );
     simpMessagingTemplate.convertAndSend(
       TOPIC_BOARD + updatedCard.boardId(),
@@ -106,7 +99,6 @@ public class BoardController implements BoardApi {
     @Payload DeleteCardRequestContract deleteCardRequestContract
   ) {
     Card deletedCard = cardFacade.deleteCardFromBoard(
-      deleteCardRequestContract.getBoardId(),
       deleteCardRequestContract.getCardId()
     );
     simpMessagingTemplate.convertAndSend(

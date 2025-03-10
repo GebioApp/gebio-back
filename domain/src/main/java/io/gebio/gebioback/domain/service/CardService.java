@@ -21,12 +21,12 @@ public class CardService implements CardFacade {
   }
 
   @Override
-  public Card updateCardOnBoard(UUID boardId, Card card) {
-    return cardRepositoryPort.updateCardOnBoard(boardId, card);
+  public Card updateCardOnBoard(Card card) {
+    return cardRepositoryPort.updateCardOnBoard(card);
   }
 
   @Override
-  public Card deleteCardFromBoard(UUID boardId, UUID cardId) {
-    return cardRepositoryPort.deleteCardFromBoard(boardId, cardId);
+  public Card deleteCardFromBoard(UUID cardId) {
+    return cardRepositoryPort.deleteCardFromBoard(cardId);
   }
 }

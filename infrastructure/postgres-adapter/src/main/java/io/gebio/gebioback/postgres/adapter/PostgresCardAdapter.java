@@ -37,11 +37,7 @@ public class PostgresCardAdapter implements CardRepositoryPort {
   }
 
   @Override
-  public Card updateCardOnBoard(UUID boardId, Card card) {
-    boolean boardExists = boardRepository.existsById(boardId);
-    if (!boardExists) {
-      throw new BoardNotFound(boardId);
-    }
+  public Card updateCardOnBoard(Card card) {
     return cardRepository
       .findById(card.id())
       .map(cardEntity ->
@@ -53,11 +49,7 @@ public class PostgresCardAdapter implements CardRepositoryPort {
   }
 
   @Override
-  public Card deleteCardFromBoard(UUID boardId, UUID cardId) {
-    boolean boardExists = boardRepository.existsById(boardId);
-    if (!boardExists) {
-      throw new BoardNotFound(boardId);
-    }
+  public Card deleteCardFromBoard(UUID cardId) {
     CardEntity cardToDelete = cardRepository
       .findById(cardId)
       .orElseThrow(() -> new CardNotFound(cardId));
