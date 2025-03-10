@@ -56,7 +56,7 @@ public class PostgresCardAdapter implements CardRepositoryPort {
   }
 
   @Override
-  public Board deleteBoardWithDeletedCard(UUID boardId, UUID cardId) {
+  public Board deleteCardFromBoard(UUID boardId, UUID cardId) {
     BoardEntity boardEntity = boardRepository
       .findById(boardId)
       .orElseThrow(() -> new BoardNotFound(boardId));
