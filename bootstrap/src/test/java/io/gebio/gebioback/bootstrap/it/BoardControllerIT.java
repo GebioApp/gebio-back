@@ -313,7 +313,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         "/topic/board/" + boardId,
         () -> stompSession.send(ADD_CARD_API_URL, request)
       );
-
+      assertThat(response.getOperationType()).isEqualTo(
+        OperationTypeContract.ADD
+      );
       assertThat(response.getCard())
         .isNotNull()
         .satisfies(addedCard -> {
@@ -387,6 +389,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         () -> stompSession.send(UPDATED_CARD_API_URL, request)
       );
 
+      assertThat(response.getOperationType()).isEqualTo(
+        OperationTypeContract.UPDATE
+      );
       assertThat(response.getCard())
         .isNotNull()
         .satisfies(updatedCard -> {
@@ -448,6 +453,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           () -> stompSession.send(DELETE_CARD_API_URL, request)
         );
 
+        assertThat(response.getOperationType()).isEqualTo(
+          OperationTypeContract.DELETE
+        );
         assertThat(response.getCard())
           .isNotNull()
           .satisfies(deletedCard -> {

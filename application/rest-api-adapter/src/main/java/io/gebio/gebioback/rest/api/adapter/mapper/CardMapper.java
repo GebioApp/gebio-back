@@ -9,6 +9,7 @@ public interface CardMapper {
     AddCardResponseContract addCardResponseContract =
       new AddCardResponseContract();
     CardContract cardContract = fromDomainToContract(card);
+    addCardResponseContract.setOperationType(OperationTypeContract.ADD);
     addCardResponseContract.setCard(cardContract);
     return addCardResponseContract;
   }
@@ -17,6 +18,7 @@ public interface CardMapper {
     UpdateCardResponseContract updateCardResponseContract =
       new UpdateCardResponseContract();
     CardContract cardContract = fromDomainToContract(card);
+    updateCardResponseContract.setOperationType(OperationTypeContract.UPDATE);
     updateCardResponseContract.setCard(cardContract);
     return updateCardResponseContract;
   }
@@ -27,6 +29,7 @@ public interface CardMapper {
     DeleteCardResponseContract deleteCardResponseContract =
       new DeleteCardResponseContract();
     CardContract cardContract = fromDomainToContract(deletedCard);
+    deleteCardResponseContract.setOperationType(OperationTypeContract.DELETE);
     deleteCardResponseContract.setCard(cardContract);
     return deleteCardResponseContract;
   }

@@ -226,6 +226,8 @@ components:
       properties:
         card:
           $ref: '#/components/schemas/CardContract'
+        operationType:
+          $ref: '#/components/schemas/OperationTypeContract'
     UpdateCardRequestContract:
       type: object
       properties:
@@ -236,6 +238,8 @@ components:
       properties:
         card:
           $ref: '#/components/schemas/CardContract'
+        operationType:
+          $ref: '#/components/schemas/OperationTypeContract'
     DeleteCardRequestContract:
       type: object
       properties:
@@ -247,6 +251,14 @@ components:
       properties:
         card:
           $ref: '#/components/schemas/CardContract'
+        operationType:
+          $ref: '#/components/schemas/OperationTypeContract'
+    OperationTypeContract:
+      type: string
+      enum:
+        - ADD
+        - UPDATE
+        - DELETE
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid
