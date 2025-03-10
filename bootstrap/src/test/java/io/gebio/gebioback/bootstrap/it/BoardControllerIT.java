@@ -289,28 +289,21 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UUID boardId = UUID.randomUUID();
       UUID cardId = UUID.randomUUID();
 
-      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
-      );
-      userRepository.save(userEntity);
-
+      UserEntity userEntity = createAndSaveAuthenticatedUser();
+      UserEntity guestEntity = createAndSaveGuestUser();
       BoardEntity board = new BoardEntity(
         boardId,
         "Test Board",
         UUID.randomUUID(),
         userEntity
       );
-
       boardRepository.save(board);
 
       AddCardRequestContract request = new AddCardRequestContract();
       CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        guestEntity.getId(),
+        guestEntity.getEmail(),
+        guestEntity.getProfileLogo()
       );
       request.setBoardId(boardId);
       request.setCard(
@@ -323,32 +316,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final FindBoardResponseContract[] responseHolder =
-        new FindBoardResponseContract[1];
-
-      stompSession.subscribe(
-        "/topic/board/" + boardId,
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return FindBoardResponseContract.class;
-          }
-
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (FindBoardResponseContract) payload;
-            latch.countDown();
-          }
-        }
+      FindBoardResponseContract response = sendAndReceiveStompRequest(
+        "/app/board/add-card",
+        request,
+        boardId
       );
 
-      stompSession.send("/app/board/add-card", request);
-
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      FindBoardResponseContract response = responseHolder[0];
       assertThat(response.getBoard()).isNotNull();
       assertThat(response.getBoard().getCards()).isNotNull();
 
@@ -358,12 +331,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       assertThat(addedCard.getColor()).isEqualTo("#FF5733");
       assertThat(addedCard.getPosition().getPosX()).isEqualTo(1);
       assertThat(addedCard.getPosition().getPosY()).isEqualTo(2);
-      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(id);
-      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
-        AUTHENTICATED_USER_LOGO
-      );
+      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(ownerInfo.getId());
       assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
-        AUTHENTICATED_USER_EMAIL
+        ownerInfo.getEmail()
+      );
+      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+        ownerInfo.getLogo()
       );
     }
   }
@@ -376,38 +349,32 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UUID boardId = UUID.randomUUID();
       UUID cardId = UUID.randomUUID();
 
-      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
-      );
-      userRepository.save(userEntity);
-
+      UserEntity userEntity = createAndSaveAuthenticatedUser();
+      UserEntity guestEntity = createAndSaveGuestUser();
       BoardEntity boardEntity = new BoardEntity(
         boardId,
         "Test Board",
         UUID.randomUUID(),
         userEntity
       );
+
       CardEntity cardEntity = new CardEntity(
         cardId,
         "Card 1 Content",
         "#FF5733",
         10,
         20,
-        userEntity,
+        guestEntity,
         boardEntity
       );
       boardEntity.setCards(List.of(cardEntity));
-
       boardRepository.save(boardEntity);
 
       UpdateCardRequestContract request = new UpdateCardRequestContract();
       CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        guestEntity.getId(),
+        guestEntity.getEmail(),
+        guestEntity.getProfileLogo()
       );
       request.setBoardId(boardId);
       request.setCard(
@@ -420,32 +387,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final FindBoardResponseContract[] responseHolder =
-        new FindBoardResponseContract[1];
-
-      stompSession.subscribe(
-        "/topic/board/" + boardId,
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return FindBoardResponseContract.class;
-          }
-
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (FindBoardResponseContract) payload;
-            latch.countDown();
-          }
-        }
+      FindBoardResponseContract response = sendAndReceiveStompRequest(
+        "/app/board/update-card",
+        request,
+        boardId
       );
 
-      stompSession.send("/app/board/update-card", request);
-
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      FindBoardResponseContract response = responseHolder[0];
       assertThat(response.getBoard()).isNotNull();
       assertThat(response.getBoard().getCards()).isNotNull();
 
@@ -455,12 +402,14 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       assertThat(addedCard.getColor()).isEqualTo("#FF5735");
       assertThat(addedCard.getPosition().getPosX()).isEqualTo(20);
       assertThat(addedCard.getPosition().getPosY()).isEqualTo(30);
-      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(id);
-      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
-        AUTHENTICATED_USER_LOGO
+      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(
+        guestEntity.getId()
       );
       assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
-        AUTHENTICATED_USER_EMAIL
+        guestEntity.getEmail()
+      );
+      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+        guestEntity.getProfileLogo()
       );
     }
   }
@@ -473,70 +422,71 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UUID boardId = UUID.randomUUID();
       UUID cardId = UUID.randomUUID();
 
-      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
-      );
-      userRepository.save(userEntity);
-
+      UserEntity userEntity = createAndSaveAuthenticatedUser();
+      UserEntity guestEntity = createAndSaveGuestUser();
       BoardEntity boardEntity = new BoardEntity(
         boardId,
         "Test Board",
         UUID.randomUUID(),
         userEntity
       );
+
       CardEntity cardEntity = new CardEntity(
         cardId,
         "Card 1 Content",
         "#FF5733",
         10,
         20,
-        userEntity,
+        guestEntity,
         boardEntity
       );
       boardEntity.setCards(List.of(cardEntity));
-
       boardRepository.save(boardEntity);
 
       DeleteCardRequestContract request = new DeleteCardRequestContract();
-      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
-      );
       request.setBoardId(boardId);
       request.setCardId(cardId);
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final FindBoardResponseContract[] responseHolder =
-        new FindBoardResponseContract[1];
-
-      stompSession.subscribe(
-        "/topic/board/" + boardId,
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return FindBoardResponseContract.class;
-          }
-
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (FindBoardResponseContract) payload;
-            latch.countDown();
-          }
-        }
+      FindBoardResponseContract response = sendAndReceiveStompRequest(
+        "/app/board/delete-card",
+        request,
+        boardId
       );
 
-      stompSession.send("/app/board/delete-card", request);
-
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      FindBoardResponseContract response = responseHolder[0];
       assertThat(response.getBoard()).isNotNull();
       assertThat(response.getBoard().getCards().size()).isEqualTo(0);
     }
+  }
+
+  private FindBoardResponseContract sendAndReceiveStompRequest(
+    String destination,
+    Object request,
+    UUID boardId
+  ) throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    final FindBoardResponseContract[] responseHolder =
+      new FindBoardResponseContract[1];
+
+    stompSession.subscribe(
+      "/topic/board/" + boardId,
+      new StompFrameHandler() {
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+          return FindBoardResponseContract.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+          responseHolder[0] = (FindBoardResponseContract) payload;
+          latch.countDown();
+        }
+      }
+    );
+
+    stompSession.send(destination, request);
+
+    assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+    assertThat(responseHolder[0]).isNotNull();
+    return responseHolder[0];
   }
 }

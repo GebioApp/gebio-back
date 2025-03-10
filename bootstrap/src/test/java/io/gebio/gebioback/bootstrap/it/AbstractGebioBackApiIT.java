@@ -3,6 +3,9 @@ package io.gebio.gebioback.bootstrap.it;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 import io.gebio.gebioback.bootstrap.it.configuration.TestJwtDecoderConfiguration;
+import io.gebio.gebioback.postgres.entity.UserEntity;
+import io.gebio.gebioback.postgres.repository.UserRepository;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,13 +29,15 @@ class AbstractGebioBackApiIT {
   @Autowired
   protected MockMvc mockMvc;
 
+  @Autowired
+  protected UserRepository userRepository;
+
   private static final String GEBIO_EMAIL = "email";
   private static final String GEBIO_LOGO = "logo";
 
   protected static final String AUTHENTICATED_USER_EMAIL =
     "integration-test.user@gmail.com";
-  protected static final String AUTHENTICATED_USER_LOGO =
-          "my-logo-url";
+  protected static final String AUTHENTICATED_USER_LOGO = "my-logo-url";
 
   @Container
   static PostgreSQLContainer postgresSQLContainer = new PostgreSQLContainer<>(
@@ -66,6 +71,26 @@ class AbstractGebioBackApiIT {
           .claim(GEBIO_LOGO, AUTHENTICATED_USER_LOGO)
           .build()
       );
+  }
+
+  protected UserEntity createAndSaveAuthenticatedUser() {
+    UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+    UserEntity userEntity = new UserEntity(
+      id,
+      AUTHENTICATED_USER_EMAIL,
+      AUTHENTICATED_USER_LOGO
+    );
+    return userRepository.save(userEntity);
+  }
+
+  protected UserEntity createAndSaveGuestUser() {
+    UUID id = UUID.fromString("802dfe54-cc90-4be6-9bd2-461fcea6f214");
+    UserEntity userEntity = new UserEntity(
+      id,
+      "imaguest@gmail.com",
+      "https://i.pravatar.cc/150"
+    );
+    return userRepository.save(userEntity);
   }
 
   protected static final String GET_CURRENT_USER_API_URL = "/api/v1/me";
