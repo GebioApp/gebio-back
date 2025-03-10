@@ -4,10 +4,10 @@ import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder
 
 import io.gebio.gebioback.contract.api.BoardApi;
 import io.gebio.gebioback.contract.model.*;
+import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
-import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.rest.api.adapter.mapper.BoardMapper;
 import io.gebio.gebioback.rest.api.adapter.mapper.CardMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;

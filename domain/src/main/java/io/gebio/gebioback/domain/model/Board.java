@@ -1,7 +1,5 @@
-package io.gebio.gebioback.domain.service;
+package io.gebio.gebioback.domain.model;
 
-import io.gebio.gebioback.domain.model.Card;
-import io.gebio.gebioback.domain.model.User;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
