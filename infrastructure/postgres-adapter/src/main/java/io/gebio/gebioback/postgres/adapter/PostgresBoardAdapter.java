@@ -1,9 +1,9 @@
 package io.gebio.gebioback.postgres.adapter;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
+import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
-import io.gebio.gebioback.domain.service.Board;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.mapper.BoardMapper;

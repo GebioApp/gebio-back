@@ -1,6 +1,6 @@
 package io.gebio.gebioback.postgres.mapper;
 
-import io.gebio.gebioback.domain.service.Board;
+import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import java.util.List;

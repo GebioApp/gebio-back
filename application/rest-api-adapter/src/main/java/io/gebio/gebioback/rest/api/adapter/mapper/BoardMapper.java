@@ -3,7 +3,7 @@ package io.gebio.gebioback.rest.api.adapter.mapper;
 import io.gebio.gebioback.contract.model.BoardContract;
 import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
 import io.gebio.gebioback.contract.model.FindBoardResponseContract;
-import io.gebio.gebioback.domain.service.Board;
+import io.gebio.gebioback.domain.model.Board;
 
 public interface BoardMapper {
   static CreateBoardResponseContract createBoardFromDomainToContract(
