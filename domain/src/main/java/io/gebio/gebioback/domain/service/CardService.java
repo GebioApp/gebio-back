@@ -28,6 +28,6 @@ public class CardService implements CardFacade {
 
   @Override
   public Board deleteCardFromBoard(UUID boardId, UUID cardId) {
-    return cardRepositoryPort.deleteBoardWithDeletedCard(boardId, cardId);
+    return cardRepositoryPort.deleteCardFromBoard(boardId, cardId);
   }
 }
