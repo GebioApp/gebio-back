@@ -1,22 +1,32 @@
 package io.gebio.gebioback.bootstrap.it;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 import io.gebio.gebioback.bootstrap.it.configuration.TestJwtDecoderConfiguration;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.UserRepository;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.lang.NonNull;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
@@ -31,6 +41,9 @@ class AbstractGebioBackApiIT {
 
   @Autowired
   protected UserRepository userRepository;
+
+  protected WebSocketStompClient stompClient;
+  protected StompSession stompSession;
 
   private static final String GEBIO_EMAIL = "email";
   private static final String GEBIO_LOGO = "logo";
@@ -91,6 +104,35 @@ class AbstractGebioBackApiIT {
       "https://i.pravatar.cc/150"
     );
     return userRepository.save(userEntity);
+  }
+
+  protected <T> T waitForMessage(
+    Class<T> responseType,
+    String topic,
+    Runnable action
+  ) throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    final T[] responseHolder = (T[]) Array.newInstance(responseType, 1);
+
+    stompSession.subscribe(
+      topic,
+      new StompFrameHandler() {
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+          return responseType;
+        }
+
+        @Override
+        public void handleFrame(@NonNull StompHeaders headers, Object payload) {
+          responseHolder[0] = responseType.cast(payload);
+          latch.countDown();
+        }
+      }
+    );
+
+    action.run();
+    assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+    return responseHolder[0];
   }
 
   protected static final String GET_CURRENT_USER_API_URL = "/api/v1/me";
