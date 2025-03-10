@@ -2,7 +2,6 @@ package io.gebio.gebioback.postgres.adapter;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.domain.model.Board;
-import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
@@ -38,27 +37,6 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
   @Override
   public Optional<Board> findById(UUID boardId) {
     return boardRepository.findById(boardId).map(BoardMapper::entityToDomain);
-  }
-
-  @Override
-  public Board updateBoardWithUpdatedCardForBoardId(UUID boardId, Card card) {
-    BoardEntity boardEntity = boardRepository
-      .findById(boardId)
-      .orElseThrow(() -> new BoardNotFound(boardId));
-    Optional<CardEntity> cardEntityToUpdate = boardEntity
-      .getCards()
-      .stream()
-      .filter(cardEntity -> cardEntity.getId().equals(card.id()))
-      .findFirst();
-    if (cardEntityToUpdate.isEmpty()) {
-      return BoardMapper.entityToDomain(boardEntity);
-    }
-    CardEntity updatedCardEntity = cardEntityToUpdate.get();
-    updatedCardEntity.setContent(card.content());
-    updatedCardEntity.setColor(card.color());
-    updatedCardEntity.setPosX(card.position().posX());
-    updatedCardEntity.setPosY(card.position().posY());
-    return BoardMapper.entityToDomain(boardRepository.save(boardEntity));
   }
 
   @Override
