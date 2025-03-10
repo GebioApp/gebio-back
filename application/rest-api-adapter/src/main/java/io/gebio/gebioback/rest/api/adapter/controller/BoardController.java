@@ -27,6 +27,8 @@ public class BoardController implements BoardApi {
   private final AuthenticationService authenticationService;
   private final SimpMessagingTemplate simpMessagingTemplate;
 
+  private static final String TOPIC_BOARD = "/topic/board/";
+
   public BoardController(
     BoardFacade boardFacade,
     AuthenticationService authenticationService,
@@ -73,7 +75,7 @@ public class BoardController implements BoardApi {
       )
     );
     simpMessagingTemplate.convertAndSend(
-      "/topic/board/" + addedCard.boardId(),
+      TOPIC_BOARD + addedCard.boardId(),
       CardMapper.addCardFromDomainToContract(addedCard)
     );
   }
@@ -90,7 +92,7 @@ public class BoardController implements BoardApi {
       )
     );
     simpMessagingTemplate.convertAndSend(
-      "/topic/board/" + updatedBoard.id(),
+      TOPIC_BOARD + updatedBoard.id(),
       BoardMapper.findBoardFromDomainToContract(updatedBoard)
     );
   }
@@ -104,7 +106,7 @@ public class BoardController implements BoardApi {
       deleteCardRequestContract.getCardId()
     );
     simpMessagingTemplate.convertAndSend(
-      "/topic/board/" + updatedBoard.id(),
+      TOPIC_BOARD + updatedBoard.id(),
       BoardMapper.findBoardFromDomainToContract(updatedBoard)
     );
   }
