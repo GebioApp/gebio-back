@@ -234,6 +234,11 @@ components:
           format: uuid
         card:
           $ref: '#/components/schemas/CardContract'
+    UpdateCardResponseContract:
+      type: object
+      properties:
+        card:
+          $ref: '#/components/schemas/CardContract'
     DeleteCardRequestContract:
       type: object
       properties:
