@@ -39,7 +39,7 @@ public class BoardService implements BoardFacade {
   }
 
   @Override
-  public Board addCardToBoard(UUID boardId, Card card) {
+  public Card addCardToBoard(UUID boardId, Card card) {
     return boardRepositoryPort.updateBoardWithNewCardForBoardId(boardId, card);
   }
 

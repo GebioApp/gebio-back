@@ -89,7 +89,8 @@ class BoardServiceTest {
           "I'm the content of the card",
           "#000000",
           new Card.Position(100, 100),
-          cardOwner
+          cardOwner,
+          boardId
         )
       );
       Board expectedBoard = new Board(

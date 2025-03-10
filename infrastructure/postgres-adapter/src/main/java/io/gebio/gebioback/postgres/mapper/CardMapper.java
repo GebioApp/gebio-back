@@ -23,7 +23,8 @@ public interface CardMapper {
       cardEntity.getContent(),
       cardEntity.getColor(),
       new Card.Position(cardEntity.getPosX(), cardEntity.getPosY()),
-      UserMapper.entityToDomain(cardEntity.getOwner())
+      UserMapper.entityToDomain(cardEntity.getOwner()),
+      cardEntity.getBoard().getId()
     );
   }
 }

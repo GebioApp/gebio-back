@@ -7,7 +7,8 @@ public record Card(
   String content,
   String color,
   Position position,
-  User owner
+  User owner,
+  UUID boardId
 ) {
   public record Position(int posX, int posY) {}
 }
