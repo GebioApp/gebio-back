@@ -25,7 +25,7 @@ public class PostgresCardAdapter implements CardRepositoryPort {
   }
 
   @Override
-  public Card updateBoardWithNewCardForBoardId(UUID boardId, Card card) {
+  public Card addCardToBoard(UUID boardId, Card card) {
     BoardEntity boardEntity = boardRepository
       .findById(boardId)
       .orElseThrow(() -> new BoardNotFound(boardId));
