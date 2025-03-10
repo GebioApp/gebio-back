@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0004
+      author: dorian-frances
+      changes:
+        - addColumn:
+            tableName: gebio_user
+            columns:
+              - column:
+                  name: role
+                  type: varchar(128)
+        - update:
+            tableName: gebio_user
+            columns:
+              - column:
+                  name: role
+                  value: 'USER'
+            where: "role IS NULL"
