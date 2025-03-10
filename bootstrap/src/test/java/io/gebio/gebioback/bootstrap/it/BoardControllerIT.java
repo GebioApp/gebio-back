@@ -14,10 +14,8 @@ import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
 import io.gebio.gebioback.postgres.repository.UserRepository;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,9 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -42,9 +37,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
   @Autowired
   BoardRepository boardRepository;
-
-  private WebSocketStompClient stompClient;
-  private StompSession stompSession;
 
   @LocalServerPort
   private int port;
@@ -316,32 +308,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final AddCardResponseContract[] responseHolder =
-        new AddCardResponseContract[1];
-
-      stompSession.subscribe(
-        TOPIC_BOARD_API_URL.formatted(boardId),
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return AddCardResponseContract.class;
-          }
-
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (AddCardResponseContract) payload;
-            latch.countDown();
-          }
-        }
+      AddCardResponseContract response = waitForMessage(
+        AddCardResponseContract.class,
+        "/topic/board/" + boardId,
+        () -> stompSession.send(ADD_CARD_API_URL, request)
       );
 
-      stompSession.send(ADD_CARD_API_URL, request);
-
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      AddCardResponseContract response = responseHolder[0];
       assertThat(response.getCard())
         .isNotNull()
         .satisfies(addedCard -> {
@@ -410,32 +382,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final UpdateCardResponseContract[] responseHolder =
-        new UpdateCardResponseContract[1];
-
-      stompSession.subscribe(
+      UpdateCardResponseContract response = waitForMessage(
+        UpdateCardResponseContract.class,
         TOPIC_BOARD_API_URL.formatted(boardId),
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return UpdateCardResponseContract.class;
-          }
-
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (UpdateCardResponseContract) payload;
-            latch.countDown();
-          }
-        }
+        () -> stompSession.send(UPDATED_CARD_API_URL, request)
       );
 
-      stompSession.send(UPDATED_CARD_API_URL, request);
-
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      UpdateCardResponseContract response = responseHolder[0];
       assertThat(response.getCard())
         .isNotNull()
         .satisfies(updatedCard -> {
@@ -492,32 +444,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         request.setBoardId(boardId);
         request.setCardId(cardId);
 
-        CountDownLatch latch = new CountDownLatch(1);
-        final DeleteCardResponseContract[] responseHolder =
-          new DeleteCardResponseContract[1];
-
-        stompSession.subscribe(
+        DeleteCardResponseContract response = waitForMessage(
+          DeleteCardResponseContract.class,
           TOPIC_BOARD_API_URL.formatted(boardId),
-          new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-              return DeleteCardResponseContract.class;
-            }
-
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-              responseHolder[0] = (DeleteCardResponseContract) payload;
-              latch.countDown();
-            }
-          }
+          () -> stompSession.send(DELETE_CARD_API_URL, request)
         );
 
-        stompSession.send(DELETE_CARD_API_URL, request);
-
-        assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-        assertThat(responseHolder[0]).isNotNull();
-
-        DeleteCardResponseContract response = responseHolder[0];
         assertThat(response.getCard())
           .isNotNull()
           .satisfies(deletedCard -> {
