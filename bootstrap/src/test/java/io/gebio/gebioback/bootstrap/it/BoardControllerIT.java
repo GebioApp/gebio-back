@@ -321,7 +321,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         new AddCardResponseContract[1];
 
       stompSession.subscribe(
-        "/topic/board/" + boardId,
+        TOPIC_BOARD_API_URL.formatted(boardId),
         new StompFrameHandler() {
           @Override
           public Type getPayloadType(StompHeaders headers) {
@@ -415,7 +415,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         new UpdateCardResponseContract[1];
 
       stompSession.subscribe(
-        "/topic/board/" + boardId,
+        TOPIC_BOARD_API_URL.formatted(boardId),
         new StompFrameHandler() {
           @Override
           public Type getPayloadType(StompHeaders headers) {
@@ -497,7 +497,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           new DeleteCardResponseContract[1];
 
         stompSession.subscribe(
-          "/topic/board/" + boardId,
+          TOPIC_BOARD_API_URL.formatted(boardId),
           new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
