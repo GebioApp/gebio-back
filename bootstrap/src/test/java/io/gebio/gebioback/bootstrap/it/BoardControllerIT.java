@@ -342,22 +342,25 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       assertThat(responseHolder[0]).isNotNull();
 
       AddCardResponseContract response = responseHolder[0];
-      assertThat(response.getCard()).isNotNull();
-
-      CardContract addedCard = response.getCard();
-      assertThat(addedCard.getId()).isEqualTo(cardId);
-      assertThat(addedCard.getContent()).isEqualTo("Test Card");
-      assertThat(addedCard.getColor()).isEqualTo("#FF5733");
-      assertThat(addedCard.getPosition().getPosX()).isEqualTo(1);
-      assertThat(addedCard.getPosition().getPosY()).isEqualTo(2);
-      assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(ownerInfo.getId());
-      assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
-        ownerInfo.getEmail()
-      );
-      assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
-        ownerInfo.getLogo()
-      );
-      assertThat(addedCard.getBoardId()).isEqualTo(boardId);
+      assertThat(response.getCard())
+        .isNotNull()
+        .satisfies(addedCard -> {
+          assertThat(addedCard.getId()).isEqualTo(cardId);
+          assertThat(addedCard.getContent()).isEqualTo("Test Card");
+          assertThat(addedCard.getColor()).isEqualTo("#FF5733");
+          assertThat(addedCard.getPosition().getPosX()).isEqualTo(1);
+          assertThat(addedCard.getPosition().getPosY()).isEqualTo(2);
+          assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(
+            ownerInfo.getId()
+          );
+          assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
+            ownerInfo.getEmail()
+          );
+          assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
+            ownerInfo.getLogo()
+          );
+          assertThat(addedCard.getBoardId()).isEqualTo(boardId);
+        });
     }
   }
 
@@ -433,102 +436,108 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       assertThat(responseHolder[0]).isNotNull();
 
       UpdateCardResponseContract response = responseHolder[0];
-      assertThat(response.getCard()).isNotNull();
-
-      CardContract updatedCard = response.getCard();
-      assertThat(updatedCard.getId()).isEqualTo(cardId);
-      assertThat(updatedCard.getContent()).isEqualTo("Card 1 Content modified");
-      assertThat(updatedCard.getColor()).isEqualTo("#FF5735");
-      assertThat(updatedCard.getPosition().getPosX()).isEqualTo(20);
-      assertThat(updatedCard.getPosition().getPosY()).isEqualTo(30);
-      assertThat(updatedCard.getOwnerInfo().getId()).isEqualTo(
-        guestEntity.getId()
-      );
-      assertThat(updatedCard.getOwnerInfo().getEmail()).isEqualTo(
-        guestEntity.getEmail()
-      );
-      assertThat(updatedCard.getOwnerInfo().getLogo()).isEqualTo(
-        guestEntity.getProfileLogo()
-      );
-      assertThat(updatedCard.getBoardId()).isEqualTo(boardId);
+      assertThat(response.getCard())
+        .isNotNull()
+        .satisfies(updatedCard -> {
+          assertThat(updatedCard.getId()).isEqualTo(cardId);
+          assertThat(updatedCard.getContent()).isEqualTo(
+            "Card 1 Content modified"
+          );
+          assertThat(updatedCard.getColor()).isEqualTo("#FF5735");
+          assertThat(updatedCard.getPosition().getPosX()).isEqualTo(20);
+          assertThat(updatedCard.getPosition().getPosY()).isEqualTo(30);
+          assertThat(updatedCard.getOwnerInfo().getId()).isEqualTo(
+            guestEntity.getId()
+          );
+          assertThat(updatedCard.getOwnerInfo().getEmail()).isEqualTo(
+            guestEntity.getEmail()
+          );
+          assertThat(updatedCard.getOwnerInfo().getLogo()).isEqualTo(
+            guestEntity.getProfileLogo()
+          );
+          assertThat(updatedCard.getBoardId()).isEqualTo(boardId);
+        });
     }
-  }
 
-  @Nested
-  class DeleteCard {
+    @Nested
+    class DeleteCard {
 
-    @Test
-    void should_delete_card_from_board() throws InterruptedException {
-      UUID boardId = UUID.randomUUID();
-      UUID cardId = UUID.randomUUID();
+      @Test
+      void should_delete_card_from_board() throws InterruptedException {
+        UUID boardId = UUID.randomUUID();
+        UUID cardId = UUID.randomUUID();
 
-      UserEntity userEntity = createAndSaveAuthenticatedUser();
-      UserEntity guestEntity = createAndSaveGuestUser();
-      BoardEntity boardEntity = new BoardEntity(
-        boardId,
-        "Test Board",
-        UUID.randomUUID(),
-        userEntity
-      );
+        UserEntity userEntity = createAndSaveAuthenticatedUser();
+        UserEntity guestEntity = createAndSaveGuestUser();
+        BoardEntity boardEntity = new BoardEntity(
+          boardId,
+          "Test Board",
+          UUID.randomUUID(),
+          userEntity
+        );
 
-      CardEntity cardEntity = new CardEntity(
-        cardId,
-        "Card 1 Content",
-        "#FF5733",
-        10,
-        20,
-        guestEntity,
-        boardEntity
-      );
-      boardEntity.setCards(List.of(cardEntity));
-      boardRepository.save(boardEntity);
+        CardEntity cardEntity = new CardEntity(
+          cardId,
+          "Card 1 Content",
+          "#FF5733",
+          10,
+          20,
+          guestEntity,
+          boardEntity
+        );
+        boardEntity.setCards(List.of(cardEntity));
+        boardRepository.save(boardEntity);
 
-      DeleteCardRequestContract request = new DeleteCardRequestContract();
-      request.setBoardId(boardId);
-      request.setCardId(cardId);
+        DeleteCardRequestContract request = new DeleteCardRequestContract();
+        request.setBoardId(boardId);
+        request.setCardId(cardId);
 
-      CountDownLatch latch = new CountDownLatch(1);
-      final DeleteCardResponseContract[] responseHolder =
-        new DeleteCardResponseContract[1];
+        CountDownLatch latch = new CountDownLatch(1);
+        final DeleteCardResponseContract[] responseHolder =
+          new DeleteCardResponseContract[1];
 
-      stompSession.subscribe(
-        "/topic/board/" + boardId,
-        new StompFrameHandler() {
-          @Override
-          public Type getPayloadType(StompHeaders headers) {
-            return DeleteCardResponseContract.class;
+        stompSession.subscribe(
+          "/topic/board/" + boardId,
+          new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+              return DeleteCardResponseContract.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+              responseHolder[0] = (DeleteCardResponseContract) payload;
+              latch.countDown();
+            }
           }
+        );
 
-          @Override
-          public void handleFrame(StompHeaders headers, Object payload) {
-            responseHolder[0] = (DeleteCardResponseContract) payload;
-            latch.countDown();
-          }
-        }
-      );
+        stompSession.send("/app/board/delete-card", request);
 
-      stompSession.send("/app/board/delete-card", request);
+        assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(responseHolder[0]).isNotNull();
 
-      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
-      assertThat(responseHolder[0]).isNotNull();
-
-      DeleteCardResponseContract response = responseHolder[0];
-      CardContract deletedCard = response.getCard();
-      assertThat(deletedCard.getId()).isEqualTo(cardId);
-      assertThat(deletedCard.getContent()).isEqualTo("Card 1 Content");
-      assertThat(deletedCard.getColor()).isEqualTo("#FF5733");
-      assertThat(deletedCard.getPosition().getPosX()).isEqualTo(10);
-      assertThat(deletedCard.getPosition().getPosY()).isEqualTo(20);
-      assertThat(deletedCard.getOwnerInfo().getId()).isEqualTo(
-        guestEntity.getId()
-      );
-      assertThat(deletedCard.getOwnerInfo().getEmail()).isEqualTo(
-        guestEntity.getEmail()
-      );
-      assertThat(deletedCard.getOwnerInfo().getLogo()).isEqualTo(
-        guestEntity.getProfileLogo()
-      );
-      assertThat(deletedCard.getBoardId()).isEqualTo(boardId);
+        DeleteCardResponseContract response = responseHolder[0];
+        assertThat(response.getCard())
+          .isNotNull()
+          .satisfies(deletedCard -> {
+            assertThat(deletedCard.getId()).isEqualTo(cardId);
+            assertThat(deletedCard.getContent()).isEqualTo("Card 1 Content");
+            assertThat(deletedCard.getColor()).isEqualTo("#FF5733");
+            assertThat(deletedCard.getPosition().getPosX()).isEqualTo(10);
+            assertThat(deletedCard.getPosition().getPosY()).isEqualTo(20);
+            assertThat(deletedCard.getOwnerInfo().getId()).isEqualTo(
+              guestEntity.getId()
+            );
+            assertThat(deletedCard.getOwnerInfo().getEmail()).isEqualTo(
+              guestEntity.getEmail()
+            );
+            assertThat(deletedCard.getOwnerInfo().getLogo()).isEqualTo(
+              guestEntity.getProfileLogo()
+            );
+            assertThat(deletedCard.getBoardId()).isEqualTo(boardId);
+          });
+      }
     }
   }
 }
