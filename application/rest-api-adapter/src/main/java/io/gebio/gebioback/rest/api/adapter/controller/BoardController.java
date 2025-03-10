@@ -8,6 +8,7 @@ import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
+import io.gebio.gebioback.domain.port.in.CardFacade;
 import io.gebio.gebioback.rest.api.adapter.mapper.BoardMapper;
 import io.gebio.gebioback.rest.api.adapter.mapper.CardMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardController implements BoardApi {
 
   private final BoardFacade boardFacade;
+  private final CardFacade cardFacade;
   private final AuthenticationService authenticationService;
   private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -31,10 +33,12 @@ public class BoardController implements BoardApi {
 
   public BoardController(
     BoardFacade boardFacade,
+    CardFacade cardFacade,
     AuthenticationService authenticationService,
     SimpMessagingTemplate simpMessagingTemplate
   ) {
     this.boardFacade = boardFacade;
+    this.cardFacade = cardFacade;
     this.authenticationService = authenticationService;
     this.simpMessagingTemplate = simpMessagingTemplate;
   }
@@ -67,7 +71,7 @@ public class BoardController implements BoardApi {
 
   @MessageMapping("/board/add-card")
   public void addCard(@Payload AddCardRequestContract addCardRequestContract) {
-    Card addedCard = boardFacade.addCardToBoard(
+    Card addedCard = cardFacade.addCardToBoard(
       addCardRequestContract.getBoardId(),
       CardMapper.fromContractToDomain(
         addCardRequestContract.getBoardId(),
