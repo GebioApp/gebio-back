@@ -4,6 +4,7 @@ import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder
 
 import io.gebio.gebioback.contract.api.BoardApi;
 import io.gebio.gebioback.contract.model.*;
+import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.service.Board;
@@ -64,13 +65,16 @@ public class BoardController implements BoardApi {
 
   @MessageMapping("/board/add-card")
   public void addCard(@Payload AddCardRequestContract addCardRequestContract) {
-    Board updatedBoard = boardFacade.addCardToBoard(
+    Card addedCard = boardFacade.addCardToBoard(
       addCardRequestContract.getBoardId(),
-      CardMapper.fromContractToDomain(addCardRequestContract.getCard())
+      CardMapper.fromContractToDomain(
+        addCardRequestContract.getBoardId(),
+        addCardRequestContract.getCard()
+      )
     );
     simpMessagingTemplate.convertAndSend(
-      "/topic/board/" + updatedBoard.id(),
-      BoardMapper.findBoardFromDomainToContract(updatedBoard)
+      "/topic/board/" + addedCard.boardId(),
+      CardMapper.addCardFromDomainToContract(addedCard)
     );
   }
 
@@ -80,7 +84,10 @@ public class BoardController implements BoardApi {
   ) {
     Board updatedBoard = boardFacade.updateCardOnBoard(
       updateCardRequestContract.getBoardId(),
-      CardMapper.fromContractToDomain(updateCardRequestContract.getCard())
+      CardMapper.fromContractToDomain(
+        updateCardRequestContract.getBoardId(),
+        updateCardRequestContract.getCard()
+      )
     );
     simpMessagingTemplate.convertAndSend(
       "/topic/board/" + updatedBoard.id(),
@@ -90,15 +97,15 @@ public class BoardController implements BoardApi {
 
   @MessageMapping("/board/delete-card")
   public void updateCard(
-          @Payload DeleteCardRequestContract deleteCardRequestContract
+    @Payload DeleteCardRequestContract deleteCardRequestContract
   ) {
     Board updatedBoard = boardFacade.deleteCardFromBoard(
-            deleteCardRequestContract.getBoardId(),
-            deleteCardRequestContract.getCardId()
+      deleteCardRequestContract.getBoardId(),
+      deleteCardRequestContract.getCardId()
     );
     simpMessagingTemplate.convertAndSend(
-            "/topic/board/" + updatedBoard.id(),
-            BoardMapper.findBoardFromDomainToContract(updatedBoard)
+      "/topic/board/" + updatedBoard.id(),
+      BoardMapper.findBoardFromDomainToContract(updatedBoard)
     );
   }
 }

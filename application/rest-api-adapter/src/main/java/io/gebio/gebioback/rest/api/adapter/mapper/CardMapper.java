@@ -1,11 +1,21 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
+import io.gebio.gebioback.contract.model.AddCardResponseContract;
 import io.gebio.gebioback.contract.model.CardContract;
 import io.gebio.gebioback.contract.model.CardPositionContract;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
+import java.util.UUID;
 
 public interface CardMapper {
+  static AddCardResponseContract addCardFromDomainToContract(Card card) {
+    AddCardResponseContract addCardResponseContract =
+      new AddCardResponseContract();
+    CardContract cardContract = fromDomainToContract(card);
+    addCardResponseContract.setCard(cardContract);
+    return addCardResponseContract;
+  }
+
   static CardContract fromDomainToContract(Card card) {
     CardContract cardContract = new CardContract();
     cardContract.setId(card.id());
@@ -15,10 +25,11 @@ public interface CardMapper {
     cardContract.setOwnerInfo(
       UserContractMapper.domainToCardOwnerInfoContract(card.owner())
     );
+    cardContract.setBoardId(card.boardId());
     return cardContract;
   }
 
-  static Card fromContractToDomain(CardContract cardContract) {
+  static Card fromContractToDomain(UUID boardId, CardContract cardContract) {
     return new Card(
       cardContract.getId(),
       cardContract.getContent(),
@@ -31,7 +42,8 @@ public interface CardMapper {
         cardContract.getOwnerInfo().getId(),
         cardContract.getOwnerInfo().getEmail(),
         cardContract.getOwnerInfo().getLogo()
-      )
+      ),
+      boardId
     );
   }
 

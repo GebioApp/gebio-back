@@ -175,6 +175,9 @@ components:
           $ref: '#/components/schemas/CardPositionContract'
         ownerInfo:
           $ref: '#/components/schemas/CardOwnerInfoContract'
+        boardId:
+          type: string
+          format: uuid
     CardPositionContract:
       type: object
       required:
@@ -216,6 +219,11 @@ components:
         boardId:
           type: string
           format: uuid
+        card:
+          $ref: '#/components/schemas/CardContract'
+    AddCardResponseContract:
+      type: object
+      properties:
         card:
           $ref: '#/components/schemas/CardContract'
     UpdateCardRequestContract:

@@ -75,6 +75,10 @@ public class CardEntity {
     return owner;
   }
 
+  public BoardEntity getBoard() {
+    return board;
+  }
+
   public void setId(UUID id) {
     this.id = id;
   }

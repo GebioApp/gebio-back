@@ -316,16 +316,35 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         )
       );
 
-      FindBoardResponseContract response = sendAndReceiveStompRequest(
-        "/app/board/add-card",
-        request,
-        boardId
+      CountDownLatch latch = new CountDownLatch(1);
+      final AddCardResponseContract[] responseHolder =
+        new AddCardResponseContract[1];
+
+      stompSession.subscribe(
+        "/topic/board/" + boardId,
+        new StompFrameHandler() {
+          @Override
+          public Type getPayloadType(StompHeaders headers) {
+            return AddCardResponseContract.class;
+          }
+
+          @Override
+          public void handleFrame(StompHeaders headers, Object payload) {
+            responseHolder[0] = (AddCardResponseContract) payload;
+            latch.countDown();
+          }
+        }
       );
 
-      assertThat(response.getBoard()).isNotNull();
-      assertThat(response.getBoard().getCards()).isNotNull();
+      stompSession.send("/app/board/add-card", request);
 
-      CardContract addedCard = response.getBoard().getCards().getFirst();
+      assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+      assertThat(responseHolder[0]).isNotNull();
+
+      AddCardResponseContract response = responseHolder[0];
+      assertThat(response.getCard()).isNotNull();
+
+      CardContract addedCard = response.getCard();
       assertThat(addedCard.getId()).isEqualTo(cardId);
       assertThat(addedCard.getContent()).isEqualTo("Test Card");
       assertThat(addedCard.getColor()).isEqualTo("#FF5733");
@@ -338,6 +357,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
         ownerInfo.getLogo()
       );
+      assertThat(addedCard.getBoardId()).isEqualTo(boardId);
     }
   }
 
