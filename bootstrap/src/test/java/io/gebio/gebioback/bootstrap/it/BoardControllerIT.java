@@ -371,7 +371,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         guestEntity.getEmail(),
         guestEntity.getProfileLogo()
       );
-      request.setBoardId(boardId);
       request.setCard(
         new CardContract(
           cardId,
@@ -441,7 +440,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         boardRepository.save(boardEntity);
 
         DeleteCardRequestContract request = new DeleteCardRequestContract();
-        request.setBoardId(boardId);
         request.setCardId(cardId);
 
         DeleteCardResponseContract response = waitForMessage(

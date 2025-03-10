@@ -229,9 +229,6 @@ components:
     UpdateCardRequestContract:
       type: object
       properties:
-        boardId:
-          type: string
-          format: uuid
         card:
           $ref: '#/components/schemas/CardContract'
     UpdateCardResponseContract:
@@ -242,9 +239,6 @@ components:
     DeleteCardRequestContract:
       type: object
       properties:
-        boardId:
-          type: string
-          format: uuid
         cardId:
           type: string
           format: uuid
