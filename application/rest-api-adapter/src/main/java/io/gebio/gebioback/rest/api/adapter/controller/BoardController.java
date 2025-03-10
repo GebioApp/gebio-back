@@ -88,7 +88,7 @@ public class BoardController implements BoardApi {
   public void updateCard(
     @Payload UpdateCardRequestContract updateCardRequestContract
   ) {
-    Board updatedBoard = boardFacade.updateCardOnBoard(
+    Board updatedBoard = cardFacade.updateCardOnBoard(
       updateCardRequestContract.getBoardId(),
       CardMapper.fromContractToDomain(
         updateCardRequestContract.getBoardId(),
