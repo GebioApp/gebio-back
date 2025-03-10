@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface CardRepositoryPort {
   Card addCardToBoard(UUID boardId, Card card);
-  Board updateBoardWithUpdatedCardForBoardId(UUID boardId, Card card);
+  Board updateCardOnBoard(UUID boardId, Card card);
 }

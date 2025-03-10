@@ -23,9 +23,6 @@ public class CardService implements CardFacade {
 
   @Override
   public Board updateCardOnBoard(UUID boardId, Card card) {
-    return cardRepositoryPort.updateBoardWithUpdatedCardForBoardId(
-      boardId,
-      card
-    );
+    return cardRepositoryPort.updateCardOnBoard(boardId, card);
   }
 }
