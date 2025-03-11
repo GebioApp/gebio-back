@@ -7,4 +7,6 @@ public interface UserRepositoryPort {
   Optional<User> findUserByEmail(String email);
 
   User createUserFromMail(String email, String logo);
+
+  User create(User user);
 }

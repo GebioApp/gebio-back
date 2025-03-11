@@ -3,6 +3,7 @@ package io.gebio.gebioback.domain.service;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,8 @@ public class UserService implements UserFacade {
 
   @Override
   public User createGuest(String username) {
-    return null;
+    return userRepositoryPort.create(
+      new User(UUID.randomUUID(), null, null, username)
+    );
   }
 }

@@ -1,5 +1,7 @@
 package io.gebio.gebioback.rest.api.adapter.controller;
 
+import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder.getCreatedResourceURI;
+
 import io.gebio.gebioback.contract.api.UserApi;
 import io.gebio.gebioback.contract.model.CreateGuestRequestContract;
 import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
@@ -8,6 +10,7 @@ import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.rest.api.adapter.mapper.UserContractMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +32,13 @@ public class UserController implements UserApi {
   public ResponseEntity<CreateGuestResponseContract> createGuest(
     CreateGuestRequestContract createGuestRequestContract
   ) {
-    return ResponseEntity.ok(
+    User createdGuest = userFacade.createGuest(
+      createGuestRequestContract.getUsername()
+    );
+
+    URI location = getCreatedResourceURI(createdGuest.id());
+
+    return ResponseEntity.created(location).body(
       UserContractMapper.createGuestFromDomainToContract(
         userFacade.createGuest(createGuestRequestContract.getUsername())
       )
