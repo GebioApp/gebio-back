@@ -40,7 +40,7 @@ class BoardServiceTest {
 
       UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
       String userEmail = "dorianf@gebio.com";
-      User currentUser = new User(userId, userEmail, null);
+      User currentUser = new User(userId, userEmail, null, null);
 
       String boardName = "Retrospective du 25 février";
       UUID templateId = UUID.fromString("e637621b-4451-4b38-b33f-f07dbd8aeceb");
@@ -77,12 +77,14 @@ class BoardServiceTest {
       User boardOwner = new User(
         UUID.randomUUID(),
         "dorianf@gebio.com",
-        "https://logo.com"
+        "https://logo.com",
+        null
       );
       User cardOwner = new User(
         UUID.randomUUID(),
         "another.user@gebio.com",
-        "https://another-logo.com"
+        "https://another-logo.com",
+        null
       );
       List<Card> cards = List.of(
         new Card(

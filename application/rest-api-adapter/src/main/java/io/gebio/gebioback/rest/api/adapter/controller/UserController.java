@@ -5,6 +5,7 @@ import io.gebio.gebioback.contract.model.CreateGuestRequestContract;
 import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.rest.api.adapter.mapper.UserContractMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UserApi {
 
   private final AuthenticationService authenticationService;
+  private final UserFacade userFacade;
 
-  public UserController(AuthenticationService authenticationService) {
+  public UserController(
+    AuthenticationService authenticationService,
+    UserFacade userFacade
+  ) {
     this.authenticationService = authenticationService;
+    this.userFacade = userFacade;
   }
 
   @Override
   public ResponseEntity<CreateGuestResponseContract> createGuest(
     CreateGuestRequestContract createGuestRequestContract
   ) {
-    return null;
+    return ResponseEntity.ok(
+      UserContractMapper.createGuestFromDomainToContract(
+        userFacade.createGuest(createGuestRequestContract.getUsername())
+      )
+    );
   }
 
   @Override

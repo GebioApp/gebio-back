@@ -8,7 +8,8 @@ public interface UserMapper {
     return new User(
       userEntity.getId(),
       userEntity.getEmail(),
-      userEntity.getProfileLogo()
+      userEntity.getProfileLogo(),
+      userEntity.getUsername()
     );
   }
 
