@@ -1,6 +1,7 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
 import io.gebio.gebioback.contract.model.CardOwnerInfoContract;
+import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.contract.model.UserContract;
 import io.gebio.gebioback.domain.model.User;
@@ -31,5 +32,17 @@ public interface UserContractMapper {
     userContract.setLogo(user.profileLogo());
     userContract.setEmail(user.email());
     return userContract;
+  }
+
+  static CreateGuestResponseContract createGuestFromDomainToContract(
+    User guest
+  ) {
+    CreateGuestResponseContract createGuestResponseContract =
+      new CreateGuestResponseContract();
+    UserContract userContract = new UserContract();
+    userContract.setId(guest.id());
+    userContract.setUsername(guest.username());
+    createGuestResponseContract.setUser(userContract);
+    return createGuestResponseContract;
   }
 }

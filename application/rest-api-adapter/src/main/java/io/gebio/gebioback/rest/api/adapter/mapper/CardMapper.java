@@ -59,7 +59,8 @@ public interface CardMapper {
       new User(
         cardContract.getOwnerInfo().getId(),
         cardContract.getOwnerInfo().getEmail(),
-        cardContract.getOwnerInfo().getLogo()
+        cardContract.getOwnerInfo().getLogo(),
+        null
       ),
       null
     );

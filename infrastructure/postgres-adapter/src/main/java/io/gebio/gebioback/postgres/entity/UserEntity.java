@@ -34,6 +34,9 @@ public class UserEntity {
   @Column(name = "profile_logo")
   private String profileLogo;
 
+  @Column(name = "username")
+  private String username;
+
   public UserEntity() {}
 
   public UserEntity(UUID id, String email, String profileLogo) {
@@ -52,5 +55,9 @@ public class UserEntity {
 
   public String getProfileLogo() {
     return profileLogo;
+  }
+
+  public String getUsername() {
+    return username;
   }
 }

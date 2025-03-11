@@ -20,4 +20,9 @@ public class UserService implements UserFacade {
       .findUserByEmail(email)
       .orElseGet(() -> userRepositoryPort.createUserFromMail(email, logo));
   }
+
+  @Override
+  public User createGuest(String username) {
+    return null;
+  }
 }
