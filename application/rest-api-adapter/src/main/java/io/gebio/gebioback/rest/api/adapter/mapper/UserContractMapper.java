@@ -12,6 +12,7 @@ public interface UserContractMapper {
     UserContract userContract = new UserContract();
     userContract.setId(user.id());
     userContract.setEmail(user.email());
+    userContract.setLogo(user.profileLogo());
     currentUserResponseContract.setUser(userContract);
     return currentUserResponseContract;
   }
@@ -22,5 +23,13 @@ public interface UserContractMapper {
     cardOwnerInfoContract.setLogo(user.profileLogo());
     cardOwnerInfoContract.setEmail(user.email());
     return cardOwnerInfoContract;
+  }
+
+  static UserContract memberFromDomainToContract(User user) {
+    UserContract userContract = new UserContract();
+    userContract.setId(user.id());
+    userContract.setLogo(user.profileLogo());
+    userContract.setEmail(user.email());
+    return userContract;
   }
 }

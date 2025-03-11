@@ -99,7 +99,8 @@ class BoardServiceTest {
         "My board",
         UUID.randomUUID(),
         boardOwner,
-        cards
+        cards,
+        List.of(boardOwner)
       );
       when(boardRepositoryPort.findById(boardId)).thenReturn(
         Optional.of(expectedBoard)

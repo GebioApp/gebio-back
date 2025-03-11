@@ -23,6 +23,13 @@ public interface BoardMapper {
         .map(CardMapper::fromDomainToContract)
         .toList()
     );
+    boardContract.setMembers(
+      createdBoard
+        .members()
+        .stream()
+        .map(UserContractMapper::memberFromDomainToContract)
+        .toList()
+    );
     createBoardResponseContract.setBoard(boardContract);
     return createBoardResponseContract;
   }

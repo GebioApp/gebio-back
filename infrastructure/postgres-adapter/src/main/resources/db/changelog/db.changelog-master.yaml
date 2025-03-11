@@ -6,6 +6,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/changelogs/0003_init_board_table_and_card_table.yaml
   - include:
-      file: db/changelog/changelogs/0004_add_role_to_gebio_user_table_and_add_board_members.yaml
+      file: db/changelog/changelogs/0004_add_role_to_gebio_user_table.yaml
   - include:
       file: db/changelog/changelogs/0005_create_joint_table_board_user.sql

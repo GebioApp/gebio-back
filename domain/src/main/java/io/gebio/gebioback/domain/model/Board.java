@@ -8,5 +8,6 @@ public record Board(
   String name,
   UUID templateId,
   User owner,
-  List<Card> cards
+  List<Card> cards,
+  List<User> members
 ) {}
