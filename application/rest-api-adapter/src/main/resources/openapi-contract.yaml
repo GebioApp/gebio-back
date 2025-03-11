@@ -155,6 +155,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CardContract'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserContract'
     CardContract:
       type: object
       required:
@@ -207,11 +211,14 @@ components:
       required:
         - id
         - email
+        - logo
       properties:
         id:
           type: string
           format: uuid
         email:
+          type: string
+        logo:
           type: string
     AddCardRequestContract:
       type: object

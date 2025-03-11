@@ -150,7 +150,18 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             equalTo("3338266c-26f2-4c85-8157-91f02b680577")
           )
         )
-        .andExpect(jsonPath("$.board.cards", hasSize(0)));
+        .andExpect(jsonPath("$.board.cards", hasSize(0)))
+        .andExpect(jsonPath("$.board.members", hasSize(1)))
+        .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
+        .andExpect(
+          jsonPath("$.board.members[0].logo", equalTo(AUTHENTICATED_USER_LOGO))
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.members[0].email",
+            equalTo(AUTHENTICATED_USER_EMAIL)
+          )
+        );
     }
   }
 

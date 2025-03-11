@@ -37,6 +37,14 @@ public class BoardEntity {
   )
   private List<CardEntity> cards;
 
+  @ManyToMany
+  @JoinTable(
+    name = "gebio_user_board",
+    joinColumns = @JoinColumn(name = "board_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id")
+  )
+  private List<UserEntity> members;
+
   public BoardEntity() {}
 
   public BoardEntity(UUID id, String name, UUID templateId, UserEntity owner) {
@@ -65,6 +73,14 @@ public class BoardEntity {
 
   public List<CardEntity> getCards() {
     return cards;
+  }
+
+  public List<UserEntity> getMembers() {
+    return members;
+  }
+
+  public void setMembers(List<UserEntity> membersEntities) {
+    members = membersEntities;
   }
 
   public void setCards(List<CardEntity> cardEntities) {

@@ -6,6 +6,7 @@ import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,8 @@ public class BoardService implements BoardFacade {
         boardName,
         templateId,
         owner,
-        Collections.emptyList()
+        Collections.emptyList(),
+        List.of(owner)
       )
     );
   }
