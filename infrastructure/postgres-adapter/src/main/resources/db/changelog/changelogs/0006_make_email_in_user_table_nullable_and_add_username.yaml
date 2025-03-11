@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0006
+      author: dorian-frances
+      changes:
+        - dropNotNullConstraint:
+            tableName: gebio_user
+            columnName: email
+        - addColumn:
+            tableName: gebio_user
+            columns:
+              - column:
+                  name: username
+                  type: varchar(128)

@@ -1,6 +1,8 @@
 package io.gebio.gebioback.rest.api.adapter.controller;
 
 import io.gebio.gebioback.contract.api.UserApi;
+import io.gebio.gebioback.contract.model.CreateGuestRequestContract;
+import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.rest.api.adapter.mapper.UserContractMapper;
@@ -15,6 +17,13 @@ public class UserController implements UserApi {
 
   public UserController(AuthenticationService authenticationService) {
     this.authenticationService = authenticationService;
+  }
+
+  @Override
+  public ResponseEntity<CreateGuestResponseContract> createGuest(
+    CreateGuestRequestContract createGuestRequestContract
+  ) {
+    return null;
   }
 
   @Override

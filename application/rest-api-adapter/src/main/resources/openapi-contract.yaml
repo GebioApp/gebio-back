@@ -46,6 +46,28 @@ paths:
                   email: john.doe@gmail.com
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/public/guest:
+    post:
+      security:
+        - bearerAuth: [ ]
+      summary: Create guest user
+      description: Create guest user
+      operationId: createGuest
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGuestRequestContract'
+      responses:
+        "200":
+          description: Successfully created guest user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateGuestResponseContract'
   /api/v1/board/{board_id}:
     get:
       security:
@@ -106,6 +128,22 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    CreateGuestRequestContract:
+      description: Create guest user request contract
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+    CreateGuestResponseContract:
+      description: Create guest user response contract
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/UserContract'
     FindBoardResponseContract:
       description: Find retrospective board response contract
       type: object
