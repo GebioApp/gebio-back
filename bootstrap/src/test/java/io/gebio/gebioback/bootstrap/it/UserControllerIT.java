@@ -1,8 +1,8 @@
 package io.gebio.gebioback.bootstrap.it;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,5 +69,26 @@ class UserControllerIT extends AbstractGebioBackApiIT {
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)))
       .andExpect(jsonPath("$.user.logo", equalTo(AUTHENTICATED_USER_LOGO)));
+  }
+
+  @Test
+  void should_return_201_and_create_guest_from_username() throws Exception {
+    String body =
+      """
+      {
+        "username": "iamatest"
+      }
+      """;
+    mockMvc
+      .perform(
+        post(CREATE_GUEST_API_URL)
+          .content(body)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.user.id", notNullValue()))
+      .andExpect(jsonPath("$.user.email", nullValue()))
+      .andExpect(jsonPath("$.user.logo", nullValue()))
+      .andExpect(jsonPath("$.user.username", equalTo("iamatest")));
   }
 }
