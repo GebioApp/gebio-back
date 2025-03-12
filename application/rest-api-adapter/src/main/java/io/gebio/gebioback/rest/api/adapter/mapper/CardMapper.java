@@ -3,6 +3,7 @@ package io.gebio.gebioback.rest.api.adapter.mapper;
 import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 
 public interface CardMapper {
   static AddCardResponseContract addCardFromDomainToContract(Card card) {
@@ -61,7 +62,7 @@ public interface CardMapper {
         cardContract.getOwnerInfo().getEmail(),
         cardContract.getOwnerInfo().getLogo(),
         cardContract.getOwnerInfo().getUsername(),
-        null
+        UserRole.valueOf(cardContract.getOwnerInfo().getRole().getValue())
       ),
       null
     );

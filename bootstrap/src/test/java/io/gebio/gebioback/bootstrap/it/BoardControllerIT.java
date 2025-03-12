@@ -297,10 +297,13 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       boardRepository.save(board);
 
       AddCardRequestContract request = new AddCardRequestContract();
-      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
-        guestEntity.getId(),
-        guestEntity.getEmail(),
-        guestEntity.getProfileLogo()
+      CardOwnerInfoContract ownerInfoContract = new CardOwnerInfoContract();
+      ownerInfoContract.setId(guestEntity.getId());
+      ownerInfoContract.setEmail(guestEntity.getEmail());
+      ownerInfoContract.setLogo(guestEntity.getProfileLogo());
+      ownerInfoContract.setUsername(guestEntity.getUsername());
+      ownerInfoContract.setRole(
+        UserRoleContract.valueOf(guestEntity.getRole())
       );
       request.setBoardId(boardId);
       request.setCard(
@@ -309,7 +312,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           "Test Card",
           "#FF5733",
           new CardPositionContract(1, 2),
-          ownerInfo
+          ownerInfoContract
         )
       );
 
@@ -330,13 +333,19 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           assertThat(addedCard.getPosition().getPosX()).isEqualTo(1);
           assertThat(addedCard.getPosition().getPosY()).isEqualTo(2);
           assertThat(addedCard.getOwnerInfo().getId()).isEqualTo(
-            ownerInfo.getId()
+            ownerInfoContract.getId()
           );
           assertThat(addedCard.getOwnerInfo().getEmail()).isEqualTo(
-            ownerInfo.getEmail()
+            ownerInfoContract.getEmail()
           );
           assertThat(addedCard.getOwnerInfo().getLogo()).isEqualTo(
-            ownerInfo.getLogo()
+            ownerInfoContract.getLogo()
+          );
+          assertThat(addedCard.getOwnerInfo().getUsername()).isEqualTo(
+            ownerInfoContract.getUsername()
+          );
+          assertThat(addedCard.getOwnerInfo().getRole()).isEqualTo(
+            ownerInfoContract.getRole()
           );
           assertThat(addedCard.getBoardId()).isEqualTo(boardId);
         });
@@ -373,10 +382,13 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       boardRepository.save(boardEntity);
 
       UpdateCardRequestContract request = new UpdateCardRequestContract();
-      CardOwnerInfoContract ownerInfo = new CardOwnerInfoContract(
-        guestEntity.getId(),
-        guestEntity.getEmail(),
-        guestEntity.getProfileLogo()
+      CardOwnerInfoContract ownerInfoContract = new CardOwnerInfoContract();
+      ownerInfoContract.setId(guestEntity.getId());
+      ownerInfoContract.setEmail(guestEntity.getEmail());
+      ownerInfoContract.setLogo(guestEntity.getProfileLogo());
+      ownerInfoContract.setUsername(guestEntity.getUsername());
+      ownerInfoContract.setRole(
+        UserRoleContract.valueOf(guestEntity.getRole())
       );
       request.setCard(
         new CardContract(
@@ -384,7 +396,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           "Card 1 Content modified",
           "#FF5735",
           new CardPositionContract(20, 30),
-          ownerInfo
+          ownerInfoContract
         )
       );
 
@@ -415,6 +427,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           );
           assertThat(updatedCard.getOwnerInfo().getLogo()).isEqualTo(
             guestEntity.getProfileLogo()
+          );
+          assertThat(updatedCard.getOwnerInfo().getUsername()).isEqualTo(
+            guestEntity.getUsername()
+          );
+          assertThat(updatedCard.getOwnerInfo().getRole()).isEqualTo(
+            UserRoleContract.valueOf(guestEntity.getRole())
           );
           assertThat(updatedCard.getBoardId()).isEqualTo(boardId);
         });
@@ -477,6 +495,12 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             );
             assertThat(deletedCard.getOwnerInfo().getLogo()).isEqualTo(
               guestEntity.getProfileLogo()
+            );
+            assertThat(deletedCard.getOwnerInfo().getUsername()).isEqualTo(
+              guestEntity.getUsername()
+            );
+            assertThat(deletedCard.getOwnerInfo().getRole()).isEqualTo(
+              UserRoleContract.valueOf(guestEntity.getRole())
             );
             assertThat(deletedCard.getBoardId()).isEqualTo(boardId);
           });
