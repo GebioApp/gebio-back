@@ -6,11 +6,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
+import io.gebio.gebioback.core.exception.UserNotFound;
 import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
+import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +29,9 @@ class BoardServiceTest {
 
   @Mock
   BoardRepositoryPort boardRepositoryPort;
+
+  @Mock
+  UserRepositoryPort userRepositoryPort;
 
   @InjectMocks
   BoardService boardService;
@@ -114,6 +119,132 @@ class BoardServiceTest {
       Board result = boardService.findById(boardId);
 
       assertThat(result).isEqualTo(expectedBoard);
+    }
+  }
+
+  @Nested
+  class AddUserToBoardTest {
+
+    @Test
+    void should_throw_when_board_is_not_found() {
+      UUID boardId = UUID.randomUUID();
+      UUID userId = UUID.randomUUID();
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> boardService.addUserToBoard(boardId, userId)
+      ).isExactlyInstanceOf(BoardNotFound.class);
+    }
+
+    @Test
+    void should_throw_when_user_is_not_found() {
+      UUID boardId = UUID.randomUUID();
+      UUID userId = UUID.randomUUID();
+
+      User boardOwner = new User(
+        UUID.randomUUID(),
+        "dorianf@gebio.com",
+        "https://logo.com",
+        null,
+        UserRole.USER
+      );
+      User cardOwner = new User(
+        UUID.randomUUID(),
+        "another.user@gebio.com",
+        "https://another-logo.com",
+        null,
+        UserRole.USER
+      );
+      List<Card> cards = List.of(
+        new Card(
+          UUID.randomUUID(),
+          "I'm the content of the card",
+          "#000000",
+          new Card.Position(100, 100),
+          cardOwner,
+          boardId
+        )
+      );
+      Board expectedBoard = new Board(
+        boardId,
+        "My board",
+        UUID.randomUUID(),
+        boardOwner,
+        cards,
+        List.of(boardOwner)
+      );
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(expectedBoard)
+      );
+      when(userRepositoryPort.findById(userId)).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> boardService.addUserToBoard(boardId, userId)
+      ).isExactlyInstanceOf(UserNotFound.class);
+    }
+
+    @Test
+    void should_save_board_with_new_user() {
+      UUID boardId = UUID.randomUUID();
+      UUID userId = UUID.randomUUID();
+
+      User boardOwner = new User(
+        UUID.randomUUID(),
+        "dorianf@gebio.com",
+        "https://logo.com",
+        null,
+        UserRole.USER
+      );
+      User cardOwner = new User(
+        UUID.randomUUID(),
+        "another.user@gebio.com",
+        "https://another-logo.com",
+        null,
+        UserRole.USER
+      );
+      List<Card> cards = List.of(
+        new Card(
+          UUID.randomUUID(),
+          "I'm the content of the card",
+          "#000000",
+          new Card.Position(100, 100),
+          cardOwner,
+          boardId
+        )
+      );
+      Board expectedBoard = new Board(
+        boardId,
+        "My board",
+        UUID.randomUUID(),
+        boardOwner,
+        cards,
+        List.of(boardOwner)
+      );
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(expectedBoard)
+      );
+      User expectedUser = new User(
+        userId,
+        "john.doe@gmail.com",
+        "https://logo.com",
+        "John Doe",
+        UserRole.USER
+      );
+      when(userRepositoryPort.findById(userId)).thenReturn(
+        Optional.of(expectedUser)
+      );
+
+      Board updatedBoard = new Board(
+        expectedBoard.id(),
+        expectedBoard.name(),
+        expectedBoard.templateId(),
+        boardOwner,
+        cards,
+        List.of(boardOwner, expectedUser)
+      );
+
+      boardService.addUserToBoard(boardId, userId);
+
+      verify(boardRepositoryPort).save(updatedBoard);
     }
   }
 }
