@@ -120,6 +120,39 @@ paths:
                 $ref: '#/components/schemas/CreateBoardResponseContract'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/public/board/{board_id}/add-user:
+    post:
+      security:
+        - bearerAuth: [ ]
+      summary: Add user to a board
+      description: Add user to a board
+      operationId: addUserToBoard
+      tags:
+        - Board
+      parameters:
+        - name: board_id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUserToBoardRequestContract'
+      responses:
+        "200":
+          description: Successfully added user to retrospective board
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserToBoardResponseContract'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: Board was not found
 
 components:
   securitySchemes:
@@ -128,6 +161,23 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    AddUserToBoardRequestContract:
+      description: Add current user to retrospective board request contract
+      type: object
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+          format: uuid
+    AddUserToBoardResponseContract:
+      description: Add current user to retrospective board response contract
+      type: object
+      required:
+        - board
+      properties:
+        board:
+          $ref: '#/components/schemas/BoardContract'
     CreateGuestRequestContract:
       description: Create guest user request contract
       type: object
