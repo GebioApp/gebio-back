@@ -38,4 +38,9 @@ public class PostgresUserAdapter implements UserRepositoryPort {
       userRepository.save(UserMapper.domainToEntity(user))
     );
   }
+
+  @Override
+  public Optional<User> findById(UUID userId) {
+    return userRepository.findById(userId).map(UserMapper::entityToDomain);
+  }
 }
