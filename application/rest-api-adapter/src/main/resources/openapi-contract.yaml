@@ -236,6 +236,7 @@ components:
         - id
         - email
         - logo
+        - role
       properties:
         id:
           type: string
@@ -246,6 +247,8 @@ components:
           type: string
         username:
           type: string
+        role:
+          $ref: '#/components/schemas/UserRoleContract'
     UserContract:
       type: object
       required:

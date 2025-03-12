@@ -23,6 +23,7 @@ public interface UserContractMapper {
     cardOwnerInfoContract.setLogo(user.profileLogo());
     cardOwnerInfoContract.setEmail(user.email());
     cardOwnerInfoContract.setUsername(user.username());
+    cardOwnerInfoContract.setRole(UserRoleContract.valueOf(user.role().name()));
     return cardOwnerInfoContract;
   }
 
