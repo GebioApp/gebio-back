@@ -44,6 +44,14 @@ public class BoardController implements BoardApi {
   }
 
   @Override
+  public ResponseEntity<AddUserToBoardResponseContract> addUserToBoard(
+    UUID boardId,
+    AddUserToBoardRequestContract addUserToBoardRequestContract
+  ) {
+    return null;
+  }
+
+  @Override
   public ResponseEntity<CreateBoardResponseContract> createBoard(
     @Valid CreateBoardRequestContract createBoardRequestContract
   ) {
