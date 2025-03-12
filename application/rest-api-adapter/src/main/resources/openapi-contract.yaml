@@ -68,7 +68,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateGuestResponseContract'
-  /api/v1/board/{board_id}:
+  /api/v1/public/board/{board_id}:
     get:
       security:
         - bearerAuth: [ ]
