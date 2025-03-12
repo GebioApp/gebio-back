@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 import io.gebio.gebioback.bootstrap.it.configuration.TestJwtDecoderConfiguration;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.UserRepository;
 import java.lang.reflect.Array;
@@ -51,6 +52,8 @@ class AbstractGebioBackApiIT {
   protected static final String AUTHENTICATED_USER_EMAIL =
     "integration-test.user@gmail.com";
   protected static final String AUTHENTICATED_USER_LOGO = "my-logo-url";
+  protected static final String AUTHENTICATED_USER_USERNAME =
+    "integration-test";
 
   @Container
   static PostgreSQLContainer postgresSQLContainer = new PostgreSQLContainer<>(
@@ -91,7 +94,9 @@ class AbstractGebioBackApiIT {
     UserEntity userEntity = new UserEntity(
       id,
       AUTHENTICATED_USER_EMAIL,
-      AUTHENTICATED_USER_LOGO
+      AUTHENTICATED_USER_LOGO,
+      AUTHENTICATED_USER_USERNAME,
+      UserRole.USER.name()
     );
     return userRepository.save(userEntity);
   }
@@ -101,7 +106,9 @@ class AbstractGebioBackApiIT {
     UserEntity userEntity = new UserEntity(
       id,
       "imaguest@gmail.com",
-      "https://i.pravatar.cc/150"
+      "https://i.pravatar.cc/150",
+      "iamaguest",
+      UserRole.GUEST.name()
     );
     return userRepository.save(userEntity);
   }
@@ -138,7 +145,7 @@ class AbstractGebioBackApiIT {
   protected static final String GET_CURRENT_USER_API_URL = "/api/v1/me";
   protected static final String CREATE_GUEST_API_URL = "/api/v1/public/guest";
   protected static final String CREATE_BOARD_API_URL = "/api/v1/board";
-  protected static final String FIND_BOARD_API_URL = "/api/v1/board/%s";
+  protected static final String FIND_BOARD_API_URL = "/api/v1/public/board/%s";
 
   protected static final String TOPIC_BOARD_API_URL = "/topic/board/%s";
   protected static final String ADD_CARD_API_URL = "/app/board/add-card";

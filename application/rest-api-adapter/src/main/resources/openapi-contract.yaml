@@ -68,7 +68,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateGuestResponseContract'
-  /api/v1/board/{board_id}:
+  /api/v1/public/board/{board_id}:
     get:
       security:
         - bearerAuth: [ ]
@@ -244,6 +244,8 @@ components:
           type: string
         logo:
           type: string
+        username:
+          type: string
     UserContract:
       type: object
       required:
@@ -260,6 +262,8 @@ components:
           type: string
         username:
           type: string
+        role:
+          $ref: '#/components/schemas/UserRoleContract'
     AddCardRequestContract:
       type: object
       properties:
@@ -306,6 +310,11 @@ components:
         - ADD
         - UPDATE
         - DELETE
+    UserRoleContract:
+      type: string
+      enum:
+        - USER
+        - GUEST
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid

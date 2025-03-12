@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import io.gebio.gebioback.contract.model.*;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.entity.UserEntity;
@@ -115,7 +116,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UserEntity userEntity = new UserEntity(
         id,
         AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
       );
       userRepository.save(userEntity);
 
@@ -171,17 +174,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
     UUID boardId = UUID.fromString("99c25084-4df3-42da-bece-4e7e50788abb");
 
     @Test
-    void should_return_401_when_unauthenticated() throws Exception {
-      mockMvc
-        .perform(
-          get(String.format(FIND_BOARD_API_URL, boardId)).contentType(
-            MediaType.APPLICATION_JSON
-          )
-        )
-        .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void should_return_404_when_board_was_not_found() throws Exception {
       mockMvc
         .perform(
@@ -198,7 +190,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UserEntity userEntity = new UserEntity(
         id,
         AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
       );
       userRepository.save(userEntity);
 

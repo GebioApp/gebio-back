@@ -1,9 +1,6 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
-import io.gebio.gebioback.contract.model.CardOwnerInfoContract;
-import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
-import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
-import io.gebio.gebioback.contract.model.UserContract;
+import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.User;
 
 public interface UserContractMapper {
@@ -14,6 +11,8 @@ public interface UserContractMapper {
     userContract.setId(user.id());
     userContract.setEmail(user.email());
     userContract.setLogo(user.profileLogo());
+    userContract.setUsername(user.username());
+    userContract.setRole(UserRoleContract.valueOf(user.role().name()));
     currentUserResponseContract.setUser(userContract);
     return currentUserResponseContract;
   }
@@ -23,6 +22,7 @@ public interface UserContractMapper {
     cardOwnerInfoContract.setId(user.id());
     cardOwnerInfoContract.setLogo(user.profileLogo());
     cardOwnerInfoContract.setEmail(user.email());
+    cardOwnerInfoContract.setUsername(user.username());
     return cardOwnerInfoContract;
   }
 
@@ -31,6 +31,8 @@ public interface UserContractMapper {
     userContract.setId(user.id());
     userContract.setLogo(user.profileLogo());
     userContract.setEmail(user.email());
+    userContract.setUsername(user.username());
+    userContract.setRole(UserRoleContract.valueOf(user.role().name()));
     return userContract;
   }
 
@@ -41,7 +43,9 @@ public interface UserContractMapper {
       new CreateGuestResponseContract();
     UserContract userContract = new UserContract();
     userContract.setId(guest.id());
+    userContract.setEmail(guest.email());
     userContract.setUsername(guest.username());
+    userContract.setRole(UserRoleContract.valueOf(guest.role().name()));
     createGuestResponseContract.setUser(userContract);
     return createGuestResponseContract;
   }

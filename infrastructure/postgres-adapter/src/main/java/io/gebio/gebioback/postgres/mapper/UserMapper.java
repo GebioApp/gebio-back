@@ -1,6 +1,7 @@
 package io.gebio.gebioback.postgres.mapper;
 
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 
 public interface UserMapper {
@@ -9,7 +10,8 @@ public interface UserMapper {
       userEntity.getId(),
       userEntity.getEmail(),
       userEntity.getProfileLogo(),
-      userEntity.getUsername()
+      userEntity.getUsername(),
+      UserRole.valueOf(userEntity.getRole())
     );
   }
 
@@ -18,7 +20,8 @@ public interface UserMapper {
       user.id(),
       user.email(),
       user.profileLogo(),
-      user.username()
+      user.username(),
+      user.role() != null ? user.role().name() : null
     );
   }
 }

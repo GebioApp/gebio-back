@@ -9,6 +9,7 @@ import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,7 @@ class BoardServiceTest {
 
       UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
       String userEmail = "dorianf@gebio.com";
-      User currentUser = new User(userId, userEmail, null, null);
+      User currentUser = new User(userId, userEmail, null, null, UserRole.USER);
 
       String boardName = "Retrospective du 25 février";
       UUID templateId = UUID.fromString("e637621b-4451-4b38-b33f-f07dbd8aeceb");
@@ -78,13 +79,15 @@ class BoardServiceTest {
         UUID.randomUUID(),
         "dorianf@gebio.com",
         "https://logo.com",
-        null
+        null,
+        UserRole.USER
       );
       User cardOwner = new User(
         UUID.randomUUID(),
         "another.user@gebio.com",
         "https://another-logo.com",
-        null
+        null,
+        UserRole.USER
       );
       List<Card> cards = List.of(
         new Card(
