@@ -60,6 +60,7 @@ public interface CardMapper {
         cardContract.getOwnerInfo().getId(),
         cardContract.getOwnerInfo().getEmail(),
         cardContract.getOwnerInfo().getLogo(),
+        cardContract.getOwnerInfo().getUsername(),
         null
       ),
       null

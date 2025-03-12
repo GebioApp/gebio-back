@@ -37,6 +37,9 @@ public class UserEntity {
   @Column(name = "username")
   private String username;
 
+  @Column(name = "role")
+  private String role;
+
   public UserEntity() {}
 
   public UserEntity(UUID id, String email, String profileLogo) {
@@ -49,12 +52,14 @@ public class UserEntity {
     UUID id,
     String email,
     String profileLogo,
-    String username
+    String username,
+    String role
   ) {
     this.id = id;
     this.email = email;
     this.profileLogo = profileLogo;
     this.username = username;
+    this.role = role;
   }
 
   public UUID getId() {
@@ -71,5 +76,9 @@ public class UserEntity {
 
   public String getUsername() {
     return username;
+  }
+
+  public String getRole() {
+    return role;
   }
 }

@@ -7,5 +7,6 @@ public record User(
   UUID id,
   String email,
   @Nullable String profileLogo,
-  @Nullable String username
+  @Nullable String username,
+  UserRole role
 ) {}

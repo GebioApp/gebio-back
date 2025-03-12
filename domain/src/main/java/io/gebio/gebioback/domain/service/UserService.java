@@ -1,6 +1,7 @@
 package io.gebio.gebioback.domain.service;
 
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class UserService implements UserFacade {
   @Override
   public User createGuest(String username) {
     return userRepositoryPort.create(
-      new User(UUID.randomUUID(), null, null, username)
+      new User(UUID.randomUUID(), null, null, username, UserRole.GUEST)
     );
   }
 }

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import io.gebio.gebioback.contract.model.*;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.entity.UserEntity;
@@ -115,7 +116,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UserEntity userEntity = new UserEntity(
         id,
         AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
       );
       userRepository.save(userEntity);
 
@@ -198,7 +201,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       UserEntity userEntity = new UserEntity(
         id,
         AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
       );
       userRepository.save(userEntity);
 

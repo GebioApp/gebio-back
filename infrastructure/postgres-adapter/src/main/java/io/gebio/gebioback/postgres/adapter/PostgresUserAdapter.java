@@ -1,6 +1,7 @@
 package io.gebio.gebioback.postgres.adapter;
 
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.mapper.UserMapper;
@@ -26,7 +27,7 @@ public class PostgresUserAdapter implements UserRepositoryPort {
   @Override
   public User createUserFromMail(String email, String logo) {
     UserEntity userEntity = UserMapper.domainToEntity(
-      new User(UUID.randomUUID(), email, logo, null)
+      new User(UUID.randomUUID(), email, logo, null, UserRole.USER)
     );
     return UserMapper.entityToDomain(userRepository.save(userEntity));
   }

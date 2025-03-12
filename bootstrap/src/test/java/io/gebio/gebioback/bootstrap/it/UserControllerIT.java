@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.UserRepository;
 import java.util.UUID;
@@ -40,7 +41,9 @@ class UserControllerIT extends AbstractGebioBackApiIT {
     UserEntity userEntity = new UserEntity(
       id,
       AUTHENTICATED_USER_EMAIL,
-      AUTHENTICATED_USER_LOGO
+      AUTHENTICATED_USER_LOGO,
+      AUTHENTICATED_USER_USERNAME,
+      UserRole.USER.name()
     );
     userRepository.save(userEntity);
 
@@ -53,7 +56,11 @@ class UserControllerIT extends AbstractGebioBackApiIT {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", equalTo(id.toString())))
       .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)))
-      .andExpect(jsonPath("$.user.logo", equalTo(AUTHENTICATED_USER_LOGO)));
+      .andExpect(jsonPath("$.user.logo", equalTo(AUTHENTICATED_USER_LOGO)))
+      .andExpect(
+        jsonPath("$.user.username", equalTo(AUTHENTICATED_USER_USERNAME))
+      )
+      .andExpect(jsonPath("$.user.role", equalTo("USER")));
   }
 
   @Test
@@ -68,7 +75,8 @@ class UserControllerIT extends AbstractGebioBackApiIT {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)))
-      .andExpect(jsonPath("$.user.logo", equalTo(AUTHENTICATED_USER_LOGO)));
+      .andExpect(jsonPath("$.user.logo", equalTo(AUTHENTICATED_USER_LOGO)))
+      .andExpect(jsonPath("$.user.role", equalTo("USER")));
   }
 
   @Test
@@ -89,6 +97,7 @@ class UserControllerIT extends AbstractGebioBackApiIT {
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", nullValue()))
       .andExpect(jsonPath("$.user.logo", nullValue()))
-      .andExpect(jsonPath("$.user.username", equalTo("iamatest")));
+      .andExpect(jsonPath("$.user.username", equalTo("iamatest")))
+      .andExpect(jsonPath("$.user.role", equalTo("GUEST")));
   }
 }

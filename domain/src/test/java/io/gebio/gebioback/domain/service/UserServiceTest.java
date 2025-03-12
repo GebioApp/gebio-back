@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,7 +31,13 @@ class UserServiceTest {
     UUID existingUserId = UUID.fromString(
       "e575b163-a4ae-41ff-a407-d004042248fb"
     );
-    User existingUser = new User(existingUserId, existingUserEmail, null, null);
+    User existingUser = new User(
+      existingUserId,
+      existingUserEmail,
+      null,
+      null,
+      UserRole.USER
+    );
     when(userRepositoryPort.findUserByEmail(existingUserEmail)).thenReturn(
       Optional.of(existingUser)
     );
@@ -47,7 +54,13 @@ class UserServiceTest {
   void should_create_user_if_user_does_not_exist() {
     String email = "john.doe@gmail.com";
     String logo = "my-logo-url";
-    User createdUser = new User(UUID.randomUUID(), email, logo, null);
+    User createdUser = new User(
+      UUID.randomUUID(),
+      email,
+      logo,
+      null,
+      UserRole.USER
+    );
 
     when(userRepositoryPort.findUserByEmail(email)).thenReturn(
       Optional.empty()
