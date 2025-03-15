@@ -39,9 +39,7 @@ public class UserController implements UserApi {
     URI location = getCreatedResourceURI(createdGuest.id());
 
     return ResponseEntity.created(location).body(
-      UserContractMapper.createGuestFromDomainToContract(
-        userFacade.createGuest(createGuestRequestContract.getUsername())
-      )
+      UserContractMapper.createGuestFromDomainToContract(createdGuest)
     );
   }
 

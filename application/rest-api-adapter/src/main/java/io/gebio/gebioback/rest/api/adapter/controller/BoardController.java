@@ -48,7 +48,13 @@ public class BoardController implements BoardApi {
     UUID boardId,
     AddUserToBoardRequestContract addUserToBoardRequestContract
   ) {
-    return null;
+    Board updatedBoard = boardFacade.addUserToBoard(
+      boardId,
+      addUserToBoardRequestContract.getUserId()
+    );
+    return ResponseEntity.ok(
+      BoardMapper.addUserFromDomainToContract(updatedBoard)
+    );
   }
 
   @Override

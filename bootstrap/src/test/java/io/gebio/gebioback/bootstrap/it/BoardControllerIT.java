@@ -1,6 +1,6 @@
 package io.gebio.gebioback.bootstrap.it;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,6 +16,7 @@ import io.gebio.gebioback.postgres.entity.UserEntity;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
 import io.gebio.gebioback.postgres.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -505,6 +506,85 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             assertThat(deletedCard.getBoardId()).isEqualTo(boardId);
           });
       }
+    }
+  }
+
+  @Nested
+  class AddUserToBoard {
+
+    @Test
+    void should_add_user_to_board() throws Exception {
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(userEntity);
+
+      String createBoardRequestBody =
+        """
+        {
+          "title": "Retrospective du 25 février",
+          "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
+        }
+        """;
+      mockMvc.perform(
+        post(CREATE_BOARD_API_URL)
+          .contentType(MediaType.APPLICATION_JSON)
+          .with(jwtToken())
+          .content(createBoardRequestBody)
+      );
+
+      List<BoardEntity> boardEntities = boardRepository.findAll();
+      assertThat(boardEntities).hasSize(1);
+      BoardEntity board = boardEntities.getFirst();
+
+      String createGuestUserRequestBody =
+        """
+        {
+          "username": "iamaguest"
+        }
+        """;
+      mockMvc.perform(
+        post(CREATE_GUEST_API_URL)
+          .content(createGuestUserRequestBody)
+          .contentType(MediaType.APPLICATION_JSON)
+      );
+
+      List<UserEntity> userEntities = userRepository.findAll();
+      assertThat(userEntities).hasSize(2);
+      Optional<UserEntity> optionalGuestEntity = userEntities
+        .stream()
+        .filter(user -> user.getUsername().equals("iamaguest"))
+        .findFirst();
+      assertThat(optionalGuestEntity).isPresent();
+
+      String addUserToBoardRequestBody =
+        """
+        {
+          "userId": "%s"
+        }
+        """.formatted(optionalGuestEntity.get().getId());
+      mockMvc
+        .perform(
+          post(ADD_USER_TO_BOARD_API_URL.formatted(board.getId()))
+            .content(addUserToBoardRequestBody)
+            .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.board.members", hasSize(2)))
+        .andExpect(
+          jsonPath(
+            "$.board.members[1].id",
+            equalTo(optionalGuestEntity.get().getId().toString())
+          )
+        )
+        .andExpect(
+          jsonPath("$.board.members[1].username", equalTo("iamaguest"))
+        );
     }
   }
 }
