@@ -3,8 +3,6 @@ package io.gebio.gebioback.bootstrap.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,7 +24,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -66,49 +63,35 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
     @Test
     void should_return_401_when_unauthenticated() throws Exception {
-      mockMvc
-        .perform(
-          post(CREATE_BOARD_API_URL).contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isUnauthorized());
+      doPostWithoutToken(CREATE_BOARD_API_URL).andExpect(
+        status().isUnauthorized()
+      );
     }
 
     @Test
     void should_return_400_when_user_try_to_create_board_with_empty_board_name()
       throws Exception {
-      String requestBody =
+      doPostWithToken(
+        CREATE_BOARD_API_URL,
         """
         {
           "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
         }
-        """;
-      mockMvc
-        .perform(
-          post(CREATE_BOARD_API_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .with(jwtToken())
-            .content(requestBody)
-        )
-        .andExpect(status().isBadRequest());
+        """
+      ).andExpect(status().isBadRequest());
     }
 
     @Test
     void should_return_400_when_user_try_to_create_board_with_empty_template_id()
       throws Exception {
-      String requestBody =
+      doPostWithToken(
+        CREATE_BOARD_API_URL,
         """
         {
           "title": "Retrospective du 25 février"
         }
-        """;
-      mockMvc
-        .perform(
-          post(CREATE_BOARD_API_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .with(jwtToken())
-            .content(requestBody)
-        )
-        .andExpect(status().isBadRequest());
+        """
+      ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -123,20 +106,15 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       );
       userRepository.save(userEntity);
 
-      String requestBody =
+      doPostWithToken(
+        CREATE_BOARD_API_URL,
         """
         {
-          "title": "Retrospective du 25 février",
-          "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
-        }
-        """;
-      mockMvc
-        .perform(
-          post(CREATE_BOARD_API_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .with(jwtToken())
-            .content(requestBody)
-        )
+                  "title": "Retrospective du 25 février",
+                  "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
+                }
+        """
+      )
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.board.id").exists())
         .andExpect(
@@ -176,13 +154,9 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
     @Test
     void should_return_404_when_board_was_not_found() throws Exception {
-      mockMvc
-        .perform(
-          get(String.format(FIND_BOARD_API_URL, boardId))
-            .with(jwtToken())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isNotFound());
+      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId)).andExpect(
+        status().isNotFound()
+      );
     }
 
     @Test
@@ -227,12 +201,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
       boardRepository.save(board);
 
-      mockMvc
-        .perform(
-          get(String.format(FIND_BOARD_API_URL, boardId))
-            .with(jwtToken())
-            .contentType(MediaType.APPLICATION_JSON)
-        )
+      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.board.id", equalTo(boardId.toString())))
         .andExpect(jsonPath("$.board.title", equalTo(board.getName())))
@@ -500,35 +469,29 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       );
       userRepository.save(userEntity);
 
-      String createBoardRequestBody =
+      doPostWithToken(
+        CREATE_BOARD_API_URL,
         """
-        {
-          "title": "Retrospective du 25 février",
-          "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
-        }
-        """;
-      mockMvc.perform(
-        post(CREATE_BOARD_API_URL)
-          .contentType(MediaType.APPLICATION_JSON)
-          .with(jwtToken())
-          .content(createBoardRequestBody)
-      );
+                {
+                  "title": "Retrospective du 25 février",
+                  "templateId": "b65687d3-4edc-4492-857d-3f22705ca7fd"
+                }
+
+        """
+      ).andExpect(status().isCreated());
 
       List<BoardEntity> boardEntities = boardRepository.findAll();
       assertThat(boardEntities).hasSize(1);
       BoardEntity board = boardEntities.getFirst();
 
-      String createGuestUserRequestBody =
+      doPostWithoutToken(
+        CREATE_GUEST_API_URL,
         """
         {
           "username": "iamaguest"
         }
-        """;
-      mockMvc.perform(
-        post(CREATE_GUEST_API_URL)
-          .content(createGuestUserRequestBody)
-          .contentType(MediaType.APPLICATION_JSON)
-      );
+        """
+      ).andExpect(status().isCreated());
 
       List<UserEntity> userEntities = userRepository.findAll();
       assertThat(userEntities).hasSize(2);
@@ -538,18 +501,14 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         .findFirst();
       assertThat(optionalGuestEntity).isPresent();
 
-      String addUserToBoardRequestBody =
+      doPostWithoutToken(
+        ADD_USER_TO_BOARD_API_URL.formatted(board.getId()),
         """
         {
           "userId": "%s"
         }
-        """.formatted(optionalGuestEntity.get().getId());
-      mockMvc
-        .perform(
-          post(ADD_USER_TO_BOARD_API_URL.formatted(board.getId()))
-            .content(addUserToBoardRequestBody)
-            .contentType(MediaType.APPLICATION_JSON)
-        )
+        """.formatted(optionalGuestEntity.get().getId())
+      )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.board.members", hasSize(2)))
         .andExpect(

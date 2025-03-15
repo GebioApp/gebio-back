@@ -2,6 +2,8 @@ package io.gebio.gebioback.bootstrap.it;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import io.gebio.gebioback.bootstrap.it.configuration.TestJwtDecoderConfiguration;
 import io.gebio.gebioback.domain.model.UserRole;
@@ -12,11 +14,13 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -27,6 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -153,4 +158,41 @@ class AbstractGebioBackApiIT {
   protected static final String ADD_CARD_API_URL = "/app/board/add-card";
   protected static final String UPDATED_CARD_API_URL = "/app/board/update-card";
   protected static final String DELETE_CARD_API_URL = "/app/board/delete-card";
+
+  ResultActions doPostWithToken(String endpoint, @Language("json") String body)
+    throws Exception {
+    return mockMvc.perform(
+      post(endpoint)
+        .with(jwtToken())
+        .content(body)
+        .contentType(MediaType.APPLICATION_JSON)
+    );
+  }
+
+  ResultActions doPostWithoutToken(
+    String endpoint,
+    @Language("json") String body
+  ) throws Exception {
+    return mockMvc.perform(
+      post(endpoint).content(body).contentType(MediaType.APPLICATION_JSON)
+    );
+  }
+
+  ResultActions doPostWithoutToken(String endpoint) throws Exception {
+    return mockMvc.perform(
+      post(endpoint).contentType(MediaType.APPLICATION_JSON)
+    );
+  }
+
+  ResultActions doGetWithToken(String endpoint) throws Exception {
+    return mockMvc.perform(
+      get(endpoint).with(jwtToken()).contentType(MediaType.APPLICATION_JSON)
+    );
+  }
+
+  ResultActions doGetWithoutToken(String endpoint) throws Exception {
+    return mockMvc.perform(
+      get(endpoint).contentType(MediaType.APPLICATION_JSON)
+    );
+  }
 }

@@ -1,8 +1,6 @@
 package io.gebio.gebioback.bootstrap.it;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,7 +11,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 
 class UserControllerIT extends AbstractGebioBackApiIT {
 
@@ -27,11 +24,9 @@ class UserControllerIT extends AbstractGebioBackApiIT {
 
   @Test
   void should_return_401_when_unauthenticated() throws Exception {
-    mockMvc
-      .perform(
-        get(GET_CURRENT_USER_API_URL).contentType(MediaType.APPLICATION_JSON)
-      )
-      .andExpect(status().isUnauthorized());
+    doGetWithoutToken(GET_CURRENT_USER_API_URL).andExpect(
+      status().isUnauthorized()
+    );
   }
 
   @Test
@@ -47,12 +42,7 @@ class UserControllerIT extends AbstractGebioBackApiIT {
     );
     userRepository.save(userEntity);
 
-    mockMvc
-      .perform(
-        get(GET_CURRENT_USER_API_URL)
-          .with(jwtToken())
-          .contentType(MediaType.APPLICATION_JSON)
-      )
+    doGetWithToken(GET_CURRENT_USER_API_URL)
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", equalTo(id.toString())))
       .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)))
@@ -66,12 +56,7 @@ class UserControllerIT extends AbstractGebioBackApiIT {
   @Test
   void should_return_200_and_create_user_if_user_does_not_exist_in_database()
     throws Exception {
-    mockMvc
-      .perform(
-        get(GET_CURRENT_USER_API_URL)
-          .with(jwtToken())
-          .contentType(MediaType.APPLICATION_JSON)
-      )
+    doGetWithToken(GET_CURRENT_USER_API_URL)
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", equalTo(AUTHENTICATED_USER_EMAIL)))
@@ -81,18 +66,14 @@ class UserControllerIT extends AbstractGebioBackApiIT {
 
   @Test
   void should_return_201_and_create_guest_from_username() throws Exception {
-    String body =
+    doPostWithoutToken(
+      CREATE_GUEST_API_URL,
       """
       {
         "username": "iamatest"
       }
-      """;
-    mockMvc
-      .perform(
-        post(CREATE_GUEST_API_URL)
-          .content(body)
-          .contentType(MediaType.APPLICATION_JSON)
-      )
+      """
+    )
       .andExpect(status().isCreated())
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", nullValue()))
