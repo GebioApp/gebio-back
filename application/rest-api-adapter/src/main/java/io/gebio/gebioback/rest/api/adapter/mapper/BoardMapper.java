@@ -1,5 +1,6 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
+import io.gebio.gebioback.contract.model.AddUserToBoardResponseContract;
 import io.gebio.gebioback.contract.model.BoardContract;
 import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
 import io.gebio.gebioback.contract.model.FindBoardResponseContract;
@@ -47,5 +48,29 @@ public interface BoardMapper {
     );
     findBoardResponseContract.setBoard(boardContract);
     return findBoardResponseContract;
+  }
+
+  static AddUserToBoardResponseContract addUserFromDomainToContract(
+    Board board
+  ) {
+    AddUserToBoardResponseContract addUserToBoardResponseContract =
+      new AddUserToBoardResponseContract();
+    BoardContract boardContract = new BoardContract();
+    boardContract.setId(board.id());
+    boardContract.setTitle(board.name());
+    boardContract.setTemplateId(board.templateId());
+    boardContract.setOwnerId(board.owner().id());
+    boardContract.setCards(
+      board.cards().stream().map(CardMapper::fromDomainToContract).toList()
+    );
+    boardContract.setMembers(
+      board
+        .members()
+        .stream()
+        .map(UserContractMapper::memberFromDomainToContract)
+        .toList()
+    );
+    addUserToBoardResponseContract.setBoard(boardContract);
+    return addUserToBoardResponseContract;
   }
 }
