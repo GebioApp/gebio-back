@@ -77,7 +77,12 @@ class UserControllerIT extends AbstractGebioBackApiIT {
       .andExpect(status().isCreated())
       .andExpect(jsonPath("$.user.id", notNullValue()))
       .andExpect(jsonPath("$.user.email", nullValue()))
-      .andExpect(jsonPath("$.user.logo", nullValue()))
+      .andExpect(
+        jsonPath(
+          "$.user.logo",
+          equalTo("https://www.svgrepo.com/show/13656/user.svg")
+        )
+      )
       .andExpect(jsonPath("$.user.username", equalTo("iamatest")))
       .andExpect(jsonPath("$.user.role", equalTo("GUEST")));
   }

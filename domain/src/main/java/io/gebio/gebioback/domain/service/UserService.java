@@ -1,10 +1,8 @@
 package io.gebio.gebioback.domain.service;
 
 import io.gebio.gebioback.domain.model.User;
-import io.gebio.gebioback.domain.model.UserRole;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,13 +18,13 @@ public class UserService implements UserFacade {
   public User getOrCreateUserFromEmail(String email, String logo) {
     return userRepositoryPort
       .findUserByEmail(email)
-      .orElseGet(() -> userRepositoryPort.createUserFromMail(email, logo));
+      .orElseGet(() ->
+        userRepositoryPort.create(User.buildAuthenticatedUser(email, logo))
+      );
   }
 
   @Override
   public User createGuest(String username) {
-    return userRepositoryPort.create(
-      new User(UUID.randomUUID(), null, null, username, UserRole.GUEST)
-    );
+    return userRepositoryPort.create(User.buildGuestUser(username));
   }
 }

@@ -46,6 +46,7 @@ public interface UserContractMapper {
     userContract.setId(guest.id());
     userContract.setEmail(guest.email());
     userContract.setUsername(guest.username());
+    userContract.setLogo(guest.profileLogo());
     userContract.setRole(UserRoleContract.valueOf(guest.role().name()));
     createGuestResponseContract.setUser(userContract);
     return createGuestResponseContract;
