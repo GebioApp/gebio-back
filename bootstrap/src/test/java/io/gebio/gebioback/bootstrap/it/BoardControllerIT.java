@@ -178,6 +178,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         userEntity
       );
 
+      board.setMembers(List.of(userEntity));
+
       CardEntity card1 = new CardEntity(
         UUID.randomUUID(),
         "Card 1 Content",
@@ -243,6 +245,13 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           jsonPath(
             "$.board.cards[0].ownerInfo.logo",
             equalTo(card1.getOwner().getProfileLogo())
+          )
+        )
+        .andExpect(jsonPath("$.board.members", hasSize(1)))
+        .andExpect(
+          jsonPath(
+            "$.board.members[0].id",
+            equalTo(id.toString())
           )
         );
     }
