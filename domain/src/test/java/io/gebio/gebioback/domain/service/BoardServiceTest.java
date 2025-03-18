@@ -247,4 +247,20 @@ class BoardServiceTest {
       verify(boardRepositoryPort).save(updatedBoard);
     }
   }
+
+  @Nested
+  class FindAllUserJoinedBoardsTest {
+
+    @Test
+    void should_user_joined_boards() {
+      UUID userId = UUID.randomUUID();
+      when(boardRepositoryPort.findAllForIdInMemberIds(userId)).thenReturn(
+        List.of()
+      );
+
+      List<Board> boards = boardService.findAllUserJoinedBoards(userId);
+
+      assertThat(boards).isEmpty();
+    }
+  }
 }
