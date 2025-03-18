@@ -46,6 +46,32 @@ paths:
                   email: john.doe@gmail.com
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/user/{user_id}/board:
+    get:
+      security:
+        - bearerAuth: [ ]
+      summary: Get all the retrospective boards for a given user id
+      description: Get all the retrospective boards for a given user id
+      operationId: findBoards
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully retrieved boards for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindBoardsResponseContract'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
   /api/v1/public/guest:
     post:
       security:
@@ -355,6 +381,13 @@ components:
           $ref: '#/components/schemas/CardContract'
         operationType:
           $ref: '#/components/schemas/OperationTypeContract'
+    FindBoardsResponseContract:
+      type: object
+      properties:
+        boards:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoardContract'
     OperationTypeContract:
       type: string
       enum:
