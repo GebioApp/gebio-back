@@ -12,25 +12,7 @@ public interface BoardMapper {
   ) {
     CreateBoardResponseContract createBoardResponseContract =
       new CreateBoardResponseContract();
-    BoardContract boardContract = new BoardContract();
-    boardContract.setId(createdBoard.id());
-    boardContract.setTitle(createdBoard.name());
-    boardContract.setTemplateId(createdBoard.templateId());
-    boardContract.setOwnerId(createdBoard.owner().id());
-    boardContract.setCards(
-      createdBoard
-        .cards()
-        .stream()
-        .map(CardMapper::fromDomainToContract)
-        .toList()
-    );
-    boardContract.setMembers(
-      createdBoard
-        .members()
-        .stream()
-        .map(UserMapper::memberFromDomainToContract)
-        .toList()
-    );
+    BoardContract boardContract = fromDomainToContract(createdBoard);
     createBoardResponseContract.setBoard(boardContract);
     return createBoardResponseContract;
   }
@@ -38,21 +20,7 @@ public interface BoardMapper {
   static FindBoardResponseContract findBoardFromDomainToContract(Board board) {
     FindBoardResponseContract findBoardResponseContract =
       new FindBoardResponseContract();
-    BoardContract boardContract = new BoardContract();
-    boardContract.setId(board.id());
-    boardContract.setTitle(board.name());
-    boardContract.setTemplateId(board.templateId());
-    boardContract.setOwnerId(board.owner().id());
-    boardContract.setCards(
-      board.cards().stream().map(CardMapper::fromDomainToContract).toList()
-    );
-    boardContract.setMembers(
-      board
-        .members()
-        .stream()
-        .map(UserMapper::memberFromDomainToContract)
-        .toList()
-    );
+    BoardContract boardContract = fromDomainToContract(board);
     findBoardResponseContract.setBoard(boardContract);
     return findBoardResponseContract;
   }
@@ -62,21 +30,7 @@ public interface BoardMapper {
   ) {
     AddUserToBoardResponseContract addUserToBoardResponseContract =
       new AddUserToBoardResponseContract();
-    BoardContract boardContract = new BoardContract();
-    boardContract.setId(board.id());
-    boardContract.setTitle(board.name());
-    boardContract.setTemplateId(board.templateId());
-    boardContract.setOwnerId(board.owner().id());
-    boardContract.setCards(
-      board.cards().stream().map(CardMapper::fromDomainToContract).toList()
-    );
-    boardContract.setMembers(
-      board
-        .members()
-        .stream()
-        .map(UserMapper::memberFromDomainToContract)
-        .toList()
-    );
+    BoardContract boardContract = fromDomainToContract(board);
     addUserToBoardResponseContract.setBoard(boardContract);
     return addUserToBoardResponseContract;
   }
