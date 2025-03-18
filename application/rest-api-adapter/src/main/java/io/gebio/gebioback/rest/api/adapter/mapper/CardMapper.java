@@ -42,7 +42,7 @@ public interface CardMapper {
     cardContract.setColor(card.color());
     cardContract.setPosition(fromDomainToContract(card.position()));
     cardContract.setOwnerInfo(
-      UserContractMapper.domainToCardOwnerInfoContract(card.owner())
+      UserMapper.domainToCardOwnerInfoContract(card.owner())
     );
     cardContract.setBoardId(card.boardId());
     return cardContract;

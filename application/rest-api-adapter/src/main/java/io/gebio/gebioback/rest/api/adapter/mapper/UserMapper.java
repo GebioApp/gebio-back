@@ -5,7 +5,7 @@ import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.User;
 import java.util.List;
 
-public interface UserContractMapper {
+public interface UserMapper {
   static CurrentUserResponseContract domainToContract(User user) {
     CurrentUserResponseContract currentUserResponseContract =
       new CurrentUserResponseContract();

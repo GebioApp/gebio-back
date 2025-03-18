@@ -10,7 +10,7 @@ import io.gebio.gebioback.contract.model.FindBoardsResponseContract;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.in.UserFacade;
-import io.gebio.gebioback.rest.api.adapter.mapper.UserContractMapper;
+import io.gebio.gebioback.rest.api.adapter.mapper.UserMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
 import java.net.URI;
 import java.util.UUID;
@@ -45,14 +45,14 @@ public class UserController implements UserApi {
     URI location = getCreatedResourceURI(createdGuest.id());
 
     return ResponseEntity.created(location).body(
-      UserContractMapper.createGuestFromDomainToContract(createdGuest)
+      UserMapper.createGuestFromDomainToContract(createdGuest)
     );
   }
 
   @Override
   public ResponseEntity<FindBoardsResponseContract> findBoards(UUID userId) {
     return ResponseEntity.ok(
-      UserContractMapper.findBoardsDomainToContract(
+      UserMapper.findBoardsDomainToContract(
         boardFacade.findAllUserJoinedBoards(userId)
       )
     );
@@ -61,8 +61,6 @@ public class UserController implements UserApi {
   @Override
   public ResponseEntity<CurrentUserResponseContract> getCurrentUser() {
     final User authenticatedUser = authenticationService.getAuthenticatedUser();
-    return ResponseEntity.ok(
-      UserContractMapper.domainToContract(authenticatedUser)
-    );
+    return ResponseEntity.ok(UserMapper.domainToContract(authenticatedUser));
   }
 }
