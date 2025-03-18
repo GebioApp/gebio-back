@@ -28,7 +28,7 @@ public interface BoardMapper {
       createdBoard
         .members()
         .stream()
-        .map(UserContractMapper::memberFromDomainToContract)
+        .map(UserMapper::memberFromDomainToContract)
         .toList()
     );
     createBoardResponseContract.setBoard(boardContract);
@@ -50,7 +50,7 @@ public interface BoardMapper {
       board
         .members()
         .stream()
-        .map(UserContractMapper::memberFromDomainToContract)
+        .map(UserMapper::memberFromDomainToContract)
         .toList()
     );
     findBoardResponseContract.setBoard(boardContract);
@@ -74,7 +74,7 @@ public interface BoardMapper {
       board
         .members()
         .stream()
-        .map(UserContractMapper::memberFromDomainToContract)
+        .map(UserMapper::memberFromDomainToContract)
         .toList()
     );
     addUserToBoardResponseContract.setBoard(boardContract);
@@ -94,7 +94,7 @@ public interface BoardMapper {
       board
         .members()
         .stream()
-        .map(UserContractMapper::memberFromDomainToContract)
+        .map(UserMapper::memberFromDomainToContract)
         .toList()
     );
     return boardContract;
