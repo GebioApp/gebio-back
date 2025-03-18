@@ -46,7 +46,13 @@ public interface BoardMapper {
     boardContract.setCards(
       board.cards().stream().map(CardMapper::fromDomainToContract).toList()
     );
-    boardContract.setMembers(board.members().stream().map(UserContractMapper::memberFromDomainToContract).toList());
+    boardContract.setMembers(
+      board
+        .members()
+        .stream()
+        .map(UserContractMapper::memberFromDomainToContract)
+        .toList()
+    );
     findBoardResponseContract.setBoard(boardContract);
     return findBoardResponseContract;
   }
@@ -73,5 +79,24 @@ public interface BoardMapper {
     );
     addUserToBoardResponseContract.setBoard(boardContract);
     return addUserToBoardResponseContract;
+  }
+
+  static BoardContract fromDomainToContract(Board board) {
+    BoardContract boardContract = new BoardContract();
+    boardContract.setId(board.id());
+    boardContract.setTitle(board.name());
+    boardContract.setTemplateId(board.templateId());
+    boardContract.setOwnerId(board.owner().id());
+    boardContract.setCards(
+      board.cards().stream().map(CardMapper::fromDomainToContract).toList()
+    );
+    boardContract.setMembers(
+      board
+        .members()
+        .stream()
+        .map(UserContractMapper::memberFromDomainToContract)
+        .toList()
+    );
+    return boardContract;
   }
 }

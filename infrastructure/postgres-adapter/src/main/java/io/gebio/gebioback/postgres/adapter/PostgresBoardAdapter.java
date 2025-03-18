@@ -38,6 +38,10 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
 
   @Override
   public List<Board> findAllForIdInMemberIds(UUID userId) {
-    return List.of();
+    return boardRepository
+      .findByMemberIdsContain(userId)
+      .stream()
+      .map(BoardMapper::entityToDomain)
+      .toList();
   }
 }
