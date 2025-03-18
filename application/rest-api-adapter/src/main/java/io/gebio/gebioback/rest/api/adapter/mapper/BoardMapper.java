@@ -45,11 +45,7 @@ public interface BoardMapper {
       board.cards().stream().map(CardMapper::fromDomainToContract).toList()
     );
     boardContract.setMembers(
-      board
-        .members()
-        .stream()
-        .map(UserMapper::memberFromDomainToContract)
-        .toList()
+      board.members().stream().map(UserMapper::fromDomainToContract).toList()
     );
     return boardContract;
   }

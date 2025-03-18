@@ -9,12 +9,7 @@ public interface UserMapper {
   static CurrentUserResponseContract domainToContract(User user) {
     CurrentUserResponseContract currentUserResponseContract =
       new CurrentUserResponseContract();
-    UserContract userContract = new UserContract();
-    userContract.setId(user.id());
-    userContract.setEmail(user.email());
-    userContract.setLogo(user.profileLogo());
-    userContract.setUsername(user.username());
-    userContract.setRole(UserRoleContract.valueOf(user.role().name()));
+    UserContract userContract = fromDomainToContract(user);
     currentUserResponseContract.setUser(userContract);
     return currentUserResponseContract;
   }
@@ -29,27 +24,12 @@ public interface UserMapper {
     return cardOwnerInfoContract;
   }
 
-  static UserContract memberFromDomainToContract(User user) {
-    UserContract userContract = new UserContract();
-    userContract.setId(user.id());
-    userContract.setLogo(user.profileLogo());
-    userContract.setEmail(user.email());
-    userContract.setUsername(user.username());
-    userContract.setRole(UserRoleContract.valueOf(user.role().name()));
-    return userContract;
-  }
-
   static CreateGuestResponseContract createGuestFromDomainToContract(
     User guest
   ) {
     CreateGuestResponseContract createGuestResponseContract =
       new CreateGuestResponseContract();
-    UserContract userContract = new UserContract();
-    userContract.setId(guest.id());
-    userContract.setEmail(guest.email());
-    userContract.setUsername(guest.username());
-    userContract.setLogo(guest.profileLogo());
-    userContract.setRole(UserRoleContract.valueOf(guest.role().name()));
+    UserContract userContract = fromDomainToContract(guest);
     createGuestResponseContract.setUser(userContract);
     return createGuestResponseContract;
   }
@@ -65,5 +45,15 @@ public interface UserMapper {
       .toList();
     findBoardsResponseContract.setBoards(boardContracts);
     return findBoardsResponseContract;
+  }
+
+  static UserContract fromDomainToContract(User user) {
+    UserContract userContract = new UserContract();
+    userContract.setId(user.id());
+    userContract.setLogo(user.profileLogo());
+    userContract.setEmail(user.email());
+    userContract.setUsername(user.username());
+    userContract.setRole(UserRoleContract.valueOf(user.role().name()));
+    return userContract;
   }
 }
