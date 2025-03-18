@@ -8,6 +8,7 @@ import io.gebio.gebioback.contract.model.CreateGuestResponseContract;
 import io.gebio.gebioback.contract.model.CurrentUserResponseContract;
 import io.gebio.gebioback.contract.model.FindBoardsResponseContract;
 import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.in.UserFacade;
 import io.gebio.gebioback.rest.api.adapter.mapper.UserContractMapper;
 import io.gebio.gebioback.rest.api.adapter.service.AuthenticationService;
@@ -21,13 +22,16 @@ public class UserController implements UserApi {
 
   private final AuthenticationService authenticationService;
   private final UserFacade userFacade;
+  private final BoardFacade boardFacade;
 
   public UserController(
     AuthenticationService authenticationService,
-    UserFacade userFacade
+    UserFacade userFacade,
+    BoardFacade boardFacade
   ) {
     this.authenticationService = authenticationService;
     this.userFacade = userFacade;
+    this.boardFacade = boardFacade;
   }
 
   @Override
@@ -47,7 +51,11 @@ public class UserController implements UserApi {
 
   @Override
   public ResponseEntity<FindBoardsResponseContract> findBoards(UUID userId) {
-    return null;
+    return ResponseEntity.ok(
+      UserContractMapper.findBoardsDomainToContract(
+        boardFacade.findAllUserJoinedBoards(userId)
+      )
+    );
   }
 
   @Override

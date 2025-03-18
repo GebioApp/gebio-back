@@ -1,7 +1,9 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
 import io.gebio.gebioback.contract.model.*;
+import io.gebio.gebioback.domain.model.Board;
 import io.gebio.gebioback.domain.model.User;
+import java.util.List;
 
 public interface UserContractMapper {
   static CurrentUserResponseContract domainToContract(User user) {
@@ -50,5 +52,18 @@ public interface UserContractMapper {
     userContract.setRole(UserRoleContract.valueOf(guest.role().name()));
     createGuestResponseContract.setUser(userContract);
     return createGuestResponseContract;
+  }
+
+  static FindBoardsResponseContract findBoardsDomainToContract(
+    List<Board> boards
+  ) {
+    FindBoardsResponseContract findBoardsResponseContract =
+      new FindBoardsResponseContract();
+    List<BoardContract> boardContracts = boards
+      .stream()
+      .map(BoardMapper::fromDomainToContract)
+      .toList();
+    findBoardsResponseContract.setBoards(boardContracts);
+    return findBoardsResponseContract;
   }
 }
