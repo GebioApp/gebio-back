@@ -57,4 +57,9 @@ public class BoardService implements BoardFacade {
       .orElseThrow(() -> new UserNotFound(userId));
     return boardRepositoryPort.save(board.addUser(user));
   }
+
+  @Override
+  public List<Board> findAllUserJoinedBoards(UUID userId) {
+    return boardRepositoryPort.findAllForIdInMemberIds(userId);
+  }
 }

@@ -5,6 +5,7 @@ import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.postgres.mapper.BoardMapper;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
 import io.gebio.gebioback.postgres.repository.CardRepository;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -33,5 +34,10 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
   @Override
   public Optional<Board> findById(UUID boardId) {
     return boardRepository.findById(boardId).map(BoardMapper::entityToDomain);
+  }
+
+  @Override
+  public List<Board> findAllForIdInMemberIds(UUID userId) {
+    return List.of();
   }
 }
