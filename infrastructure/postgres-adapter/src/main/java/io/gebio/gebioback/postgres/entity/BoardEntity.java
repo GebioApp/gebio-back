@@ -1,9 +1,12 @@
 package io.gebio.gebioback.postgres.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "board")
@@ -44,6 +47,14 @@ public class BoardEntity {
     inverseJoinColumns = @JoinColumn(name = "user_id")
   )
   private List<UserEntity> members;
+
+  @CreationTimestamp
+  @Column(name = "creation_date")
+  private Instant creationDate;
+
+  @UpdateTimestamp
+  @Column(name = "modification_date")
+  private Instant modificationDate;
 
   public BoardEntity() {}
 

@@ -1,8 +1,11 @@
 package io.gebio.gebioback.postgres.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "gebio_user")
@@ -39,6 +42,14 @@ public class UserEntity {
 
   @Column(name = "role")
   private String role;
+
+  @CreationTimestamp
+  @Column(name = "creation_date")
+  private Instant creationDate;
+
+  @UpdateTimestamp
+  @Column(name = "modification_date")
+  private Instant modificationDate;
 
   public UserEntity() {}
 

@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/changelogs/0005_create_joint_table_board_user.sql
   - include:
       file: db/changelog/changelogs/0006_make_email_in_user_table_nullable_and_add_username.yaml
+  - include:
+      file: db/changelog/changelogs/0007_add_creation_and_modification_date_on_tables.yaml

@@ -1,7 +1,10 @@
 package io.gebio.gebioback.postgres.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "card")
@@ -30,6 +33,14 @@ public class CardEntity {
   @ManyToOne
   @JoinColumn(name = "board_id")
   private BoardEntity board;
+
+  @CreationTimestamp
+  @Column(name = "creation_date")
+  private Instant creationDate;
+
+  @UpdateTimestamp
+  @Column(name = "modification_date")
+  private Instant modificationDate;
 
   public CardEntity() {}
 
