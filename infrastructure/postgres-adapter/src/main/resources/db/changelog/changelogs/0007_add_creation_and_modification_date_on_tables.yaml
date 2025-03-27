@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0007
+      author: dorian-frances
+      changes:
+        - addColumn:
+            tableName: gebio_user
+            columns:
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: modification_date
+                  type: timestamp
+        - addColumn:
+            tableName: board
+            columns:
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: modification_date
+                  type: timestamp
+        - addColumn:
+            tableName: card
+            columns:
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: modification_date
+                  type: timestamp
