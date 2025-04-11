@@ -1,6 +1,7 @@
 package io.gebio.gebioback.bootstrap.it;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -195,6 +196,12 @@ class AbstractGebioBackApiIT {
   ResultActions doGetWithoutToken(String endpoint) throws Exception {
     return mockMvc.perform(
       get(endpoint).contentType(MediaType.APPLICATION_JSON)
+    );
+  }
+
+  public static org.hamcrest.Matcher<String> isDatetimeWithUTCFormat() {
+    return matchesPattern(
+      "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
     );
   }
 }
