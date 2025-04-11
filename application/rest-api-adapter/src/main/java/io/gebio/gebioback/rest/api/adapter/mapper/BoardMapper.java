@@ -47,6 +47,8 @@ public interface BoardMapper {
     boardContract.setMembers(
       board.members().stream().map(UserMapper::fromDomainToContract).toList()
     );
+    boardContract.setCreatedAt(board.createdAt());
+    boardContract.setUpdatedAt(board.updatedAt());
     return boardContract;
   }
 }

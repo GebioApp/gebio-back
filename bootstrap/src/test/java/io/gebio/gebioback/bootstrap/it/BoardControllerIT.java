@@ -1,8 +1,7 @@
 package io.gebio.gebioback.bootstrap.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -143,6 +142,22 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             "$.board.members[0].email",
             equalTo(AUTHENTICATED_USER_EMAIL)
           )
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.createdAt",
+            matchesPattern(
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
+            )
+          )
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.updatedAt",
+            matchesPattern(
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
+            )
+          )
         );
     }
   }
@@ -201,7 +216,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
       board.setCards(List.of(card1, card2));
 
-      boardRepository.save(board);
+      boardRepository.saveAndFlush(board);
 
       doGetWithToken(FIND_BOARD_API_URL.formatted(boardId))
         .andExpect(status().isOk())
@@ -248,10 +263,19 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           )
         )
         .andExpect(jsonPath("$.board.members", hasSize(1)))
+        .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
         .andExpect(
-          jsonPath(
-            "$.board.members[0].id",
-            equalTo(id.toString())
+          jsonPath("$.board.createdAt").value(
+            matchesPattern(
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
+            )
+          )
+        )
+        .andExpect(
+          jsonPath("$.board.updatedAt").value(
+            matchesPattern(
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
+            )
           )
         );
     }
