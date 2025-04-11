@@ -83,6 +83,14 @@ public class BoardController implements BoardApi {
     );
   }
 
+  @Override
+  public ResponseEntity<UpdateBoardResponseContract> updateBoard(
+    UUID boardId,
+    UpdateBoardRequestContract renameBoardRequestContract
+  ) {
+    return null;
+  }
+
   @MessageMapping("/board/add-card")
   public void addCard(@Payload AddCardRequestContract addCardRequestContract) {
     Card addedCard = cardFacade.addCardToBoard(

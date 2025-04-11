@@ -146,6 +146,40 @@ paths:
                 $ref: '#/components/schemas/CreateBoardResponseContract'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+    patch:
+      security:
+        - bearerAuth: [ ]
+      summary: Update board
+      description: Allow authenticated user to update board
+      operationId: updateBoard
+      tags:
+        - Board
+      parameters:
+        - name: board_id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBoardRequestContract'
+      responses:
+        "200":
+          description: Successfully renamed board
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateBoardResponseContract'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          description: Board was not found
   /api/v1/public/board/{board_id}/add-user:
     post:
       security:
@@ -196,6 +230,22 @@ components:
           format: uuid
     AddUserToBoardResponseContract:
       description: Add current user to retrospective board response contract
+      type: object
+      required:
+        - board
+      properties:
+        board:
+          $ref: '#/components/schemas/BoardContract'
+    UpdateBoardRequestContract:
+      description: Update retrospective board request contract
+      type: object
+      required:
+        - boardName
+      properties:
+        boardName:
+          type: string
+    UpdateBoardResponseContract:
+      description: Update retrospective board response contract
       type: object
       required:
         - board
@@ -411,5 +461,7 @@ components:
   responses:
     UnauthorizedError:
       description: Authentication is missing or invalid
+    ForbiddenError:
+      description: User is not allowed to perform this action
 
 
