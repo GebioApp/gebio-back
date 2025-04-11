@@ -1,6 +1,7 @@
 package io.gebio.gebioback.postgres.adapter;
 
 import io.gebio.gebioback.domain.model.Board;
+import io.gebio.gebioback.domain.model.BoardCreationCommand;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.postgres.mapper.BoardMapper;
 import io.gebio.gebioback.postgres.repository.BoardRepository;
@@ -25,7 +26,14 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
   }
 
   @Override
-  public Board save(Board board) {
+  public Board create(BoardCreationCommand board) {
+    return BoardMapper.entityToDomain(
+      boardRepository.save(BoardMapper.domainToEntity(board))
+    );
+  }
+
+  @Override
+  public Board update(Board board) {
     return BoardMapper.entityToDomain(
       boardRepository.save(BoardMapper.domainToEntity(board))
     );

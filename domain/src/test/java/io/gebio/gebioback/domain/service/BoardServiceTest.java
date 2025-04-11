@@ -7,12 +7,10 @@ import static org.mockito.Mockito.when;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.core.exception.UserNotFound;
-import io.gebio.gebioback.domain.model.Board;
-import io.gebio.gebioback.domain.model.Card;
-import io.gebio.gebioback.domain.model.User;
-import io.gebio.gebioback.domain.model.UserRole;
+import io.gebio.gebioback.domain.model.*;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +40,8 @@ class BoardServiceTest {
     @Test
     void should_create_board_given_board_name_and_board_template() {
       //given
-      ArgumentCaptor<Board> argumentCaptor = ArgumentCaptor.captor();
+      ArgumentCaptor<BoardCreationCommand> argumentCaptor =
+        ArgumentCaptor.captor();
 
       UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
       String userEmail = "dorianf@gebio.com";
@@ -55,8 +54,8 @@ class BoardServiceTest {
       boardService.createWithOwner(templateId, boardName, currentUser);
 
       //then
-      verify(boardRepositoryPort).save(argumentCaptor.capture());
-      Board savedBoard = argumentCaptor.getValue();
+      verify(boardRepositoryPort).create(argumentCaptor.capture());
+      BoardCreationCommand savedBoard = argumentCaptor.getValue();
       assertThat(savedBoard.id()).isNotNull();
       assertThat(savedBoard.name()).isEqualTo(boardName);
       assertThat(savedBoard.templateId()).isEqualTo(templateId);
@@ -110,7 +109,9 @@ class BoardServiceTest {
         UUID.randomUUID(),
         boardOwner,
         cards,
-        List.of(boardOwner)
+        List.of(boardOwner),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
       );
       when(boardRepositoryPort.findById(boardId)).thenReturn(
         Optional.of(expectedBoard)
@@ -171,7 +172,9 @@ class BoardServiceTest {
         UUID.randomUUID(),
         boardOwner,
         cards,
-        List.of(boardOwner)
+        List.of(boardOwner),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
       );
       when(boardRepositoryPort.findById(boardId)).thenReturn(
         Optional.of(expectedBoard)
@@ -211,13 +214,18 @@ class BoardServiceTest {
           boardId
         )
       );
+
+      OffsetDateTime createdAt = OffsetDateTime.now();
+      OffsetDateTime updatedAt = OffsetDateTime.now();
       Board expectedBoard = new Board(
         boardId,
         "My board",
         UUID.randomUUID(),
         boardOwner,
         cards,
-        List.of(boardOwner)
+        List.of(boardOwner),
+        createdAt,
+        updatedAt
       );
       when(boardRepositoryPort.findById(boardId)).thenReturn(
         Optional.of(expectedBoard)
@@ -239,12 +247,14 @@ class BoardServiceTest {
         expectedBoard.templateId(),
         boardOwner,
         cards,
-        List.of(boardOwner, expectedUser)
+        List.of(boardOwner, expectedUser),
+        createdAt,
+        updatedAt
       );
 
       boardService.addUserToBoard(boardId, userId);
 
-      verify(boardRepositoryPort).save(updatedBoard);
+      verify(boardRepositoryPort).update(updatedBoard);
     }
   }
 

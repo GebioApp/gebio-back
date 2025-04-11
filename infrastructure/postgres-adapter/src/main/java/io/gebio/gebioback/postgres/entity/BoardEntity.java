@@ -109,4 +109,12 @@ public class BoardEntity {
       .toList();
     this.setCards(updatedCards);
   }
+
+  public Instant getCreationDate() {
+    return creationDate;
+  }
+
+  public Instant getModificationDate() {
+    return modificationDate;
+  }
 }

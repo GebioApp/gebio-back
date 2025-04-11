@@ -3,6 +3,7 @@ package io.gebio.gebioback.domain.service;
 import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.core.exception.UserNotFound;
 import io.gebio.gebioback.domain.model.Board;
+import io.gebio.gebioback.domain.model.BoardCreationCommand;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
@@ -28,8 +29,8 @@ public class BoardService implements BoardFacade {
 
   @Override
   public Board createWithOwner(UUID templateId, String boardName, User owner) {
-    return boardRepositoryPort.save(
-      new Board(
+    return boardRepositoryPort.create(
+      new BoardCreationCommand(
         UUID.randomUUID(),
         boardName,
         templateId,
@@ -55,7 +56,7 @@ public class BoardService implements BoardFacade {
     User user = userRepositoryPort
       .findById(userId)
       .orElseThrow(() -> new UserNotFound(userId));
-    return boardRepositoryPort.save(board.addUser(user));
+    return boardRepositoryPort.update(board.addUser(user));
   }
 
   @Override
