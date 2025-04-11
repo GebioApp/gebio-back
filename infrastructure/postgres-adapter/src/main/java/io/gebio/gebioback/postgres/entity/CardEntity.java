@@ -42,6 +42,9 @@ public class CardEntity {
   @Column(name = "modification_date")
   private Instant modificationDate;
 
+  @Column(name = "votes", nullable = false)
+  private int votes;
+
   public CardEntity() {}
 
   public CardEntity(
@@ -51,7 +54,8 @@ public class CardEntity {
     int posX,
     int posY,
     UserEntity owner,
-    BoardEntity board
+    BoardEntity board,
+    int votes
   ) {
     this.id = id;
     this.content = content;
@@ -60,6 +64,7 @@ public class CardEntity {
     this.posY = posY;
     this.owner = owner;
     this.board = board;
+    this.votes = votes;
   }
 
   public UUID getId() {
@@ -90,6 +95,10 @@ public class CardEntity {
     return board;
   }
 
+  public int getVotes() {
+    return votes;
+  }
+
   public void setId(UUID id) {
     this.id = id;
   }
@@ -116,5 +125,9 @@ public class CardEntity {
 
   public void setBoard(BoardEntity board) {
     this.board = board;
+  }
+
+  public void setVotes(int votes) {
+    this.votes = votes;
   }
 }

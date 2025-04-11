@@ -100,7 +100,8 @@ class BoardServiceTest {
           "#000000",
           new Card.Position(100, 100),
           cardOwner,
-          boardId
+          boardId,
+          0
         )
       );
       Board expectedBoard = new Board(
@@ -163,7 +164,8 @@ class BoardServiceTest {
           "#000000",
           new Card.Position(100, 100),
           cardOwner,
-          boardId
+          boardId,
+          0
         )
       );
       Board expectedBoard = new Board(
@@ -211,7 +213,8 @@ class BoardServiceTest {
           "#000000",
           new Card.Position(100, 100),
           cardOwner,
-          boardId
+          boardId,
+          0
         )
       );
 

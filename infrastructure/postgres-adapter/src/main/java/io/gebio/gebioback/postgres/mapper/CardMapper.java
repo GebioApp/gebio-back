@@ -13,7 +13,8 @@ public interface CardMapper {
       card.position().posX(),
       card.position().posY(),
       UserMapper.domainToEntity(card.owner()),
-      boardEntity
+      boardEntity,
+      card.votes()
     );
   }
 
@@ -24,7 +25,8 @@ public interface CardMapper {
       cardEntity.getColor(),
       new Card.Position(cardEntity.getPosX(), cardEntity.getPosY()),
       UserMapper.entityToDomain(cardEntity.getOwner()),
-      cardEntity.getBoard().getId()
+      cardEntity.getBoard().getId(),
+      cardEntity.getVotes()
     );
   }
 
@@ -36,6 +38,7 @@ public interface CardMapper {
     cardEntity.setColor(card.color());
     cardEntity.setPosX(card.position().posX());
     cardEntity.setPosY(card.position().posY());
+    cardEntity.setVotes(card.votes());
     return cardEntity;
   }
 }
