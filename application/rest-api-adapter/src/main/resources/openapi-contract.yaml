@@ -285,6 +285,7 @@ components:
         - color
         - position
         - ownerInfo
+        - votes
       properties:
         id:
           type: string
@@ -300,6 +301,8 @@ components:
         boardId:
           type: string
           format: uuid
+        votes:
+          type: integer
     CardPositionContract:
       type: object
       required:

@@ -45,6 +45,7 @@ public interface CardMapper {
       UserMapper.domainToCardOwnerInfoContract(card.owner())
     );
     cardContract.setBoardId(card.boardId());
+    cardContract.votes(card.votes());
     return cardContract;
   }
 
@@ -64,7 +65,8 @@ public interface CardMapper {
         cardContract.getOwnerInfo().getUsername(),
         UserRole.valueOf(cardContract.getOwnerInfo().getRole().getValue())
       ),
-      null
+      null,
+      cardContract.getVotes()
     );
   }
 

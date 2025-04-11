@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0008
+      author: leo-merran
+      changes:
+        - addColumn:
+            tableName: card
+            columns:
+              - column:
+                  name: votes
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValue: "0"

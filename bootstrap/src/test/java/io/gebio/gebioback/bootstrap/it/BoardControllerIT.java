@@ -193,7 +193,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         10,
         20,
         userEntity,
-        board
+        board,
+        0
       );
       CardEntity card2 = new CardEntity(
         UUID.randomUUID(),
@@ -202,7 +203,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         30,
         40,
         userEntity,
-        board
+        board,
+        0
       );
 
       board.setCards(List.of(card1, card2));
@@ -298,7 +300,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           "Test Card",
           "#FF5733",
           new CardPositionContract(1, 2),
-          ownerInfoContract
+          ownerInfoContract,
+          0
         )
       );
 
@@ -362,7 +365,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         10,
         20,
         guestEntity,
-        boardEntity
+        boardEntity,
+        0
       );
       boardEntity.setCards(List.of(cardEntity));
       boardRepository.save(boardEntity);
@@ -382,7 +386,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           "Card 1 Content modified",
           "#FF5735",
           new CardPositionContract(20, 30),
-          ownerInfoContract
+          ownerInfoContract,
+          2
         )
       );
 
@@ -421,6 +426,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
             UserRoleContract.valueOf(guestEntity.getRole())
           );
           assertThat(updatedCard.getBoardId()).isEqualTo(boardId);
+          assertThat(updatedCard.getVotes()).isEqualTo(2);
         });
     }
 
@@ -448,7 +454,8 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           10,
           20,
           guestEntity,
-          boardEntity
+          boardEntity,
+          0
         );
         boardEntity.setCards(List.of(cardEntity));
         boardRepository.save(boardEntity);
