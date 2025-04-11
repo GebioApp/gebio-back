@@ -1,7 +1,8 @@
 package io.gebio.gebioback.bootstrap.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -144,20 +145,10 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
           )
         )
         .andExpect(
-          jsonPath(
-            "$.board.createdAt",
-            matchesPattern(
-              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
-            )
-          )
+          jsonPath("$.board.createdAt").value(isDatetimeWithUTCFormat())
         )
         .andExpect(
-          jsonPath(
-            "$.board.updatedAt",
-            matchesPattern(
-              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
-            )
-          )
+          jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
         );
     }
   }
@@ -265,18 +256,10 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         .andExpect(jsonPath("$.board.members", hasSize(1)))
         .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
         .andExpect(
-          jsonPath("$.board.createdAt").value(
-            matchesPattern(
-              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
-            )
-          )
+          jsonPath("$.board.createdAt").value(isDatetimeWithUTCFormat())
         )
         .andExpect(
-          jsonPath("$.board.updatedAt").value(
-            matchesPattern(
-              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)$"
-            )
-          )
+          jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
         );
     }
   }
