@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
+import io.gebio.gebioback.core.exception.UserIsNotOwnerOfBoard;
 import io.gebio.gebioback.core.exception.UserNotFound;
 import io.gebio.gebioback.domain.model.*;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
@@ -274,6 +275,120 @@ class BoardServiceTest {
       List<Board> boards = boardService.findAllUserJoinedBoards(userId);
 
       assertThat(boards).isEmpty();
+    }
+  }
+
+  @Nested
+  class UpdateBoardTest {
+
+    @Test
+    void should_throw_when_board_not_found() {
+      // given
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+      String newName = "New Board Name";
+      BoardUpdateCommand command = new BoardUpdateCommand(
+        boardId,
+        userId,
+        newName
+      );
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(Optional.empty());
+
+      // when/then
+      assertThatThrownBy(() -> boardService.updateBoard(command))
+        .isExactlyInstanceOf(BoardNotFound.class)
+        .hasMessage(
+          "Board with id 184628cc-1493-414d-a9b5-ede2247d88ee was not found"
+        );
+    }
+
+    @Test
+    void should_throw_when_user_is_not_board_owner() {
+      // given
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID ownerId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+      UUID differentUserId = UUID.fromString(
+        "45920a0f-7c3f-484d-96a3-7efa789c6079"
+      );
+
+      User owner = new User(
+        ownerId,
+        "owner@gebio.com",
+        null,
+        null,
+        UserRole.USER
+      );
+      Board board = new Board(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        owner,
+        List.of(),
+        List.of(),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
+      );
+      BoardUpdateCommand command = new BoardUpdateCommand(
+        boardId,
+        differentUserId,
+        "New Board Name"
+      );
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(board)
+      );
+
+      // when/then
+      assertThatThrownBy(() -> boardService.updateBoard(command))
+        .isExactlyInstanceOf(UserIsNotOwnerOfBoard.class)
+        .hasMessage(
+          "User %s is not owner of board %s".formatted(
+              command.userId(),
+              command.boardId()
+            )
+        );
+    }
+
+    @Test
+    void should_successfully_update_board() {
+      ArgumentCaptor<Board> boardArgumentCaptor = ArgumentCaptor.captor();
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID ownerId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+
+      User owner = new User(
+        ownerId,
+        "owner@gebio.com",
+        null,
+        null,
+        UserRole.USER
+      );
+      Board board = new Board(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        owner,
+        List.of(),
+        List.of(),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
+      );
+      String newName = "New Board Name";
+      BoardUpdateCommand command = new BoardUpdateCommand(
+        boardId,
+        ownerId,
+        newName
+      );
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(board)
+      );
+
+      boardService.updateBoard(command);
+
+      verify(boardRepositoryPort).update(boardArgumentCaptor.capture());
+      Board updatedBoard = boardArgumentCaptor.getValue();
+      assertThat(updatedBoard.name()).isEqualTo(newName);
     }
   }
 }
