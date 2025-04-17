@@ -117,4 +117,12 @@ public class BoardEntity {
   public Instant getModificationDate() {
     return modificationDate;
   }
+
+  public void setCreationDate(Instant creationDate) {
+    this.creationDate = creationDate;
+  }
+
+  public void setModificationDate(Instant modificationDate) {
+    this.modificationDate = modificationDate;
+  }
 }

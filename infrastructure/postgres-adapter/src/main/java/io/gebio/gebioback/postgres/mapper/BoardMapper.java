@@ -5,6 +5,7 @@ import io.gebio.gebioback.domain.model.BoardCreationCommand;
 import io.gebio.gebioback.postgres.entity.BoardEntity;
 import io.gebio.gebioback.postgres.entity.CardEntity;
 import io.gebio.gebioback.postgres.entity.UserEntity;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -53,6 +54,8 @@ public interface BoardMapper {
       .toList();
     boardEntity.setCards(cardEntities);
     boardEntity.setMembers(members);
+    boardEntity.setCreationDate(Instant.now());
+    boardEntity.setModificationDate(Instant.now());
     return boardEntity;
   }
 
@@ -75,6 +78,8 @@ public interface BoardMapper {
       .toList();
     boardEntity.setCards(cardEntities);
     boardEntity.setMembers(members);
+    boardEntity.setCreationDate(board.createdAt().toInstant());
+    boardEntity.setModificationDate(board.updatedAt().toInstant());
     return boardEntity;
   }
 }

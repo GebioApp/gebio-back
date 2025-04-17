@@ -153,6 +153,7 @@ class AbstractGebioBackApiIT {
   protected static final String FIND_USER_BOARDS_API_URL =
     "/api/v1/user/%s/board";
   protected static final String CREATE_BOARD_API_URL = "/api/v1/board";
+  protected static final String UPDATE_BOARD_API_URL = "/api/v1/board/%s";
   protected static final String FIND_BOARD_API_URL = "/api/v1/public/board/%s";
   protected static final String ADD_USER_TO_BOARD_API_URL =
     "/api/v1/public/board/%s/add-user";

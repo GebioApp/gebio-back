@@ -1,9 +1,6 @@
 package io.gebio.gebioback.rest.api.adapter.mapper;
 
-import io.gebio.gebioback.contract.model.AddUserToBoardResponseContract;
-import io.gebio.gebioback.contract.model.BoardContract;
-import io.gebio.gebioback.contract.model.CreateBoardResponseContract;
-import io.gebio.gebioback.contract.model.FindBoardResponseContract;
+import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.Board;
 
 public interface BoardMapper {
@@ -15,6 +12,16 @@ public interface BoardMapper {
     BoardContract boardContract = fromDomainToContract(createdBoard);
     createBoardResponseContract.setBoard(boardContract);
     return createBoardResponseContract;
+  }
+
+  static UpdateBoardResponseContract updateBoardFromDomainToContract(
+    Board updatedBoard
+  ) {
+    UpdateBoardResponseContract updateBoardResponseContract =
+      new UpdateBoardResponseContract();
+    BoardContract boardContract = fromDomainToContract(updatedBoard);
+    updateBoardResponseContract.setBoard(boardContract);
+    return updateBoardResponseContract;
   }
 
   static FindBoardResponseContract findBoardFromDomainToContract(Board board) {
