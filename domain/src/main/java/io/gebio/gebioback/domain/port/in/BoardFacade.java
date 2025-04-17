@@ -1,6 +1,7 @@
 package io.gebio.gebioback.domain.port.in;
 
 import io.gebio.gebioback.domain.model.Board;
+import io.gebio.gebioback.domain.model.BoardDeleteCommand;
 import io.gebio.gebioback.domain.model.BoardUpdateCommand;
 import io.gebio.gebioback.domain.model.User;
 import java.util.List;
@@ -12,4 +13,5 @@ public interface BoardFacade {
   Board addUserToBoard(UUID boardId, UUID userId);
   List<Board> findAllUserJoinedBoards(UUID userId);
   Board updateBoard(BoardUpdateCommand updateBoardCommand);
+  Board deleteBoard(BoardDeleteCommand boardDeleteCommand);
 }

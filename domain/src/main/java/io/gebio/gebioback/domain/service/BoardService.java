@@ -2,10 +2,7 @@ package io.gebio.gebioback.domain.service;
 
 import io.gebio.gebioback.core.exception.BoardNotFound;
 import io.gebio.gebioback.core.exception.UserNotFound;
-import io.gebio.gebioback.domain.model.Board;
-import io.gebio.gebioback.domain.model.BoardCreationCommand;
-import io.gebio.gebioback.domain.model.BoardUpdateCommand;
-import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.*;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.out.BoardRepositoryPort;
 import io.gebio.gebioback.domain.port.out.UserRepositoryPort;
@@ -73,5 +70,10 @@ public class BoardService implements BoardFacade {
     board.checkBoardOwner(updateBoardCommand.userId());
     Board updateBoard = board.updateName(updateBoardCommand.name());
     return boardRepositoryPort.update(updateBoard);
+  }
+
+  @Override
+  public Board deleteBoard(BoardDeleteCommand boardDeleteCommand) {
+    return null;
   }
 }
