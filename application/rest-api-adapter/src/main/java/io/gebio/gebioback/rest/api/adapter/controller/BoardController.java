@@ -4,10 +4,7 @@ import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder
 
 import io.gebio.gebioback.contract.api.BoardApi;
 import io.gebio.gebioback.contract.model.*;
-import io.gebio.gebioback.domain.model.Board;
-import io.gebio.gebioback.domain.model.BoardUpdateCommand;
-import io.gebio.gebioback.domain.model.Card;
-import io.gebio.gebioback.domain.model.User;
+import io.gebio.gebioback.domain.model.*;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
 import io.gebio.gebioback.domain.port.in.CardFacade;
 import io.gebio.gebioback.rest.api.adapter.mapper.BoardMapper;
@@ -79,7 +76,9 @@ public class BoardController implements BoardApi {
 
   @Override
   public ResponseEntity<Void> deleteBoard(UUID boardId) {
-    return null;
+    User currentUser = authenticationService.getAuthenticatedUser();
+    boardFacade.deleteBoard(new BoardDeleteCommand(boardId, currentUser.id()));
+    return ResponseEntity.noContent().build();
   }
 
   @Override
