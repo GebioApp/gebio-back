@@ -409,5 +409,49 @@ class BoardServiceTest {
           "Board with id 184628cc-1493-414d-a9b5-ede2247d88ee was not found"
         );
     }
+
+    @Test
+    void should_throw_when_user_is_not_board_owner() {
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID ownerId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+      UUID differentUserId = UUID.fromString(
+        "45920a0f-7c3f-484d-96a3-7efa789c6079"
+      );
+
+      User owner = new User(
+        ownerId,
+        "owner@gebio.com",
+        null,
+        null,
+        UserRole.USER
+      );
+      Board board = new Board(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        owner,
+        List.of(),
+        List.of(),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
+      );
+      BoardDeleteCommand command = new BoardDeleteCommand(
+        boardId,
+        differentUserId
+      );
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(board)
+      );
+
+      assertThatThrownBy(() -> boardService.deleteBoard(command))
+        .isExactlyInstanceOf(UserIsNotOwnerOfBoard.class)
+        .hasMessage(
+          "User %s is not owner of board %s".formatted(
+              command.userId(),
+              command.boardId()
+            )
+        );
+    }
   }
 }

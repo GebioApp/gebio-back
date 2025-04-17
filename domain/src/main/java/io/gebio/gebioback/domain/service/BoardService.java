@@ -77,6 +77,7 @@ public class BoardService implements BoardFacade {
     Board board = boardRepositoryPort
       .findById(deleteBoardCommand.boardId())
       .orElseThrow(() -> new BoardNotFound(deleteBoardCommand.boardId()));
+    board.checkBoardOwner(deleteBoardCommand.userId());
     return null;
   }
 }
