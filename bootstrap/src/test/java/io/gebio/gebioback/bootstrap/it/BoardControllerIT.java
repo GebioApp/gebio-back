@@ -62,6 +62,119 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
   }
 
   @Nested
+  class FindBoard {
+
+    UUID boardId = UUID.fromString("99c25084-4df3-42da-bece-4e7e50788abb");
+
+    @Test
+    void should_return_404_when_board_was_not_found() throws Exception {
+      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId)).andExpect(
+        status().isNotFound()
+      );
+    }
+
+    @Test
+    void should_return_200_and_retrieve_existing_board() throws Exception {
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(userEntity);
+
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+
+      board.setMembers(List.of(userEntity));
+
+      CardEntity card1 = new CardEntity(
+        UUID.randomUUID(),
+        "Card 1 Content",
+        "#FF5733",
+        10,
+        20,
+        userEntity,
+        board,
+        0
+      );
+      CardEntity card2 = new CardEntity(
+        UUID.randomUUID(),
+        "Card 2 Content",
+        "#33FF57",
+        30,
+        40,
+        userEntity,
+        board,
+        0
+      );
+
+      board.setCards(List.of(card1, card2));
+
+      boardRepository.saveAndFlush(board);
+
+      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.board.id", equalTo(boardId.toString())))
+        .andExpect(jsonPath("$.board.title", equalTo(board.getName())))
+        .andExpect(
+          jsonPath(
+            "$.board.templateId",
+            equalTo(board.getTemplateId().toString())
+          )
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.ownerId",
+            equalTo(board.getOwner().getId().toString())
+          )
+        )
+        .andExpect(jsonPath("$.board.cards", hasSize(2)))
+        .andExpect(
+          jsonPath("$.board.cards[0].id", equalTo(card1.getId().toString()))
+        )
+        .andExpect(
+          jsonPath("$.board.cards[0].content", equalTo(card1.getContent()))
+        )
+        .andExpect(
+          jsonPath("$.board.cards[0].color", equalTo(card1.getColor()))
+        )
+        .andExpect(
+          jsonPath("$.board.cards[0].position.posX", equalTo(card1.getPosX()))
+        )
+        .andExpect(
+          jsonPath("$.board.cards[0].position.posY", equalTo(card1.getPosY()))
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.cards[0].ownerInfo.id",
+            equalTo(card1.getOwner().getId().toString())
+          )
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.cards[0].ownerInfo.logo",
+            equalTo(card1.getOwner().getProfileLogo())
+          )
+        )
+        .andExpect(jsonPath("$.board.members", hasSize(1)))
+        .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
+        .andExpect(
+          jsonPath("$.board.createdAt").value(isDatetimeWithUTCFormat())
+        )
+        .andExpect(
+          jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
+        );
+    }
+  }
+
+  @Nested
   class CreateBoard {
 
     @Test
@@ -452,119 +565,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         .andExpect(status().isNoContent());
 
       assertThat(boardRepository.findById(boardId)).isEmpty();
-    }
-  }
-
-  @Nested
-  class FindBoard {
-
-    UUID boardId = UUID.fromString("99c25084-4df3-42da-bece-4e7e50788abb");
-
-    @Test
-    void should_return_404_when_board_was_not_found() throws Exception {
-      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId)).andExpect(
-        status().isNotFound()
-      );
-    }
-
-    @Test
-    void should_return_200_and_retrieve_existing_board() throws Exception {
-      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
-      UserEntity userEntity = new UserEntity(
-        id,
-        AUTHENTICATED_USER_EMAIL,
-        AUTHENTICATED_USER_LOGO,
-        AUTHENTICATED_USER_USERNAME,
-        UserRole.USER.name()
-      );
-      userRepository.save(userEntity);
-
-      BoardEntity board = new BoardEntity(
-        boardId,
-        "Test Board",
-        UUID.randomUUID(),
-        userEntity
-      );
-
-      board.setMembers(List.of(userEntity));
-
-      CardEntity card1 = new CardEntity(
-        UUID.randomUUID(),
-        "Card 1 Content",
-        "#FF5733",
-        10,
-        20,
-        userEntity,
-        board,
-        0
-      );
-      CardEntity card2 = new CardEntity(
-        UUID.randomUUID(),
-        "Card 2 Content",
-        "#33FF57",
-        30,
-        40,
-        userEntity,
-        board,
-        0
-      );
-
-      board.setCards(List.of(card1, card2));
-
-      boardRepository.saveAndFlush(board);
-
-      doGetWithToken(FIND_BOARD_API_URL.formatted(boardId))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.board.id", equalTo(boardId.toString())))
-        .andExpect(jsonPath("$.board.title", equalTo(board.getName())))
-        .andExpect(
-          jsonPath(
-            "$.board.templateId",
-            equalTo(board.getTemplateId().toString())
-          )
-        )
-        .andExpect(
-          jsonPath(
-            "$.board.ownerId",
-            equalTo(board.getOwner().getId().toString())
-          )
-        )
-        .andExpect(jsonPath("$.board.cards", hasSize(2)))
-        .andExpect(
-          jsonPath("$.board.cards[0].id", equalTo(card1.getId().toString()))
-        )
-        .andExpect(
-          jsonPath("$.board.cards[0].content", equalTo(card1.getContent()))
-        )
-        .andExpect(
-          jsonPath("$.board.cards[0].color", equalTo(card1.getColor()))
-        )
-        .andExpect(
-          jsonPath("$.board.cards[0].position.posX", equalTo(card1.getPosX()))
-        )
-        .andExpect(
-          jsonPath("$.board.cards[0].position.posY", equalTo(card1.getPosY()))
-        )
-        .andExpect(
-          jsonPath(
-            "$.board.cards[0].ownerInfo.id",
-            equalTo(card1.getOwner().getId().toString())
-          )
-        )
-        .andExpect(
-          jsonPath(
-            "$.board.cards[0].ownerInfo.logo",
-            equalTo(card1.getOwner().getProfileLogo())
-          )
-        )
-        .andExpect(jsonPath("$.board.members", hasSize(1)))
-        .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
-        .andExpect(
-          jsonPath("$.board.createdAt").value(isDatetimeWithUTCFormat())
-        )
-        .andExpect(
-          jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
-        );
     }
   }
 
