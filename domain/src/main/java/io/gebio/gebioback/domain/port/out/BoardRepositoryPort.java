@@ -11,4 +11,5 @@ public interface BoardRepositoryPort {
   Board update(Board board);
   Optional<Board> findById(UUID boardId);
   List<Board> findAllForIdInMemberIds(UUID userId);
+  void deleteById(UUID boardId);
 }

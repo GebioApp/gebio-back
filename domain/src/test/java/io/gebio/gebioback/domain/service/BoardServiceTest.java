@@ -453,5 +453,38 @@ class BoardServiceTest {
             )
         );
     }
+
+    @Test
+    void should_successfully_delete_board() {
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID ownerId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+
+      User owner = new User(
+        ownerId,
+        "owner@gebio.com",
+        null,
+        null,
+        UserRole.USER
+      );
+      Board board = new Board(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        owner,
+        List.of(),
+        List.of(),
+        OffsetDateTime.now(),
+        OffsetDateTime.now()
+      );
+      BoardDeleteCommand command = new BoardDeleteCommand(boardId, ownerId);
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(
+        Optional.of(board)
+      );
+
+      boardService.deleteBoard(command);
+
+      verify(boardRepositoryPort).deleteById(boardId);
+    }
   }
 }
