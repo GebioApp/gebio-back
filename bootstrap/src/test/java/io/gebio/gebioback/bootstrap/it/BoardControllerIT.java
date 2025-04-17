@@ -419,7 +419,6 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
       board.setMembers(List.of(userEntity));
       boardRepository.saveAndFlush(board);
 
-      // Exécution
       mockMvc
         .perform(
           patch(UPDATE_BOARD_API_URL.formatted(boardId))
