@@ -181,6 +181,31 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         "404":
           description: Board was not found
+    delete:
+      security:
+        - bearerAuth: [ ]
+      summary: Delete board
+      description: Allow authenticated owner to delete board
+      operationId: deleteBoard
+      tags:
+        - Board
+      parameters:
+        - name: board_id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Successfully deleted board
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          description: Board was not found
   /api/v1/public/board/{board_id}/add-user:
     post:
       security:
