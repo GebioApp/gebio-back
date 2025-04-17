@@ -13,5 +13,5 @@ public interface BoardFacade {
   Board addUserToBoard(UUID boardId, UUID userId);
   List<Board> findAllUserJoinedBoards(UUID userId);
   Board updateBoard(BoardUpdateCommand updateBoardCommand);
-  Board deleteBoard(BoardDeleteCommand boardDeleteCommand);
+  Board deleteBoard(BoardDeleteCommand deleteBoardCommand);
 }

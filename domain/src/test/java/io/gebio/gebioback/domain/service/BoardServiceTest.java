@@ -391,4 +391,23 @@ class BoardServiceTest {
       assertThat(updatedBoard.name()).isEqualTo(newName);
     }
   }
+
+  @Nested
+  class DeleteBoardTest {
+
+    @Test
+    void should_throw_when_board_not_found() {
+      UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
+      UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
+      BoardDeleteCommand command = new BoardDeleteCommand(boardId, userId);
+
+      when(boardRepositoryPort.findById(boardId)).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> boardService.deleteBoard(command))
+        .isExactlyInstanceOf(BoardNotFound.class)
+        .hasMessage(
+          "Board with id 184628cc-1493-414d-a9b5-ede2247d88ee was not found"
+        );
+    }
+  }
 }
