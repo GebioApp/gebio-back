@@ -52,4 +52,7 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
       .map(BoardMapper::entityToDomain)
       .toList();
   }
+
+  @Override
+  public void deleteById(UUID boardId) {}
 }
