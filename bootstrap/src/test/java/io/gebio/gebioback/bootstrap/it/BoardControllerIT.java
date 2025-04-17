@@ -3,6 +3,7 @@ package io.gebio.gebioback.bootstrap.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -349,6 +350,108 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         .findById(boardId)
         .orElseThrow();
       assertThat(updatedBoard.getName()).isEqualTo("Nouveau nom du tableau");
+    }
+  }
+
+  @Nested
+  class DeleteBoard {
+
+    @Test
+    void should_return_401_when_unauthenticated() throws Exception {
+      UUID boardId = UUID.randomUUID();
+
+      mockMvc
+        .perform(delete(DELETE_BOARD_API_URL.formatted(boardId)))
+        .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void should_return_404_when_board_not_found() throws Exception {
+      UUID nonExistentBoardId = UUID.randomUUID();
+
+      mockMvc
+        .perform(
+          delete(DELETE_BOARD_API_URL.formatted(nonExistentBoardId)).with(
+            jwtToken()
+          )
+        )
+        .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_403_when_user_is_not_board_owner() throws Exception {
+      UUID ownerId = UUID.randomUUID();
+      UserEntity ownerEntity = new UserEntity(
+        ownerId,
+        "owner@test.com",
+        "owner-logo",
+        "owner",
+        UserRole.USER.name()
+      );
+      userRepository.save(ownerEntity);
+
+      UUID authenticatedUserId = UUID.fromString(
+        "3338266c-26f2-4c85-8157-91f02b680577"
+      );
+      UserEntity authenticatedUserEntity = new UserEntity(
+        authenticatedUserId,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(authenticatedUserEntity);
+
+      UUID boardId = UUID.randomUUID();
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        ownerEntity
+      );
+      board.setMembers(List.of(ownerEntity, authenticatedUserEntity));
+      boardRepository.saveAndFlush(board);
+
+      mockMvc
+        .perform(
+          delete(DELETE_BOARD_API_URL.formatted(boardId)).with(jwtToken())
+        )
+        .andExpect(status().isForbidden());
+
+      assertThat(boardRepository.findById(boardId)).isPresent();
+    }
+
+    @Test
+    void should_return_204_and_delete_board_successfully() throws Exception {
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(userEntity);
+
+      UUID boardId = UUID.randomUUID();
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+      board.setMembers(List.of(userEntity));
+      boardRepository.saveAndFlush(board);
+
+      assertThat(boardRepository.findById(boardId)).isPresent();
+
+      mockMvc
+        .perform(
+          delete(DELETE_BOARD_API_URL.formatted(boardId)).with(jwtToken())
+        )
+        .andExpect(status().isNoContent());
+
+      assertThat(boardRepository.findById(boardId)).isEmpty();
     }
   }
 
