@@ -73,7 +73,10 @@ public class BoardService implements BoardFacade {
   }
 
   @Override
-  public Board deleteBoard(BoardDeleteCommand boardDeleteCommand) {
+  public Board deleteBoard(BoardDeleteCommand deleteBoardCommand) {
+    Board board = boardRepositoryPort
+      .findById(deleteBoardCommand.boardId())
+      .orElseThrow(() -> new BoardNotFound(deleteBoardCommand.boardId()));
     return null;
   }
 }
