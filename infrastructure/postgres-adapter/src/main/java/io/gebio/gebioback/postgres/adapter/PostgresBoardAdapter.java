@@ -54,5 +54,7 @@ public class PostgresBoardAdapter implements BoardRepositoryPort {
   }
 
   @Override
-  public void deleteById(UUID boardId) {}
+  public void deleteById(UUID boardId) {
+    boardRepository.deleteById(boardId);
+  }
 }
