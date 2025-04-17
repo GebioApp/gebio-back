@@ -5,6 +5,7 @@ import static io.gebio.gebioback.rest.api.adapter.service.RestResourceURIBuilder
 import io.gebio.gebioback.contract.api.BoardApi;
 import io.gebio.gebioback.contract.model.*;
 import io.gebio.gebioback.domain.model.Board;
+import io.gebio.gebioback.domain.model.BoardUpdateCommand;
 import io.gebio.gebioback.domain.model.Card;
 import io.gebio.gebioback.domain.model.User;
 import io.gebio.gebioback.domain.port.in.BoardFacade;
@@ -86,9 +87,19 @@ public class BoardController implements BoardApi {
   @Override
   public ResponseEntity<UpdateBoardResponseContract> updateBoard(
     UUID boardId,
-    UpdateBoardRequestContract renameBoardRequestContract
+    @Valid UpdateBoardRequestContract renameBoardRequestContract
   ) {
-    return null;
+    User currentUser = authenticationService.getAuthenticatedUser();
+    Board updatedBoard = boardFacade.updateBoard(
+      new BoardUpdateCommand(
+        boardId,
+        currentUser.id(),
+        renameBoardRequestContract.getBoardName()
+      )
+    );
+    return ResponseEntity.ok(
+      BoardMapper.updateBoardFromDomainToContract(updatedBoard)
+    );
   }
 
   @MessageMapping("/board/add-card")

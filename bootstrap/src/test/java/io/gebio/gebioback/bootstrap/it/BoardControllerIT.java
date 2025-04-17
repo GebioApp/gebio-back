@@ -3,6 +3,7 @@ package io.gebio.gebioback.bootstrap.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -150,6 +152,203 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
         .andExpect(
           jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
         );
+    }
+  }
+
+  @Nested
+  class UpdateBoard {
+
+    @Test
+    void should_return_401_when_unauthenticated() throws Exception {
+      mockMvc
+        .perform(
+          patch(CREATE_BOARD_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}")
+        )
+        .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void should_return_404_when_board_not_found() throws Exception {
+      UUID nonExistentBoardId = UUID.randomUUID();
+
+      mockMvc
+        .perform(
+          patch(UPDATE_BOARD_API_URL.formatted(nonExistentBoardId))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+              """
+              {
+                "boardName": "Nouveau nom du tableau"
+              }
+              """
+            )
+            .with(jwtToken())
+        )
+        .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_400_when_board_name_is_empty() throws Exception {
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(userEntity);
+
+      BoardEntity board = new BoardEntity(
+        UUID.randomUUID(),
+        "Test Board",
+        UUID.randomUUID(),
+        userEntity
+      );
+      board.setMembers(List.of(userEntity));
+      boardRepository.saveAndFlush(board);
+
+      mockMvc
+        .perform(
+          patch(UPDATE_BOARD_API_URL.formatted(board.getId()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+              """
+              {
+                "boardName": ""
+              }
+              """
+            )
+            .with(jwtToken())
+        )
+        .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_return_403_when_user_is_not_board_owner() throws Exception {
+      UUID ownerId = UUID.randomUUID();
+      UserEntity ownerEntity = new UserEntity(
+        ownerId,
+        "owner@test.com",
+        "owner-logo",
+        "owner",
+        UserRole.USER.name()
+      );
+      userRepository.save(ownerEntity);
+
+      UUID authenticatedUserId = UUID.fromString(
+        "3338266c-26f2-4c85-8157-91f02b680577"
+      );
+      UserEntity authenticatedUserEntity = new UserEntity(
+        authenticatedUserId,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(authenticatedUserEntity);
+
+      UUID boardId = UUID.randomUUID();
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board",
+        UUID.randomUUID(),
+        ownerEntity
+      );
+      board.setMembers(List.of(ownerEntity, authenticatedUserEntity));
+      boardRepository.saveAndFlush(board);
+
+      mockMvc
+        .perform(
+          patch(UPDATE_BOARD_API_URL.formatted(boardId))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+              """
+              {
+                "boardName": "Tentative de modification"
+              }
+              """
+            )
+            .with(jwtToken())
+        )
+        .andExpect(status().isForbidden());
+
+      BoardEntity unchangedBoard = boardRepository
+        .findById(boardId)
+        .orElseThrow();
+      assertThat(unchangedBoard.getName()).isEqualTo("Test Board");
+    }
+
+    @Test
+    void should_return_200_and_update_board_name_successfully()
+      throws Exception {
+      UUID id = UUID.fromString("3338266c-26f2-4c85-8157-91f02b680577");
+      UserEntity userEntity = new UserEntity(
+        id,
+        AUTHENTICATED_USER_EMAIL,
+        AUTHENTICATED_USER_LOGO,
+        AUTHENTICATED_USER_USERNAME,
+        UserRole.USER.name()
+      );
+      userRepository.save(userEntity);
+
+      UUID boardId = UUID.randomUUID();
+      UUID templateId = UUID.randomUUID();
+      BoardEntity board = new BoardEntity(
+        boardId,
+        "Test Board Original",
+        templateId,
+        userEntity
+      );
+      board.setMembers(List.of(userEntity));
+      boardRepository.saveAndFlush(board);
+
+      // Exécution
+      mockMvc
+        .perform(
+          patch(UPDATE_BOARD_API_URL.formatted(boardId))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+              """
+              {
+                "boardName": "Nouveau nom du tableau"
+              }
+              """
+            )
+            .with(jwtToken())
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.board.id", equalTo(boardId.toString())))
+        .andExpect(jsonPath("$.board.title", equalTo("Nouveau nom du tableau")))
+        .andExpect(
+          jsonPath("$.board.templateId", equalTo(templateId.toString()))
+        )
+        .andExpect(jsonPath("$.board.ownerId", equalTo(id.toString())))
+        .andExpect(jsonPath("$.board.cards", hasSize(0)))
+        .andExpect(jsonPath("$.board.members", hasSize(1)))
+        .andExpect(jsonPath("$.board.members[0].id", equalTo(id.toString())))
+        .andExpect(
+          jsonPath("$.board.members[0].logo", equalTo(AUTHENTICATED_USER_LOGO))
+        )
+        .andExpect(
+          jsonPath(
+            "$.board.members[0].email",
+            equalTo(AUTHENTICATED_USER_EMAIL)
+          )
+        )
+        .andExpect(
+          jsonPath("$.board.createdAt").value(isDatetimeWithUTCFormat())
+        )
+        .andExpect(
+          jsonPath("$.board.updatedAt").value(isDatetimeWithUTCFormat())
+        );
+
+      BoardEntity updatedBoard = boardRepository
+        .findById(boardId)
+        .orElseThrow();
+      assertThat(updatedBoard.getName()).isEqualTo("Nouveau nom du tableau");
     }
   }
 
