@@ -283,7 +283,6 @@ class BoardServiceTest {
 
     @Test
     void should_throw_when_board_not_found() {
-      // given
       UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
       UUID userId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
       String newName = "New Board Name";
@@ -295,7 +294,6 @@ class BoardServiceTest {
 
       when(boardRepositoryPort.findById(boardId)).thenReturn(Optional.empty());
 
-      // when/then
       assertThatThrownBy(() -> boardService.updateBoard(command))
         .isExactlyInstanceOf(BoardNotFound.class)
         .hasMessage(
@@ -305,7 +303,6 @@ class BoardServiceTest {
 
     @Test
     void should_throw_when_user_is_not_board_owner() {
-      // given
       UUID boardId = UUID.fromString("184628cc-1493-414d-a9b5-ede2247d88ee");
       UUID ownerId = UUID.fromString("35920a0f-7c3f-484d-96a3-7efa789c6079");
       UUID differentUserId = UUID.fromString(
@@ -339,7 +336,6 @@ class BoardServiceTest {
         Optional.of(board)
       );
 
-      // when/then
       assertThatThrownBy(() -> boardService.updateBoard(command))
         .isExactlyInstanceOf(UserIsNotOwnerOfBoard.class)
         .hasMessage(
