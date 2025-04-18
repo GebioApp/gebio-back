@@ -46,7 +46,7 @@ paths:
                   email: john.doe@gmail.com
         "401":
           $ref: '#/components/responses/UnauthorizedError'
-  /api/v1/user/{user_id}/board:
+  /api/v1/users/{user_id}/boards:
     get:
       security:
         - bearerAuth: [ ]
@@ -72,7 +72,8 @@ paths:
                 $ref: '#/components/schemas/FindBoardsResponseContract'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
-  /api/v1/public/guest:
+
+  /api/v1/public/guests:
     post:
       security:
         - bearerAuth: [ ]
@@ -94,7 +95,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateGuestResponseContract'
-  /api/v1/public/board/{board_id}:
+
+  /api/v1/public/boards/{board_id}:
     get:
       security:
         - bearerAuth: [ ]
@@ -122,7 +124,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "404":
           description: Board was not found
-  /api/v1/board:
+  
+  /api/v1/boards:
     post:
       security:
         - bearerAuth: [ ]
@@ -146,7 +149,8 @@ paths:
                 $ref: '#/components/schemas/CreateBoardResponseContract'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
-  /api/v1/board/{board_id}:
+  
+  /api/v1/boards/{board_id}:
     patch:
       security:
         - bearerAuth: [ ]
@@ -206,7 +210,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         "404":
           description: Board was not found
-  /api/v1/public/board/{board_id}/add-user:
+  
+  /api/v1/public/boards/{board_id}/users:
     post:
       security:
         - bearerAuth: [ ]
@@ -490,5 +495,3 @@ components:
       description: Authentication is missing or invalid
     ForbiddenError:
       description: User is not allowed to perform this action
-
-
