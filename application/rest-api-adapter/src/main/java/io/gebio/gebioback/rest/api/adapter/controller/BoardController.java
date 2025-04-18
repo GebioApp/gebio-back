@@ -27,7 +27,7 @@ public class BoardController implements BoardApi {
   private final AuthenticationService authenticationService;
   private final SimpMessagingTemplate simpMessagingTemplate;
 
-  private static final String TOPIC_BOARD = "/topic/board/";
+  private static final String TOPIC_BOARD = "/topic/boards/";
 
   public BoardController(
     BoardFacade boardFacade,
@@ -106,7 +106,7 @@ public class BoardController implements BoardApi {
     );
   }
 
-  @MessageMapping("/board/add-card")
+  @MessageMapping("/boards/add-card")
   public void addCard(@Payload AddCardRequestContract addCardRequestContract) {
     Card addedCard = cardFacade.addCardToBoard(
       addCardRequestContract.getBoardId(),
@@ -118,7 +118,7 @@ public class BoardController implements BoardApi {
     );
   }
 
-  @MessageMapping("/board/update-card")
+  @MessageMapping("/boards/update-card")
   public void updateCard(
     @Payload UpdateCardRequestContract updateCardRequestContract
   ) {
@@ -131,7 +131,7 @@ public class BoardController implements BoardApi {
     );
   }
 
-  @MessageMapping("/board/delete-card")
+  @MessageMapping("/boards/delete-card")
   public void updateCard(
     @Payload DeleteCardRequestContract deleteCardRequestContract
   ) {
