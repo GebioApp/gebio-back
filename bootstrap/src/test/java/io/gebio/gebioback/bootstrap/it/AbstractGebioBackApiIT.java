@@ -149,20 +149,21 @@ class AbstractGebioBackApiIT {
   }
 
   protected static final String GET_CURRENT_USER_API_URL = "/api/v1/me";
-  protected static final String CREATE_GUEST_API_URL = "/api/v1/public/guest";
+  protected static final String CREATE_GUEST_API_URL = "/api/v1/public/guests";
   protected static final String FIND_USER_BOARDS_API_URL =
-    "/api/v1/user/%s/board";
-  protected static final String CREATE_BOARD_API_URL = "/api/v1/board";
-  protected static final String UPDATE_BOARD_API_URL = "/api/v1/board/%s";
-  protected static final String DELETE_BOARD_API_URL = "/api/v1/board/%s";
-  protected static final String FIND_BOARD_API_URL = "/api/v1/public/board/%s";
+    "/api/v1/users/%s/boards";
+  protected static final String CREATE_BOARD_API_URL = "/api/v1/boards";
+  protected static final String UPDATE_BOARD_API_URL = "/api/v1/boards/%s";
+  protected static final String DELETE_BOARD_API_URL = "/api/v1/boards/%s";
+  protected static final String FIND_BOARD_API_URL = "/api/v1/public/boards/%s";
   protected static final String ADD_USER_TO_BOARD_API_URL =
-    "/api/v1/public/board/%s/add-user";
+    "/api/v1/public/boards/%s/users";
 
-  protected static final String TOPIC_BOARD_API_URL = "/topic/board/%s";
-  protected static final String ADD_CARD_API_URL = "/app/board/add-card";
-  protected static final String UPDATED_CARD_API_URL = "/app/board/update-card";
-  protected static final String DELETE_CARD_API_URL = "/app/board/delete-card";
+  protected static final String TOPIC_BOARD_API_URL = "/topic/boards/%s";
+  protected static final String ADD_CARD_API_URL = "/app/boards/add-card";
+  protected static final String UPDATED_CARD_API_URL =
+    "/app/boards/update-card";
+  protected static final String DELETE_CARD_API_URL = "/app/boards/delete-card";
 
   ResultActions doPostWithToken(String endpoint, @Language("json") String body)
     throws Exception {

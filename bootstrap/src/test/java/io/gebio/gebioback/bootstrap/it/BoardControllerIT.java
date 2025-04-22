@@ -608,7 +608,7 @@ class BoardControllerIT extends AbstractGebioBackApiIT {
 
       AddCardResponseContract response = waitForMessage(
         AddCardResponseContract.class,
-        "/topic/board/" + boardId,
+        "/topic/boards/" + boardId,
         () -> stompSession.send(ADD_CARD_API_URL, request)
       );
       assertThat(response.getOperationType()).isEqualTo(
