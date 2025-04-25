@@ -160,7 +160,7 @@ class AbstractGebioBackApiIT {
     "/api/v1/public/boards/%s/users";
 
   protected static final String TOPIC_BOARD_API_URL = "/topic/boards/%s";
-  protected static final String ADD_CARD_API_URL = "/app/boards/add-card";
+  protected static final String ADD_CARD_API_URL = "/app/board/add-card";
   protected static final String UPDATED_CARD_API_URL =
     "/app/boards/update-card";
   protected static final String DELETE_CARD_API_URL = "/app/boards/delete-card";
